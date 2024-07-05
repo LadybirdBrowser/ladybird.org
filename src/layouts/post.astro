@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout>
+  <div class="min-h-screen">
+    <section class="hero hero_single">
+      <div class="container custom-row">
+        <div class="hero__tf">
+          <label
+            ><span>{frontmatter.author || "Announcement"}</span> | {
+              frontmatter.date
+            }</label
+          >
+          <h1>{frontmatter.title}</h1>
+        </div>
+      </div>
+    </section>
+    <section class="single-content">
+      <div class="container container-narrow">
+        <slot />
+      </div>
+    </section>
+  </div>
+</BaseLayout>

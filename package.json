@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && bun run ./generate-middleware.ts",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""

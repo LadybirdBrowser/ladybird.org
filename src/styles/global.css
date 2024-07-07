@@ -378,13 +378,6 @@ a {
   gap: 40px;
 }
 
-@media (min-width: 380px) {
-  .footer__content-top {
-    flex-direction: row;
-    gap: 20px;
-  }
-}
-
 .footer__content-bottom {
   display: flex;
   justify-content: space-between;

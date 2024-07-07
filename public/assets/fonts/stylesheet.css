@@ -1,18 +1,7 @@
 @font-face {
-    font-family: 'General Sans';
-    font-weight: 400;
-    src: url('GeneralSans-Regular.otf');
+  font-family: "General Sans";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("GeneralSans-Variable.woff2") format(woff2) tech(variations);
 }
-
-@font-face {
-    font-family: 'General Sans';
-    font-weight: 500;
-    src: url('GeneralSans-Medium.otf');
-}
-
-@font-face {
-    font-family: 'General Sans';
-    font-weight: 600;
-    src: url('GeneralSans-Semibold.otf');
-}
-

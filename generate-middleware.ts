@@ -24,13 +24,10 @@ fs.readdir(srcDir, (err, files) => {
   files.forEach((file) => {
     if (!file.startsWith("index.")) {
       const fileNameWithoutExt = path.parse(file).name;
-      const htmlContent = `<meta charset="utf-8" />
+      const htmlContent = `<meta charset="utf-8"/>
 <title>Redirecting to https://ladybird.org/${fileNameWithoutExt}/</title>
-<meta
-  http-equiv="refresh"
-  content="0; URL=http://ladybird.org/${fileNameWithoutExt}/"
-/>
-<link rel="canonical" href="http://ladybird.org/${fileNameWithoutExt}/" />`;
+<meta http-equiv="refresh" content="0; URL=http://ladybird.org/${fileNameWithoutExt}/"/>
+<link rel="canonical" href="http://ladybird.org/${fileNameWithoutExt}/"/>`;
       const distFilePath = path.join(distDir, `${fileNameWithoutExt}.html`);
 
       fs.writeFile(distFilePath, htmlContent, (err) => {

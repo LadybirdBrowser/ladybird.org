@@ -8,11 +8,11 @@ const { frontmatter } = Astro.props;
     <section class="hero hero_single">
       <div class="container custom-row">
         <div class="hero__tf">
-          <label
-            ><span>{frontmatter.author || "Announcement"}</span> | {
+          <p>
+            <span>{frontmatter.author || "Announcement"}</span> | {
               frontmatter.date
-            }</label
-          >
+            }
+          </p>
           <h1>{frontmatter.title}</h1>
         </div>
       </div>

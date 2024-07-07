@@ -440,11 +440,11 @@ a {
   margin-bottom: 32px;
 }
 
-.hero__tf label {
+.hero__tf p {
   color: #fff;
 }
 
-.hero__tf label span {
+.hero__tf p span {
   background-image: linear-gradient(#6d98cc, #8a64e5);
   -webkit-background-clip: text;
   background-clip: text;

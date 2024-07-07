@@ -1,31 +1,25 @@
-<header class="header">
-  <div class="header__eclipse"></div>
-  <div class="container">
-    <div class="header-wrapper">
-      <div class="header__logo text-left">
-        <a href="/index">
-          <img
-            class="ladybird-logo"
-            src="/assets/img/logo-new.webp"
-            alt="Ladybird Logo"
-          />
-        </a>
-      </div>
-
-      <div class="header__nav text-center" id="navMenu">
-        <div class="header__pages">
-          <a href="/#about" class="header__nav-link">About</a>
-          <a href="/#news" class="header__nav-link">News</a>
-          <a href="/#gi" class="header__nav-link">Get Involved</a>
-          <a href="/#sponsors" class="header__nav-link">Sponsors</a>
-        </div>
-      </div>
-
-      <div class="header__cta text-right">
-        <a href="https://donorbox.org/ladybird" class="btn btn--small"
-          >Donate
-        </a>
-      </div>
+<header class="p-[20px] bg-[#000] relative">
+  <div id="header-blobs" class="absolute z-10 left-0 top-0 scale-125 sm:scale-100 translate-y-[10%] sm:translate-y-0">
+    <img src="/assets/img/header-eclipse.svg" alt="Header Gradient Blobs">
+  </div>
+  <div id="header-nav" class="container mx-auto flex flex-row items-center justify-between">
+    <a id="header-logo" href="/index">
+      <img
+        class="w-36"
+        src="/assets/img/logo-new.webp"
+        alt="Ladybird Logo"
+      />
+    </a>
+    <div id="header-links" class="flex-row gap-3 text-sm hidden lg:flex">
+      <a href="/#about" class="font-normal">About</a>
+      <a href="/#news" class="font-normal">News</a>
+      <a href="/#gi" class="font-normal">Get Involved</a>
+      <a href="/#sponsors" class="font-normal">Sponsors</a>
+    </div>
+    <div id="header-donate" class="hidden lg:block">
+      <a href="https://donorbox.org/ladybird" class="btn btn--small">
+        Donate
+      </a>
     </div>
   </div>
 </header>

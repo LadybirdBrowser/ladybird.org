@@ -1,0 +1,21 @@
+name: Build & Test
+
+on:
+  # Trigger the workflow every time a push is made to 'master'
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  # Allows you to run this workflow manually from the Actions tab on GitHub.
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      - name: Install & Build
+        uses: withastro/action@v2
+      - name: Test
+        run: bun test

@@ -545,7 +545,8 @@ a {
   background-image: url("../../../assets/img/why-eclipse.svg");
   background-repeat: no-repeat;
   background-size: cover;
-  width: 697px;
+  max-width: 697px;
+  width: 100%;
   height: 1117px;
   display: block;
 }
@@ -682,7 +683,8 @@ a {
   background-image: url("../../../assets/img/news-bg.webp");
   background-repeat: no-repeat;
   background-size: cover;
-  width: 688px;
+  max-width: 688px;
+  width: 100%;
   height: 1117px;
   display: block;
 }
@@ -840,7 +842,8 @@ a {
   background-image: url("../../../assets/img/sponsors-medium-eclipse.svg");
   background-repeat: no-repeat;
   background-size: cover;
-  width: 829px;
+  max-width: 829px;
+  width: 100%;
   height: 1117px;
   display: block;
 }

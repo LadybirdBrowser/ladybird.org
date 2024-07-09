@@ -120,6 +120,13 @@ h2 {
   }
 }
 
+@media (max-width: 480px) {
+  h1,
+  h2 {
+    font-size: 35px;
+  }
+}
+
 h1 span,
 h2 span {
   background-image: linear-gradient(#6d98cc, #8a64e5);
@@ -903,6 +910,15 @@ a {
   .faq__wrapper .ac-header-title {
     font-size: 22px;
     line-height: 150%;
+  }
+}
+
+@media (max-width: 768px) {
+  .faq__wrapper .ac-header-number {
+    display: none;
+  }
+  .faq__wrapper .ac {
+    padding: 15px;
   }
 }
 

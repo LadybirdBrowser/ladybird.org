@@ -53,6 +53,10 @@ module.exports = {
         },
       },
     },
+    screens: {
+      "max-md": {'max': '768px'},
+      'max-sm': {'max': '640px'},
+    },
     extend: {
       colors: {
         black: "#0e0e0e",

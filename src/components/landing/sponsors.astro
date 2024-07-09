@@ -1,74 +1,82 @@
-<section class="sponsors" id="sponsors">
+---
+const sponsors = [
+  {
+    name: "Platinum",
+    sponsors: [
+      {
+        name: "Shopify",
+        href: "https://www.shopify.com/",
+        logo: "/assets/img/sponsor-shopify.svg",
+      },
+    ],
+  },
+  {
+    name: "Silver",
+    sponsors: [
+      {
+        name: "Packet Clearing House",
+        href: "https://www.pch.net/",
+        logo: "/assets/img/sponsor-pch.svg",
+      },
+      {
+        name: "Null Games",
+        href: "https://www.null.com/",
+        logo: "/assets/img/sponsor-null.svg",
+      },
+      {
+        name: "Playbit",
+        href: "https://www.playb.it/",
+        logo: "/assets/img/sponsor-playbit.svg",
+      },
+      {
+        name: "ohne-makler.net",
+        href: "https://www.ohne-makler.net/",
+        logo: "/assets/img/sponsor-ohne-makler.svg",
+      },
+    ],
+  },
+  {
+    name: "Bronze",
+    sponsors: [
+      {
+        name: "Tuple",
+        href: "https://www.tuple.app/",
+        logo: "/assets/img/sponsor-tuple.svg",
+      },
+    ],
+  },
+];
+---
+
+<section class="relative mb-24 px-5 lg:mb-28" id="sponsors">
   <div class="sponsors__eclipse-big"></div>
   <div class="sponsors__eclipse-medium"></div>
   <div class="container">
-    <h2 class="text-center">Sponsors</h2>
-    <div class="sponsors__wrapper">
-      <div class="sponsors__block">
-        <div class="sponsors__title">
-          <span class="sponsors__title-line"></span>
-          <span class="sponsors__title-text">Platinum</span>
-          <span class="sponsors__title-line"></span>
-        </div>
-        <div class="sponsors__grid">
-          <div class="sponsors__grid-item">
-            <a href="https://www.shopify.com/"
-              ><img src="/assets/img/sponsor-shopify.svg" alt="Shopify" /></a
-            >
+    <h2 class="text-center mb-12">Sponsors</h2>
+    {
+      sponsors.map((tier) => {
+        return (
+          <div class="mb-[64px] relative">
+            <div class="flex items-center mb-6">
+              <span class="block w-full h-[1px] bg-[#d3d2d6]" />
+              <span class="text-2xl font-semibold px-5">{tier.name}</span>
+              <span class="block w-full h-[1px] bg-[#d3d2d6]" />
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+              {tier.sponsors.map((sponsor) => {
+                return (
+                  <div class="relative flex items-center justify-center min-h-[102px] border-[6px] border-[#fff] rounded-[30px] shadow-[0_0_8px_0_rgba(202,205,226,0.38)] p-4">
+                    <a href={sponsor.href}>
+                      {" "}
+                      <img src={sponsor.logo} alt={sponsor.name} />{" "}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="sponsors__block">
-        <div class="sponsors__title">
-          <span class="sponsors__title-line"></span>
-          <span class="sponsors__title-text">Silver</span>
-          <span class="sponsors__title-line"></span>
-        </div>
-        <div class="sponsors__grid">
-          <div class="sponsors__grid-item">
-            <a href="https://www.pch.net/"
-              ><img
-                src="/assets/img/sponsor-pch.svg"
-                alt="Packet Clearing House"
-              /></a
-            >
-          </div>
-          <div class="sponsors__grid-item">
-            <a href="https://www.null.com/"
-              ><img src="/assets/img/sponsor-null.svg" alt="Null Games" /></a
-            >
-          </div>
-          <div class="sponsors__grid-item">
-            <a href="https://www.playb.it/"
-              ><img src="/assets/img/sponsor-playbit.svg" alt="Playbit" /></a
-            >
-          </div>
-          <div class="sponsors__grid-item">
-            <a href="https://www.ohne-makler.net/"
-              ><img
-                src="/assets/img/sponsor-ohne-makler.svg"
-                alt="ohne-makler.net"
-              /></a
-            >
-          </div>
-        </div>
-      </div>
-
-      <div class="sponsors__block">
-        <div class="sponsors__title">
-          <span class="sponsors__title-line"></span>
-          <span class="sponsors__title-text">Bronze</span>
-          <span class="sponsors__title-line"></span>
-        </div>
-        <div class="sponsors__grid">
-          <div class="sponsors__grid-item">
-            <a href="https://www.tuple.app/"
-              ><img src="/assets/img/sponsor-tuple.svg" alt="Tuple" /></a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
+        );
+      })
+    }
   </div>
 </section>

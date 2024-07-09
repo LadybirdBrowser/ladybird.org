@@ -429,6 +429,7 @@ a {
   z-index: 0;
   background-image: url("../../../assets/img/why-eclipse.svg");
   background-repeat: no-repeat;
+  pointer-events: none;
   background-size: cover;
   max-width: 697px;
   width: 100%;
@@ -493,6 +494,7 @@ a {
   background: #fff;
   opacity: 7%;
   border-radius: 25px;
+  pointer-events: none;
   position: absolute;
   top: 0;
   left: 0;

@@ -1,9 +1,12 @@
 {
+  "extends": "astro/tsconfigs/base",
   "compilerOptions": {
-    "lib": [
-      "ESNext",
-      "DOM"
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
     ],
+    "lib": ["ESNext", "DOM"],
     "target": "ESNext",
     "module": "ESNext",
     "moduleDetection": "force",
@@ -14,6 +17,7 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "strict": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -21,9 +25,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "@/*": ["src/*"]
     }
   }
 }

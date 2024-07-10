@@ -7,8 +7,13 @@
 
 import fs from "fs";
 import path from "path";
+import { dim, blue } from "kleur/colors";
 
-const srcDir = path.join(__dirname, "src/pages");
+function time() {
+  return dim(new Date().toTimeString().slice(0, 8));
+}
+
+const srcDir = path.join(__dirname, "src/content/posts");
 const distDir = path.join(__dirname, "dist");
 
 if (!fs.existsSync(distDir)) {
@@ -25,16 +30,18 @@ fs.readdir(srcDir, (err, files) => {
     if (!file.startsWith("index.")) {
       const fileNameWithoutExt = path.parse(file).name;
       const htmlContent = `<meta charset="utf-8"/>
-<title>Redirecting to https://ladybird.org/${fileNameWithoutExt}/</title>
-<meta http-equiv="refresh" content="0; URL=http://ladybird.org/${fileNameWithoutExt}/"/>
-<link rel="canonical" href="http://ladybird.org/${fileNameWithoutExt}/"/>`;
+<title>Redirecting to https://ladybird.org/posts/${fileNameWithoutExt}/</title>
+<meta http-equiv="refresh" content="0; URL=http://ladybird.org/posts/${fileNameWithoutExt}/"/>
+<link rel="canonical" href="http://ladybird.org/posts/${fileNameWithoutExt}/"/>`;
       const distFilePath = path.join(distDir, `${fileNameWithoutExt}.html`);
 
       fs.writeFile(distFilePath, htmlContent, (err) => {
         if (err) {
           console.error(`Error writing file ${distFilePath}:`, err);
         } else {
-          console.log(`Generated ${distFilePath}`);
+          console.log(
+            `${time()} ${blue("[middleware]")} ${dim(`generated ${distFilePath.replace(__dirname, "")}`)}`
+          );
         }
       });
     }

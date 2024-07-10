@@ -7,14 +7,10 @@ const { frontmatter } = Astro.props;
   <div class="min-h-screen">
     <section class="hero hero_single">
       <div class="container custom-row">
-        <div class="hero__tf">
-          <p>
-            <span>{frontmatter.author || "Announcement"}</span> | {
-              frontmatter.date.toUTCString().slice(0, 16)
-            }
-          </p>
-          <h1>{frontmatter.title}</h1>
-        </div>
+        <h1 class="mx-auto text-center text-[#fff]">
+          {frontmatter.date.toLocaleString("default", { month: "long" })}
+          {frontmatter.date.getFullYear()} | Newsletter
+        </h1>
       </div>
     </section>
     <section class="single-content">

@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/post.astro";
+import { markdown } from "@/components/md";
+
+const posts = await getCollection("posts");
+posts.sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+---
+
+<section class="news" id="news">
+  <div class="news__eclipse"></div>
+  <div class="container">
+    <div class="news__top">
+      <h2>News &amp; Announcements</h2>
+    </div>
+    <div class="news__grid">
+      {
+        posts
+          .filter((post) => post.data.type !== "Hidden")
+          .splice(0, 6)
+          .map((post) => {
+            return (
+              <a href={`/posts/${post.slug}`}>
+                <div class="news__box">
+                  <div class="news__box-image">
+                    <div class="news__box-category">
+                      <span>{post.data.type}</span>
+                    </div>
+                    <img
+                      src={post.data.image}
+                      alt={post.data.image.split("/").pop().split(".")[0]}
+                    />
+                  </div>
+                  <h4>{post.data.title}</h4>
+                  <p>{post.data.description}</p>
+                </div>
+              </a>
+            );
+          })
+      }
+    </div>
+  </div>
+</section>

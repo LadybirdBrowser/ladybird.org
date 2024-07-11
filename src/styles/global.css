@@ -180,62 +180,6 @@ a {
   }
 }
 
-.hero__tf {
-  max-width: 800px;
-  position: relative;
-  z-index: 2;
-}
-
-.hero__tf h1 {
-  color: #fff;
-  margin-bottom: 16px;
-}
-
-.hero__tf p {
-  margin-bottom: 32px;
-}
-
-.hero__tf p {
-  color: #fff;
-}
-
-.hero__tf p span {
-  background-image: linear-gradient(#6d98cc, #8a64e5);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero__image {
-  position: relative;
-  top: 0;
-  right: 0;
-  background-image: url("../../../assets/img/lb-hero-gradient.webp");
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 535px;
-  max-width: 600px;
-  max-height: 695px;
-  display: block;
-  margin-top: 40px;
-}
-
-@media (min-width: 991px) {
-  .hero__image {
-    height: 695px;
-  }
-}
-
-@media (min-width: 991px) {
-  .hero__image {
-    position: absolute;
-    top: 105px;
-    height: 100%;
-    margin: 0;
-  }
-}
-
 .why {
   background-color: #000;
   position: relative;

@@ -1,27 +1,36 @@
 ---
 import "../../styles/global.css";
+const { title, description, author, image } = Astro.props;
 ---
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="" />
-<meta name="keywords" content="" />
+<meta
+  name="description"
+  content={description !== undefined
+    ? description
+    : "Ladybird is a truly independent web browser, backed by a non-profit."}
+/>
 
-<meta property="og:title" content="Ladybird" />
+<meta property="og:title" content={title !== undefined ? title : "Ladybird"} />
 <meta
   property="og:description"
-  content="Ladybird is a truly independent web browser, backed by a non-profit."
+  content={description !== undefined
+    ? description
+    : "Ladybird is a truly independent web browser, backed by a non-profit."}
 />
 <meta
   property="og:image"
-  content="https://ladybird.org/ladybird-purple-on-black.png"
+  content={image !== undefined
+    ? image
+    : "https://ladybird.org/ladybird-purple-on-black.png"}
 />
 <meta
   property="og:logo"
   content="https://ladybird.org/avatar-black-purple.png"
 />
+{author !== undefined ? <meta property="author" content={author} /> : null}
 
-<title>Ladybird</title>
+<title>{title !== undefined ? title : "Ladybird"}</title>
 <link rel="stylesheet" href="/assets/fonts/stylesheet.css" />
-
 <link rel="icon" type="image/x-icon" href="/assets/img/ladybird_favicon.png" />

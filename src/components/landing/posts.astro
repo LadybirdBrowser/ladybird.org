@@ -1,10 +1,10 @@
 ---
 import { getCollection } from "astro:content";
-import Layout from "@/layouts/post.astro";
-import { markdown } from "@/components/md";
 
 const posts = await getCollection("posts");
-posts.sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+posts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
 ---
 
 <section class="news" id="news">
@@ -28,7 +28,11 @@ posts.sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
                     </div>
                     <img
                       src={post.data.image}
-                      alt={post.data.image.split("/").pop().split(".")[0]}
+                      alt={
+                        (
+                          post.data.image.split("/").pop() ?? "no alt found"
+                        ).split(".")[0]
+                      }
                     />
                   </div>
                   <h4>{post.data.title}</h4>

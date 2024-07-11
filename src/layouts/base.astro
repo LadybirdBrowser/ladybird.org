@@ -2,11 +2,17 @@
 import Head from "@/components/global/head.astro";
 import Navigation from "@/components/global/navigation.astro";
 import Footer from "@/components/global/footer.astro";
+const { title, description, author, image } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <Head />
+    <Head
+      title={title}
+      description={description}
+      author={author}
+      image={image}
+    />
   </head>
   <body>
     <Navigation />

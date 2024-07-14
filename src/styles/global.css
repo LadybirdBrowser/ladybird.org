@@ -236,63 +236,6 @@ a {
   }
 }
 
-.about {
-  background-color: #000;
-  padding: 60px 20px 0 20px;
-}
-
-@media (min-width: 991px) {
-  .about {
-    padding: 0 20px;
-  }
-}
-
-.about__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: center;
-  gap: 80px;
-}
-
-@media (min-width: 991px) {
-  .about__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.about__grid-item h2 {
-  color: #fff;
-  margin-bottom: 6px;
-}
-
-.about__grid-item p {
-  color: #fff;
-  margin-bottom: 24px;
-  max-width: 470px;
-}
-
-.about__grid-item.image {
-  order: 2;
-  margin-top: -20px;
-  margin-bottom: -20px;
-}
-
-@media (min-width: 991px) {
-  .about__grid-item.image {
-    order: 1;
-  }
-}
-
-.about__grid-item.content {
-  order: 1;
-}
-
-@media (min-width: 991px) {
-  .about__grid-item.content {
-    order: 2;
-  }
-}
-
 .why {
   background-color: #000;
   position: relative;

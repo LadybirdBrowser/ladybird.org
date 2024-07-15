@@ -8,7 +8,8 @@
     "build": "astro build && bun run ./generate-middleware.ts",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
+    "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\"",
+    "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",

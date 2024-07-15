@@ -7,5 +7,5 @@ import mdx from "@astrojs/mdx";
 // https://astro.build/config
 export default defineConfig({
   site: "https://ladybird.org",
-  integrations: [tailwind(), sitemap(), mdx()]
+  integrations: [tailwind(), sitemap(), mdx()],
 });

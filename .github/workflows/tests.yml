@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build & Test & Check Format
 
 on:
   # Trigger the workflow every time a push is made to 'master'
@@ -19,3 +19,5 @@ jobs:
         uses: withastro/action@v2
       - name: Test
         run: bun test
+      - name: Format Check
+        run: bun format:check

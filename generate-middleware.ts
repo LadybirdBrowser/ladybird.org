@@ -33,17 +33,20 @@ fs.readdir(srcDir, (err, files) => {
 <title>Redirecting to https://ladybird.org/posts/${fileNameWithoutExt}/</title>
 <meta http-equiv="refresh" content="0; URL=http://ladybird.org/posts/${fileNameWithoutExt}/"/>
 <link rel="canonical" href="http://ladybird.org/posts/${fileNameWithoutExt}/"/>`;
-      const distFilePath = path.join(distDir, `${fileNameWithoutExt}.html`);
-
-      fs.writeFile(distFilePath, htmlContent, (err) => {
-        if (err) {
-          console.error(`Error writing file ${distFilePath}:`, err);
-        } else {
-          console.log(
-            `${time()} ${blue("[middleware]")} ${dim(`generated ${distFilePath.replace(__dirname, "")}`)}`
-          );
-        }
-      });
+      for (const distFilePath of [
+        path.join(distDir, fileNameWithoutExt),
+        path.join(distDir, `${fileNameWithoutExt}.html`),
+      ]) {
+        fs.writeFile(distFilePath, htmlContent, (err) => {
+          if (err) {
+            console.error(`Error writing file ${distFilePath}:`, err);
+          } else {
+            console.log(
+              `${time()} ${blue("[middleware]")} ${dim(`generated ${distFilePath.replace(__dirname, "")}`)}`
+            );
+          }
+        });
+      }
     }
   });
 });

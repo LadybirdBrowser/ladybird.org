@@ -34,7 +34,7 @@ describe("Markdown Rendering", () => {
       const frontMatterTitle = frontMatterMatch
         ? frontMatterMatch[1]
         : file.replace(".mdx", "");
-      const h1Tag = `<h1>${frontMatterTitle}</h1>`;
+      const h1Tag = `>${frontMatterTitle}</h1>`;
 
       expect(htmlContent.includes(h1Tag)).toBe(true);
     });

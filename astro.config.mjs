@@ -8,4 +8,20 @@ import mdx from "@astrojs/mdx";
 export default defineConfig({
   site: "https://ladybird.org",
   integrations: [tailwind(), sitemap(), mdx()],
+  // Special case the initial posts from before the astro transition.
+  // These are the super-SEO'd links that were shared around.
+  redirects: {
+    "/announcement": "/posts/announcement",
+    "/announcement/": "/posts/announcement",
+    "/announcement.html": "/posts/announcement",
+    "/thanks": "/posts/thanks",
+    "/thanks/": "/posts/thanks",
+    "/thanks.html": "/posts/thanks",
+    "/why-ladybird": "/posts/why-ladybird",
+    "/why-ladybird/": "/posts/why-ladybird",
+    "/why-ladybird.html": "/posts/why-ladybird",
+    "/fork": "/posts/fork",
+    "/fork/": "/posts/fork",
+    "/fork.html": "/posts/fork",
+  },
 });

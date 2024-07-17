@@ -34,3 +34,10 @@ const { title, description, author, image } = Astro.props;
 <title>{title !== undefined ? title : "Ladybird"}</title>
 <link rel="stylesheet" href="/assets/fonts/stylesheet.css" />
 <link rel="icon" type="image/x-icon" href="/assets/img/ladybird_favicon.png" />
+
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title="Ladybird Browser Posts"
+  href={new URL("posts.xml", Astro.site)}
+/>

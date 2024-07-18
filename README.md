@@ -42,7 +42,7 @@ bun format
 
 ## Adding Content
 
-All content is parsed througha zod type validator during the build step to ensure all necessary frontmatter fields like `Title`, `Author`, or `Date` are filled out and compliant, if you get an error with validation it should explain what rule you broke such as missing a field or crossing the maximum length.
+All content is parsed through a zod type validator during the build step to ensure all necessary front matter fields like `Title`, `Author`, or `Date` are filled out and compliant, if you get an error with validation it should explain what rule you broke such as missing a field or crossing the maximum length.
 
 ### Posts
 
@@ -54,7 +54,7 @@ A new content post can be added by going to `src/content/posts/[route].mdx` and 
 ---
 title: Ladybird Forks from SerenityOS!
 author: Andreas Kling
-description: Independent from SereintyOS, and what this will bring.
+description: Independent from SerenityOS, and what this will bring.
 image: /assets/img/fork.webp
 type: Announcement
 date: 2024-06-03

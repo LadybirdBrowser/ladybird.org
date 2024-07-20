@@ -20,7 +20,15 @@ const newsletter = defineCollection({
   }),
 });
 
+const faqs = defineCollection({
+  type: "content",
+  schema: z.object({
+    question: z.string().min(5).max(280),
+  }),
+});
+
 export const collections = {
   posts,
   newsletter,
+  faqs,
 };

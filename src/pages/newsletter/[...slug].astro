@@ -4,7 +4,9 @@ import Layout from "@/layouts/newsletter.astro";
 import { markdown } from "@/components/md";
 
 export async function getStaticPaths() {
-  const newsletters = await getCollection("newsletters");
+  const newsletters = await getCollection("newsletters", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true
+  );
   return newsletters.map((newsletter) => ({
     params: { slug: newsletter.data.date.toISOString().split("T")[0] },
     props: { newsletter },

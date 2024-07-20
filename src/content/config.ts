@@ -17,6 +17,7 @@ const newsletter = defineCollection({
   schema: z.object({
     description: z.string().max(280),
     date: z.date(),
+    draft: z.boolean().optional(),
   }),
 });
 

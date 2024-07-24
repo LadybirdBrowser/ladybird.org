@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import { markdown } from "@/components/md";
 
 const faqs = await getCollection("faqs");
+faqs.sort((a, b) => a.data.order - b.data.order);
 const faqContent = await Promise.all(
   faqs.map(async (faq) => {
     const { Content } = await faq.render();

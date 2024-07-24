@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "bun prebuild && astro build",
-    "prebuild": "bun run ./src/content/faqs/generator.ts",
+    "prebuild": "bun run ./src/content/faqs/generator.ts && bun run prettier --write \"./src/content/faqs/*.mdx\"",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\"",

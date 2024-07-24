@@ -43,6 +43,7 @@ describe("RSS Feeds", () => {
           "description",
           "pubDate",
           "author",
+          "category",
         ])
       );
     });

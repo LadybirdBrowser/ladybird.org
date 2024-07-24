@@ -27,8 +27,13 @@ describe("RSS Feeds", () => {
     );
   });
 
-  test("XML should contain entries for every post", async () => {
-    expect(parsedXML.rss.channel.item).toBeArrayOfSize(mdFiles.length);
+  test("XML should contain entries for every non-hidden post", async () => {
+    const nonHiddenMdFiles = mdFiles.filter((file) => {
+      const filePath = path.join(srcDir, file);
+      const fileContent = fs.readFileSync(filePath);
+      return !fileContent.includes("type: Hidden");
+    });
+    expect(parsedXML.rss.channel.item).toBeArrayOfSize(nonHiddenMdFiles.length);
     parsedXML.rss.channel.item.forEach((item: any) => {
       const itemAttributes = Object.keys(item);
       expect(itemAttributes).toEqual(

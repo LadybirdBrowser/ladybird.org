@@ -8,13 +8,15 @@ export async function GET(context: APIContext) {
     title: "Ladybird Browser Posts",
     description: "Ladybird is a brand-new browser &amp; web engine",
     site: context.site!,
-    items: posts.map((post) => ({
-      title: post.data.title,
-      description: post.data.description,
-      author: post.data.author,
-      pubDate: post.data.date,
-      link: `/posts/${post.slug}`,
-    })),
+    items: posts
+      .filter((post) => post.data.type !== "Hidden")
+      .map((post) => ({
+        title: post.data.title,
+        description: post.data.description,
+        author: post.data.author,
+        pubDate: post.data.date,
+        link: `/posts/${post.slug}`,
+      })),
     trailingSlash: false,
   });
 }

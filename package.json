@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "bun prebuild && astro build",
+    "prebuild": "bun run ./src/content/faqs/generator.ts",
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\"",

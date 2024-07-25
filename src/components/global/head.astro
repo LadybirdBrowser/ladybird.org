@@ -23,17 +23,14 @@ const { title, description, author, image } = Astro.props;
   property="og:image"
   content={image !== undefined
     ? image
-    : "https://ladybird.org/ladybird-purple-on-black.png"}
+    : "/assets/img/ladybird-purple-on-black.png"}
 />
-<meta
-  property="og:logo"
-  content="https://ladybird.org/avatar-black-purple.png"
-/>
+<meta property="og:logo" content="/assets/img/avatar-black-purple.png" />
 {author !== undefined ? <meta property="author" content={author} /> : null}
 
 <title>{title !== undefined ? title : "Ladybird"}</title>
 <link rel="stylesheet" href="/assets/fonts/stylesheet.css" />
-<link rel="icon" type="image/x-icon" href="/assets/img/ladybird_favicon.png" />
+<link rel="icon" href="/assets/img/ladybird_favicon.png" />
 
 <link
   rel="alternate"

@@ -2,6 +2,14 @@
 import Head from "@/components/global/head.astro";
 import Navigation from "@/components/global/navigation.astro";
 import Footer from "@/components/global/footer.astro";
+
+type Props = {
+  title?: string;
+  description?: string;
+  author?: string;
+  image?: string;
+  children: any;
+};
 const { title, description, author, image } = Astro.props;
 ---
 

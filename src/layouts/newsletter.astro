@@ -1,21 +1,23 @@
 ---
+import type { Newsletter } from "@/content/config";
 import BaseLayout from "@/layouts/base.astro";
-const { frontmatter, title, description, author, image } = Astro.props;
+
+type Props = {
+  frontmatter: Newsletter;
+  children: any;
+};
+const { frontmatter } = Astro.props;
+const displayDate = frontmatter.title.split(" - ")[1];
 ---
 
-<BaseLayout
-  title={title}
-  description={description}
-  author={author}
-  image={image}
->
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
   <div class="min-h-screen">
     <section class="hero hero_single">
       <div class="container custom-row">
         <h1 class="mx-auto text-center text-[#fff]">
-          This Month in <span>Ladybird</span><br />
-          {frontmatter.date.toLocaleString("default", { month: "long" })}
-          {frontmatter.date.getFullYear()}
+          This Month in <span>Ladybird</span>
+          <br />
+          {displayDate}
         </h1>
       </div>
     </section>

@@ -32,12 +32,12 @@ export const newsletterSchema = z
   .strict();
 export type Newsletter = z.infer<typeof newsletterSchema>;
 
-const newsletter = defineCollection({
+const newsletters = defineCollection({
   type: "content",
   schema: newsletterSchema,
 });
 
 export const collections = {
   posts,
-  newsletter,
+  newsletters,
 };

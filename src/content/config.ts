@@ -21,7 +21,16 @@ const newsletter = defineCollection({
   }),
 });
 
+const faqs = defineCollection({
+  type: "content",
+  schema: z.object({
+    question: z.string().min(5).max(280),
+    order: z.number().min(0),
+  }),
+});
+
 export const collections = {
   posts,
   newsletter,
+  faqs,
 };

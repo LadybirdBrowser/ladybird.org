@@ -596,7 +596,7 @@ a {
   }
 }
 
-.faq__wrapper .ac-panel-text {
+.faq__wrapper .ac-panel-text p {
   color: #444345;
   line-height: 140%;
   font-size: 18px;

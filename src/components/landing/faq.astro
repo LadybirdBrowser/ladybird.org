@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import { markdown } from "@/components/md";
+
+const faqs = await getCollection("faqs");
+faqs.sort((a, b) => a.data.order - b.data.order);
+const faqContent = await Promise.all(
+  faqs.map(async (faq) => {
+    const { Content } = await faq.render();
+    return { Content, question: faq.data.question };
+  })
+);
+---
+
+<section class="faq xl:mx-32 md:mx-16">
+  <div class="container">
+    <div class="faq__tf">
+      <h2>Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq__wrapper">
+      {
+        faqContent.map(({ Content, question }) => {
+          return (
+            <div class="ac">
+              <div class="ac-header-number">
+                <div>?</div>
+              </div>
+              <div>
+                <div class="ac-header-title">{question}?</div>
+                <div class="ac-panel-text">
+                  <Content components={markdown} />
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

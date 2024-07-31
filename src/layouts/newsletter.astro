@@ -1,5 +1,8 @@
 ---
+import type { Newsletter } from "@/content/config";
 import BaseLayout from "@/layouts/base.astro";
+
+type Props = { frontmatter: Newsletter; children: any };
 const { frontmatter } = Astro.props;
 ---
 

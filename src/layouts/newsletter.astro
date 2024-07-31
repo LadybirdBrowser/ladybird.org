@@ -8,7 +8,7 @@ const { frontmatter } = Astro.props;
     <section class="hero hero_single">
       <div class="container custom-row">
         <h1 class="mx-auto text-center text-[#fff]">
-          This Month in <span>Ladybird</span><br/>
+          This Month in <span>Ladybird</span><br />
           {frontmatter.date.toLocaleString("default", { month: "long" })}
           {frontmatter.date.getFullYear()}
         </h1>

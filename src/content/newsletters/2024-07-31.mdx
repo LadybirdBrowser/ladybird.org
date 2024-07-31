@@ -16,11 +16,11 @@ Ladybird is funded entirely by sponsorships and donations from companies and ind
 
 In July, we’ve welcomed the following new sponsors:
 
-- [FUTO](https://futo.org/) with $201,000  
-- [Packet Clearing House](http://pch.net) with $10,000  
-- [Playbit](http://playb.it) with $10,000  
-- [Null Games](https://null.com) with $10,000  
-- [Tuple](https://tuple.app/) with $5,000  
+- [FUTO](https://futo.org/) with $201,000
+- [Packet Clearing House](http://pch.net) with $10,000
+- [Playbit](http://playb.it) with $10,000
+- [Null Games](https://null.com) with $10,000
+- [Tuple](https://tuple.app/) with $5,000
 - [Bastian Müller](https://turbolent.com) with $5,000
 
 We’ve also received $7,572 in donations from 230 individual supporters\!
@@ -43,17 +43,17 @@ You can take a look at our current WPT progress [here](https://staging.wpt.fyi/r
 
 Ladybird supports Web Assembly through the LibWasm library, which is separate from the JavaScript implementation in LibJS. Similar to how JavaScript has its specification tests in the test262 test suite, and the web platform has its tests in the Web Platform Tests test suite, Web Assembly has a test suite maintained by the specification authors.
 
-As of this month, LibWasm has hit a 100% pass rate on the Wasm spec test suite\! Contributors Diego Frias and Ali Mohammad Pur Fard have put in excellent work fixing bugs and implementing missing SIMD features in LibWasm to push us from approximately 60% back at the beginning of June to 100% of tests passing late this month.
+As of this month, LibWasm has hit a 100% pass rate on the Wasm spec test suite\! Contributors Diego Frias and Ali Mohammad Pur have put in excellent work fixing bugs and implementing missing SIMD features in LibWasm to push us from approximately 60% back at the beginning of June to 100% of tests passing late this month.
 
 Have a look at the progress graphs on our development tracking website [here](https://ladybirdbrowser.github.io/libjs-website/wasm/).
 
 ### More 3rd party libraries
 
-We continue leaning into more of the OSS ecosystem. This month we’ve integrated the following 3rd party libraries to improve our functionality and performance:
+We're continuing to lean on more of the OSS ecosystem. This month we’ve integrated the following 3rd party libraries to improve our functionality and performance:
 
-- [libjxl](https://github.com/libjxl/libjxl): JPEG XL image support  
-- [libavif](https://github.com/AOMediaCodec/libavif): AVIF image support  
-- [libwebp](https://github.com/webmproject/libwebp): WebP image support  
+- [libjxl](https://github.com/libjxl/libjxl): JPEG XL image support
+- [libavif](https://github.com/AOMediaCodec/libavif): AVIF image support
+- [libwebp](https://github.com/webmproject/libwebp): WebP image support
 - [simdutf](https://github.com/simdutf/simdutf): High-performance Unicode and Base64 functions
 
 ### Skia is now our default 2D graphics library
@@ -62,9 +62,9 @@ We’re now using the open-source Skia library to rasterize 2D graphics. This is
 
 With Skia, we get:
 
-- GPU acceleration\! If a device supports GPU acceleration, Skia will use the Ganesh backend with Metal context on macOS and Vulkan context on Linux.  
-- Better surface allocation\! macOS uses `IOSurface` for backing stores, which means we avoid copying data from Skia's render target before passing it through IPC to the browser process to display it on the screen. In the future similar optimisation will be implemented for Linux.  
-- More speed\! Before switching to Skia, the rasterization process dominated performance profiles on many websites. However, now the picture is completely different. Often, recording a display list that describes what needs to be rasterized takes longer than the rasterization process itself.  
+- GPU acceleration\! If a device supports GPU acceleration, Skia will use the Ganesh backend with a Metal context on macOS and a Vulkan context on Linux.
+- Better surface allocation\! macOS uses `IOSurface` for backing stores, which means we avoid copying data from Skia's render target before passing it through IPC to the browser rocess to display it on the screen. In the future a similar optimisation will be implemented for Linux through Vulkan.
+- More speed\! Before switching to Skia, the rasterization process dominated performance profiles on many websites. Now recording a display list that describes what needs to be rasterized often takes longer than the rasterization process itself.
 - CSS 2D transforms just work\! With LibGfx, CSS transforms support was limited to `translate()` and `scale()`, but with Skia, we automatically gained support for `matrix()`, `rotate()`, `skew()`, and more.
 
 We’re also using Skia to rasterize text, although text layout and shaping is still performed by our legacy LibGfx code. That will change in the near future.
@@ -73,7 +73,7 @@ We’re also using Skia to rasterize text, although text layout and shaping is s
 
 We now update the rendering when style changes happen to a pseudo-element. An example of this is when you hover over a generated `::before` or `::after` pseudo-element.
 
-This makes the interactive part of the Acid2 test finally work as intended. (You can now hover the nose to make it turn blue\!)
+This makes the interactive part of the [Acid2 test](http://acid2.acidtests.org/) finally work as intended. (You can now hover the nose to make it turn blue\!)
 
 ### CSS counters
 
@@ -111,110 +111,109 @@ As you can see in the before/after screenshots, CSS Grid layout with `fit-conten
 
 As usual, we’ve added various new web APIs this month. Here are some:
 
-- [Element.checkVisibility()](https://github.com/LadybirdBrowser/ladybird/commit/5f154ba372f9a667351a026aa4a31306c45fd2a5)  
-- [HTMLMediaElement.textTracks](https://github.com/LadybirdBrowser/ladybird/commit/65be928d4e18108146645e177b586a3d9117aebc)  
-- [HTMLMediaElement.addTextTrack()](https://github.com/LadybirdBrowser/ladybird/commit/793248aec977d4b15006d6e55a960da2e115a734)  
-- [HTMLOptionsCollection indexed setter](https://github.com/LadybirdBrowser/ladybird/commit/99824eae142b02c7bce84b9e98d10fc6428f31fe)  
-- [KeyboardEvent.initKeyboardEvent()](https://github.com/LadybirdBrowser/ladybird/commit/3845d174e313d404c7b59b7d71637873712d4ee1)  
-- [MouseEvent.initMouseEvent()](https://github.com/LadybirdBrowser/ladybird/commit/807e63faaf6d9cb30ac01514309e532eb3742e96)  
-- [Navigator.doNotTrack](https://github.com/LadybirdBrowser/ladybird/commit/61e616c974ef2deb5edd4f85ae0a3b6da215521a)  
-- [Node.isDefaultNamespace()](https://github.com/LadybirdBrowser/ladybird/commit/055c902a375bb34b8c0e31f015c2815fe935c6a9)  
-- [Node.lookupNamespaceURI()](https://github.com/LadybirdBrowser/ladybird/commit/27d429a85f359b9c87bf9807e4dea33f7092308a)  
-- [Node.lookupPrefix()](https://github.com/LadybirdBrowser/ladybird/commit/9624e0d2a2dc952b80e1ce1999f816f60c1ad813)  
-- [Node.normalize()](https://github.com/LadybirdBrowser/ladybird/commit/0a0651f34ea927a0ca44dc5d2c7786f3dcf8da25)  
-- [SVGAElement.relList](https://github.com/LadybirdBrowser/ladybird/commit/6ca4c2beb08a81bc4aaa2571ee8c5b3207d0b3a2)  
-- [SVGElement.className](https://github.com/LadybirdBrowser/ladybird/commit/9d1ea4c7e013629d432a4c3559a5919462fd4c71)  
-- [SVGElement.ownerSVGElement](https://github.com/LadybirdBrowser/ladybird/commit/6f3c5f5ae9f0ee055c44ace5efab0c443626bb5d)  
-- [TextTrack.mode](https://github.com/LadybirdBrowser/ladybird/commit/4b16f1df05208e3ae15e4b2d2096e50045597252)  
+- [Element.checkVisibility()](https://github.com/LadybirdBrowser/ladybird/commit/5f154ba372f9a667351a026aa4a31306c45fd2a5)
+- [HTMLMediaElement.textTracks](https://github.com/LadybirdBrowser/ladybird/commit/65be928d4e18108146645e177b586a3d9117aebc)
+- [HTMLMediaElement.addTextTrack()](https://github.com/LadybirdBrowser/ladybird/commit/793248aec977d4b15006d6e55a960da2e115a734)
+- [HTMLOptionsCollection indexed setter](https://github.com/LadybirdBrowser/ladybird/commit/99824eae142b02c7bce84b9e98d10fc6428f31fe)
+- [KeyboardEvent.initKeyboardEvent()](https://github.com/LadybirdBrowser/ladybird/commit/3845d174e313d404c7b59b7d71637873712d4ee1)
+- [MouseEvent.initMouseEvent()](https://github.com/LadybirdBrowser/ladybird/commit/807e63faaf6d9cb30ac01514309e532eb3742e96)
+- [Navigator.doNotTrack](https://github.com/LadybirdBrowser/ladybird/commit/61e616c974ef2deb5edd4f85ae0a3b6da215521a)
+- [Node.isDefaultNamespace()](https://github.com/LadybirdBrowser/ladybird/commit/055c902a375bb34b8c0e31f015c2815fe935c6a9)
+- [Node.lookupNamespaceURI()](https://github.com/LadybirdBrowser/ladybird/commit/27d429a85f359b9c87bf9807e4dea33f7092308a)
+- [Node.lookupPrefix()](https://github.com/LadybirdBrowser/ladybird/commit/9624e0d2a2dc952b80e1ce1999f816f60c1ad813)
+- [Node.normalize()](https://github.com/LadybirdBrowser/ladybird/commit/0a0651f34ea927a0ca44dc5d2c7786f3dcf8da25)
+- [SVGAElement.relList](https://github.com/LadybirdBrowser/ladybird/commit/6ca4c2beb08a81bc4aaa2571ee8c5b3207d0b3a2)
+- [SVGElement.className](https://github.com/LadybirdBrowser/ladybird/commit/9d1ea4c7e013629d432a4c3559a5919462fd4c71)
+- [SVGElement.ownerSVGElement](https://github.com/LadybirdBrowser/ladybird/commit/6f3c5f5ae9f0ee055c44ace5efab0c443626bb5d)
+- [TextTrack.mode](https://github.com/LadybirdBrowser/ladybird/commit/4b16f1df05208e3ae15e4b2d2096e50045597252)
 - And many more..
 
 ### Some nice optimizations
 
-- Our `StringBuilder` class can now construct the final `String` without reallocating the data storage. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/29879a69a4b2eda4f0315027cb1e86964d333221)  
-- We now pre-allocate the final buffer when resolving rope strings. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/e8f4ae487d).  
-- The JavaScript `typeof` operator was made faster by caching all the possible results (there aren’t that many\!) [Commit](https://github.com/LadybirdBrowser/ladybird/commit/d0b11af3876a64e6b254b5fc3f474d9bbe552024)  
-- We now avoid converting from UTF-8 to UTF-16 if all we wanted to know was the length in UTF-16 code units. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/4a166a45ec9db910542893133f08cc7de4ec974f)  
+- Our `StringBuilder` class can now construct the final `String` without reallocating the data storage. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/29879a69a4b2eda4f0315027cb1e86964d333221)
+- We now pre-allocate the final buffer when resolving rope strings. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/e8f4ae487d).
+- The JavaScript `typeof` operator was made faster by caching all the possible results (there aren’t that many\!). [Commit](https://github.com/LadybirdBrowser/ladybird/commit/d0b11af3876a64e6b254b5fc3f474d9bbe552024)
+- We now avoid converting from UTF-8 to UTF-16 if all we wanted to know was the length in UTF-16 code units. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/4a166a45ec9db910542893133f08cc7de4ec974f)
 - We changed `background-repeat: repeat` to use an optimized shader for repeated image painting instead of rendering each repetition unit as a separate image. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/c5afe70f779)
 
 ### Credits
 
 We thank the following people who contributed code to Ladybird in July 2024:
 
-*Alec Murphy, 
-Alex Studer, 
-Ali Mohammad Pur, 
-Aliaksandr Kalenik, 
-Andreas Kling, 
-Andrew Kaster, 
-Antoni Duda, 
-Arthur Hartwig Carlsson, 
-Aziz Berkay Yesilyurt, 
-Bastiaan van der Plaat, 
-BenJilks, 
-Braydn, 
-Caitlin Potter, 
-CheewyOFF, 
-Colin Reeder, 
-Daeraxa, 
-Dan Klishch, 
-Daniel Bertalan, 
-Dario Castañé, 
-Dennis Camera, 
-Diego, 
-Diego Frias, 
-Edwin Hoksberg, 
-Enver Balalic, 
-Francesco Gazzetta, 
-Gingeh, 
-Harm133, 
-Hendiadyoin1, 
-Holger Hans Peter Freyther, 
-Jacob Wischnat, 
-Jamie Mansfield, 
-Jason Fairchild, 
-Jess, 
-Jörg Strebel, 
-Keith Cirkel, 
-Kemal Zebari, 
-Kenneth Myhra, 
-Kevin Meyer, 
-Kotaro Ichihara, 
-Lawrence Gimenez, 
-Lucas CHOLLET, 
-Luke Warlow, 
-Maciej, 
-Mohamed amine Bounya, 
-Natsuki Ikeguchi, 
-Nico Weber, 
-Nicolas Danelon, 
-Olekoop, 
-Saksham Mittal, 
-Salem Yaslem, 
-Sam Atkins, 
-Samuel Eisenhandler, 
-Sebastian Zaha, 
-Shannon Booth, 
-Thomas Klausner, 
-Tim Ledbetter, 
-Tim Schumacher, 
-Timothy Flynn, 
-Timur Sultanov, 
-Victor Tran, 
-bbb651, 
-circl, 
-dependabot[bot], 
-doctortheemh, 
-fish4terrisa-MSDSM, 
-lalitrn44, 
-lmutter, 
-luozhiya, 
-matjojo, 
-mbal, 
-mendhak, 
-mobounya, 
-paaspaas00, 
-rmg-x, 
-sideshowbarker, 
-simonkrauter, 
+*Alec Murphy,
+Alex Studer,
+Ali Mohammad Pur,
+Aliaksandr Kalenik,
+Andreas Kling,
+Andrew Kaster,
+Antoni Duda,
+Arthur Hartwig Carlsson,
+Aziz Berkay Yesilyurt,
+Bastiaan van der Plaat,
+BenJilks,
+Braydn,
+Caitlin Potter,
+CheewyOFF,
+Colin Reeder,
+Daeraxa,
+Dan Klishch,
+Daniel Bertalan,
+Dario Castañé,
+Dennis Camera,
+Diego,
+Diego Frias,
+Edwin Hoksberg,
+Enver Balalic,
+Francesco Gazzetta,
+Gingeh,
+Harm133,
+Hendiadyoin1,
+Holger Hans Peter Freyther,
+Jacob Wischnat,
+Jamie Mansfield,
+Jason Fairchild,
+Jess,
+Jörg Strebel,
+Keith Cirkel,
+Kemal Zebari,
+Kenneth Myhra,
+Kevin Meyer,
+Kotaro Ichihara,
+Lawrence Gimenez,
+Lucas CHOLLET,
+Luke Warlow,
+Maciej,
+Mohamed amine Bounya,
+Natsuki Ikeguchi,
+Nico Weber,
+Nicolas Danelon,
+Olekoop,
+Saksham Mittal,
+Salem Yaslem,
+Sam Atkins,
+Samuel Eisenhandler,
+Sebastian Zaha,
+Shannon Booth,
+Thomas Klausner,
+Tim Ledbetter,
+Tim Schumacher,
+Timothy Flynn,
+Timur Sultanov,
+Victor Tran,
+bbb651,
+circl,
+doctortheemh,
+fish4terrisa-MSDSM,
+lalitrn44,
+lmutter,
+luozhiya,
+matjojo,
+mbal,
+mendhak,
+mobounya,
+paaspaas00,
+rmg-x,
+sideshowbarker,
+simonkrauter,
 Ángel Carias*
 

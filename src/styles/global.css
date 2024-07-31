@@ -168,6 +168,10 @@ a {
   flex-direction: column;
 }
 
+.hero_single {
+  min-height: 300px;
+}
+
 @media (min-width: 991px) {
   .hero {
     flex-direction: row;

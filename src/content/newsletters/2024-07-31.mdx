@@ -64,7 +64,7 @@ We’re now using the open-source Skia library to rasterize 2D graphics. This is
 With Skia, we get:
 
 - GPU acceleration\! If a device supports GPU acceleration, Skia will use the Ganesh backend with a Metal context on macOS and a Vulkan context on Linux.
-- Better surface allocation\! macOS uses `IOSurface` for backing stores, which means we avoid copying data from Skia's render target before passing it through IPC to the browser rocess to display it on the screen. In the future a similar optimisation will be implemented for Linux through Vulkan.
+- Better surface allocation\! macOS uses `IOSurface` for backing stores, which means we avoid copying data from Skia's render target before passing it through IPC to the browser process to display it on the screen. In the future a similar optimisation will be implemented for Linux through Vulkan.
 - More speed\! Before switching to Skia, the rasterization process dominated performance profiles on many websites. Now recording a display list that describes what needs to be rasterized often takes longer than the rasterization process itself.
 - CSS 2D transforms just work\! With LibGfx, CSS transforms support was limited to `translate()` and `scale()`, but with Skia, we automatically gained support for `matrix()`, `rotate()`, `skew()`, and more.
 

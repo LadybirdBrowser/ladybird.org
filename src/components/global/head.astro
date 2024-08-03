@@ -1,6 +1,6 @@
 ---
 import "../../styles/global.css";
-const { title, description, author, image } = Astro.props;
+const { title, description, author, image, noindex } = Astro.props;
 ---
 
 <meta charset="UTF-8" />
@@ -27,6 +27,8 @@ const { title, description, author, image } = Astro.props;
 />
 <meta property="og:logo" content="/assets/img/avatar-black-purple.png" />
 {author !== undefined ? <meta property="author" content={author} /> : null}
+
+{noindex && <meta name="robots" content="noindex">}
 
 <title>{title !== undefined ? title : "Ladybird"}</title>
 <link rel="stylesheet" href="/assets/fonts/stylesheet.css" />

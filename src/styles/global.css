@@ -29,10 +29,6 @@ img {
   height: auto;
 }
 
-a {
-  transition: all 0.5s ease;
-}
-
 @media (min-width: 576px) {
   .container {
     max-width: 540px;
@@ -156,6 +152,10 @@ a {
   font-weight: 500;
   letter-spacing: 0.5px;
   text-decoration: none;
+  transition: all 0.5s ease;
+}
+
+header a, footer a {
   color: #fff;
 }
 
@@ -363,10 +363,6 @@ a {
   }
 }
 
-.news__grid a {
-  color: #000;
-}
-
 .news__box {
   position: relative;
   max-width: 360px;
@@ -430,10 +426,6 @@ a {
 
 .gi__tf h2 {
   margin-bottom: 20px;
-}
-
-.gi p a {
-  color: #000;
 }
 
 .gi p {
@@ -795,10 +787,6 @@ table.sponsor-tiers td {
 
 table.sponsor-tiers td:first-child {
   font-weight: bold;
-}
-
-.ac a {
-  color: black;
 }
 
 .donate .container {

@@ -7,7 +7,24 @@ draft: true
 
 Hello\!
 
-### Section
+### `console.table()`
+
+New contributor Gasim Gasimzada has been making improvements to our `console` API this month.
+In particular, we were missing `console.table()`, which produces a table from the data passed in and prints it to the browser console.
+At the time of writing, the [spec](https://console.spec.whatwg.org/#table) does not have an algorithm for this function,
+so Gasim has [written one](https://github.com/whatwg/console/pull/237) and then implemented it in Ladybird.
+Hopefully this algorithm will soon be made an official part of the spec, and help all browsers to behave consistently.
+
+### CSS style values
+
+Each CSS property's value is stored as one or more "style value" classes.
+We have many of these, and until recently, they were very freeform and unrelated to any specs.
+This month, we started moving these in line with the [CSS Typed OM spec](https://drafts.css-houdini.org/css-typed-om-1),
+which defines a way for JavaScript to access styling as objects, instead of just strings.
+So far, the main change is that we now store colors in whatever form they were written,
+instead of converting them to a 32-bit RGBA value during parsing.
+This means that using `calc()` inside a color function (such as `background-color: hsl(calc(15deg * 8) 50% 80%)`)
+now finally works, which has been a problem for a long time!
 
 ### Credits
 

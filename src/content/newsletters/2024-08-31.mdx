@@ -46,6 +46,13 @@ Before repainting, the display list is combined with the scroll offsets from the
 | [Zig Documentation](https://ziglang.org/documentation/master/) | 25 FPS | 120 FPS |
 | [CSS Grid Layout Module](https://www.w3.org/TR/css-grid-2/)    | 60 FPS | 150 FPS |
 
+### Use HarfBuzz for text layout and RTL support
+
+Text layout is a process that takes a unicode string and available fonts as input and returns a list of positioned glyphs.
+Until recently, we used our own basic text layout algorithm, which supported simple scripts like Latin and Cyrillic.
+However, this month, BenJilks helped us transition to HarfBuzz and implemented support for the direction attribute.
+With these two changes combined, Ladybird is now capable of rendering more complex scripts, such as Hebrew and Arabic.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

@@ -26,6 +26,26 @@ instead of converting them to a 32-bit RGBA value during parsing.
 This means that using `calc()` inside a color function (such as `background-color: hsl(calc(15deg * 8) 50% 80%)`)
 now finally works, which has been a problem for a long time!
 
+### Retained display list
+
+LibWeb's rendering process is divided into two stages.
+The first stage involves building a list of draw commands (display list), and the second is the actual rasterization of the commands visible in the viewport from this list.
+Until this month, the display list was built from scratch for each frame repaint.
+The time required for building the display list depends on the size of the paintable tree, which caused slow repainting of pages with a lot of content, even though we could rasterize them relatively quickly.
+
+This month, we took the first step towards improving this by reusing the display list across repaints if the only thing that requires invalidation is a scroll offset.
+This is implemented by separating the display list into two parts:
+
+- The list of draw commands, where each has an associated "scroll frame id"
+- The list of scroll frames, where each frame has an id and scroll offset.
+
+Before repainting, the display list is combined with the scroll offsets from the scroll frames list to produce the final draw commands, ready for rasterization.
+
+| Resource                                                       | Before | After   |
+| -------------------------------------------------------------- | ------ | ------- |
+| [Zig Documentation](https://ziglang.org/documentation/master/) | 25 FPS | 120 FPS |
+| [CSS Grid Layout Module](https://www.w3.org/TR/css-grid-2/)    | 60 FPS | 150 FPS |
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

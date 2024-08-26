@@ -53,6 +53,30 @@ Until recently, we used our own basic text layout algorithm, which supported sim
 However, this month, BenJilks helped us transition to HarfBuzz and implemented support for the direction attribute.
 With these two changes combined, Ladybird is now capable of rendering more complex scripts, such as Hebrew and Arabic.
 
+### Alpha premultiplication
+
+The painting process in Ladybird is responsible for displaying a web page's content to screen, and it needs to handle
+many different bitmaps from all kinds of sources. An issue we had was that a partially transparent bitmap, such as a PNG
+image or `<canvas>` target, would not blend onto other bitmaps in _quite_ the right way.
+
+When dealing with alpha channels in bitmaps, there are two ways to deal with color data (i.e. the RGB channels): you can
+either premultiply the color data with the alpha channel, or you can leave it alone. Premultiplying color data allows
+for an optimization during blending, so it's a valid use case. Unfortunately, we were always assuming bitmap data
+contains unpremultiplied color data, resulting in all kinds of ugly blending artifacts. On top of that, we didn't even
+know what type of color data we were dealing with.
+
+We started tracking the alpha type for each bitmap and now pass along this metadata to the Skia backend, getting rid of
+these artifacts once and for all!
+
+### Input selection API
+
+Most text input elements such as `<input type="text">` and `<textarea>` have a DOM API to interact with their selection
+state. With properties such as `.selectionStart` and `.selectionEnd` or methods such as `.select()`, you can
+programmatically interact with the selection for an element.
+
+Ladybird now implements these APIs almost fully according to spec and keeps the UI selection and element selection state
+in sync!
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

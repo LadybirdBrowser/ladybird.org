@@ -77,6 +77,23 @@ programmatically interact with the selection for an element.
 Ladybird now implements these APIs almost fully according to spec and keeps the UI selection and element selection state
 in sync!
 
+### Web Platform Tests
+
+This month has seen substantial progress on the Web Platform Tests!
+
+We now have a dedicated server that runs the Web Platform Tests nightly. Our results are now published to the main
+[wpt.fyi](https//wpt.fyi) dashboard, our latest results can be viewed [here](https://wpt.fyi/results/?product=ladybird).
+
+The Web Platform tests can now be run locally using the `WPT.sh` script. This allows developers to ensure that their
+changes don't cause regressions in the Web Platform Tests. The documentation for this script can be found
+[here](https://github.com/LadybirdBrowser/ladybird/blob/master/Documentation/RunningTests.md#running-the-web-platform-tests).
+
+WPT compliance has improved significantly this month in a number of areas, particularly our support for multi-byte
+legacy text encodings thanks to a PR from BenJilks and our URL parsing support thanks to a series of PRs from
+shannonbooth.
+
+We currently pass 214,325 more subtests than this time last month with a total of 930,559 subtests now passing!
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

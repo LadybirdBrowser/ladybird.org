@@ -17,6 +17,16 @@ In August, we’ve welcomed the following new sponsors:
 - [Cling](http://cling.com) with $10,000
 - [WorkOS](http://workos.com) with $10,000
 
+### Skia now powers SVG and 2D canvas
+
+We already talked last month about adopting Skia as our default rasterizer for high-performance 2D graphics.
+
+This month, we've expanded our use of Skia beyond just HTML document rendering, and it now powers our `<canvas>` element, as well as SVG content! It also helps us render CSS borders faster and more correctly than before.
+
+We've implemented all this as a set of classes with pluggable backends. This leaves the door open for using other graphics libraries in the future.
+
+The main remaining work here is to enable GPU acceleration for 2D canvas graphics.
+
 ### `console.table()`
 
 New contributor Gasim Gasimzada has been making improvements to our `console` API this month.

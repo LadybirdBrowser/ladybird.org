@@ -114,6 +114,40 @@ shannonbooth.
 
 We currently pass 214,325 more subtests than this time last month with a total of 930,559 subtests now passing!
 
+### New Security Policy
+
+This month the project adopted a new security policy for reporting vulnerabilities.
+
+In the past, our stance was that the project was pre-alpha and any security vulnerabilities in our code are not
+security-critical. Therefore, security vulnerabilities should be treated as regular issues, and reported through our
+standard GitHub issue tracker.
+
+However, we've already seen how this policy won't work for us going forward. As we start using more and more open source
+libraries, there's a chance that a vulnerability in a third party dependency is critical enough that the security
+researchers want to notify all users with a relevant security policy. As we engage more with the wider browser
+ecosystem, security researchers who find common vulnerabilities in web specifications, or implementations of web browser
+features in other browsers may want to notify all web browsers at once. We have already had one security researcher
+contact us with a vulnerability that affected all the other major browser engines, who wanted to ensure that we did not
+have the same issue impacting our code.
+
+As we move towards our alpha release, we want to encourage and acknowledge the invaluable service that security
+researchers and bug hunters provide to the open source software community. Our new security posture has two main parts:
+
+- We have enabled GitHub's [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability)
+  feature on the main ladybird repository.
+
+- We have drafted a new [SECURITY.md](https://github.com/LadybirdBrowser/ladybird/blob/master/SECURITY.md) file to
+  explain our expectations and goals for vulnerability reports
+
+The pre-alpha and work in progress nature of the project means that we don't feel it's the right time to offer bug
+bounties for discovered vulnerabilities. However, we will still publish [repository security advisories](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories)
+for valid and in-scope vulnerabilities.
+
+For more details on what we consider in-scope vulnerabilities and our new security policy in general, please see
+the [SECURITY.md](https://github.com/LadybirdBrowser/ladybird/blob/master/SECURITY.md) file in our GitHub repository.
+We welcome any and all feedback on the policy to help encourage researchers to investigate our code and to clear up
+any possibly confusing clauses.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

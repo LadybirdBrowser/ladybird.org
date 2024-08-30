@@ -148,6 +148,53 @@ the [SECURITY.md](https://github.com/LadybirdBrowser/ladybird/blob/master/SECURI
 We welcome any and all feedback on the policy to help encourage researchers to investigate our code and to clear up
 any possibly confusing clauses.
 
+### Adoption of Swift as a C++ Successor Language
+
+We've known for a long time that the future of systems software development involves at least partial adoption of a
+memory-safe programming language.
+
+Core contributors have been looking at memory-safe programming languages since as early as the spring of 2022. At that
+time, we created a [fork](https://github.com/ADKaster/serenity-rust) of the SerenityOS project that included a rust
+toolchain, and experimented with writing rust code to interact with the operating system. This experience didn't spark
+as much joy as we'd hoped, and in May of that year, [SophiaJT](https://www.sophiajt.com/) and [Andreas](https://awesomekling.com/)
+created the [Jakt](https://github.com/SerenityOS/jakt) programming language to become the "perfect" systems programming
+language for the patterns and use case of the SerenityOS project.
+
+However, as time went on it became clear that the project did not have a contributor base excited enough about memory
+safe programming language implementation to bring the Jakt programming language to a production-ready status within the
+next two years. For SerenityOS project, this is perfectly fine. As explained in the [fork](https://ladybird.org/posts/fork/)
+announcement, Ladybird and SerenityOS have different goals and priorities. Unfortunately, the timeline we established
+for Ladybird does not align with the slow but steady progress on the Jakt programming language.
+
+Earlier this year, core contributors again started looking at memory safe programming languages to find one that will
+meet our needs and be comfortable and productive for our existing contributors. The choice quickly boiled down to two
+options: Rust, and Swift. As has already been spoiled by the section title, the language we decided to invest our time
+and effort into is Swift.
+
+A lot of consideration has gone into this decision. Swift has both memory and data race safety as of the upcoming Swift
+6 release. Swift has strong support for object-oriented programming. While popular discourse tends to dismiss
+object-oriented programming as a dated technology, Web specs & browser internals tend to be highly object-oriented, and
+life is easier when you can model specs closely in your code.
+
+The Swift team is also investing heavily in C++ interoperability, which means there's a real path to incremental adoption,
+not just gigantic rewrites. The approach the Swift team is taking to C++ interoperability allows the Swift frontend to
+call directly into the Clang C++ compiler to parse C++ code, and understand it at the AST level, or even lower. Object
+passing and data marshalling can be done automatically through the compiler, rather than through unsafe C APIs or other
+generated bridge code.
+
+Of course, we won't be hiding in a cave to come out in 6 months with a fully re-written Ladybird codebase entirely in
+Swift. A large part of the value proposition of Swift is the incremental adoption story. We are already starting to
+experiment with rewrites of small components that handle untrusted input, or could benefit from more parallelism that we
+are unwilling to risk with our unsafe C++ patterns. The long tail of C++ isn't going anywhere soon, but we hope that
+adopting a memory-safe language as an ergonomic addition to our codebase will help mitigate the kinds of vulnerability
+classes that C++ is so famous for.
+
+We're all very excited about the prospect of fearless concurrency, protocol extensions, and seamless C++
+interoperability as both Ladybird and Swift mature in the multi-platform space. We're already working with the Swift
+team on select issues that will make our adoption smoother.
+
+Look forward to more progress updates on our Swift adoption after the Swift 6 release later this fall.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in August 2024:

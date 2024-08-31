@@ -5,15 +5,13 @@ date: 2024-08-31
 draft: true
 ---
 
-Well hello friends!
-
-August 2024 has been another solid month for the Ladybird project. We've merged 231 PRs from 38 contributors, and made solid progress on many fronts. Let's take a look!
+August 2024 has come to an end, and it's been another solid month for the Ladybird project. We've merged 231 PRs from 38 contributors, and made progress on many different fronts.
 
 ### Welcoming new sponsors
 
 Ladybird is funded entirely by sponsorships and donations from companies and individuals who care about the open web.
 
-In August, we’ve welcomed the following new sponsors:
+In August, we've welcomed the following new sponsors:
 
 - [Ahrefs](https://ahrefs.com/) with $50,000
 - [Cling](http://cling.com) with $10,000
@@ -25,8 +23,7 @@ Please [contact us](mailto:contact@ladybird.org) if you are interested in sponso
 
 This month saw substantial progress on Web Platform Tests (WPT)!
 
-We now have a dedicated server that runs the tests nightly, with results published to the main
-[wpt.fyi](https//wpt.fyi) dashboard. You can view our latest results [here](https://wpt.fyi/results/?product=ladybird).
+We now have a dedicated server that runs the tests nightly, with results published to the main [wpt.fyi](https//wpt.fyi) dashboard. You can view our latest results [here](https://wpt.fyi/results/?product=ladybird).
 
 Developers can now run WPT locally as well, using the `WPT.sh` script, to catch regressions before they happen. Documentation for this script is available [here](https://github.com/LadybirdBrowser/ladybird/blob/master/Documentation/RunningTests.md#running-the-web-platform-tests).
 
@@ -34,20 +31,32 @@ Our WPT compliance improved significantly this month, particularly in multi-byte
 
 At the time of writing, we're passing 205,399 more subtests than last month, bringing the total to 921,633!
 
+### Sticky positioning
+
+We now support CSS `position: sticky`!
+
+This is implemented by giving elements giving sticky-positioned elements their own scroll frame, which is then updated independently from regular scroll boxes.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-aug-2024-blender.webm"></source>
+</video>
+
+### Drag and drop
+
+Tim Flynn implemented large parts of the [HTML drag and drop specification](https://html.spec.whatwg.org/multipage/dnd.html), allowing us to use drag and drop featurs many websites, such as GitHub, Imgur, and Google Lens.
+
 ### Skia now powers SVG and 2D canvas
 
 Last month, we adopted Skia as our default rasterizer for high-performance 2D graphics. This month, we've expanded Skia's role beyond HTML document rendering. It now powers the `<canvas>` element and SVG content, and also improves the speed and accuracy of CSS border rendering.
 
 ![](/assets/img/newsletter-aug-2024-figma.png)
 
-<p class="newsletter-image-caption">
+<div class="newsletter-image-caption">
   The [Figma](https://figma.com/) home page uses a 2D canvas to render a big
-  animated demo.
-  <br />
-  Thanks to Skia, it looks good and even animates reasonably well!
-</p>
+  demo.
+</div>
 
-We’ve implemented this as a pluggable graphics backend, to leave the door open for future experiments with other graphics libraries.
+We've implemented this as a pluggable graphics backend, to leave the door open for future experiments with other graphics libraries.
 
 The next major task is enabling GPU acceleration for 2D canvas graphics.
 
@@ -67,7 +76,7 @@ Our painting process is divided into two stages: First, we build a display list 
 
 Until this month, a new display list was built from scratch for every frame painted, causing noticeable slowdown when repainting very large pages.
 
-We’ve now taken a first step towards optimizing this by reusing the display list across repaints when only scroll offsets change.
+We've now taken a first step towards optimizing this by reusing the display list across repaints when only scroll offsets change.
 
 This involves separating the display list into two parts: the draw commands (each linked to a "scroll frame ID") and the scroll frames (each with an ID and scroll offset). Before repainting, the display list is combined with the scroll offsets to produce the final draw commands, ready for rasterization.
 
@@ -95,7 +104,7 @@ Some examples of the scrolling frame rate improvement:
 
 ### Towards CSS Typed OM
 
-We’ve started aligning our internal "style value" classes with the [CSS Typed OM spec](https://drafts.css-houdini.org/css-typed-om-1), which gives JavaScript access to style information as objects rather than strings.
+We've started aligning our internal "style value" classes with the [CSS Typed OM spec](https://drafts.css-houdini.org/css-typed-om-1), which gives JavaScript access to style information as objects rather than strings.
 
 A key change is that colors are now stored in their original form, rather than being converted to a 32-bit RGBA value during parsing. This allows `calc()` inside color functions (like `background-color: hsl(calc(15deg * 8) 50% 80%))` to work correctly, resolving a long-standing issue.
 
@@ -114,9 +123,9 @@ Ladybird now implements these APIs almost fully according to spec and keeps the 
 
 ### `console.table()`
 
-New contributor Gasim Gasimzada implemented `console.table()`, a developer API that prints data formatted as a table in the developer console.
+We've implemented `console.table()`, a developer API that prints data formatted as a table in the developer console.
 
-Since the [spec](https://console.spec.whatwg.org/#table) doesn’t define an algorithm for this function, Gasim [developed one](https://github.com/whatwg/console/pull/237) and implemented it in Ladybird. We hope this algorithm will soon be part of the official spec, ensuring consistent behavior across browsers!
+Since the [spec](https://console.spec.whatwg.org/#table) doesn't define an algorithm for this function, Gasim [developed one](https://github.com/whatwg/console/pull/237) and implemented it in Ladybird. We hope this algorithm will become part of the official spec, ensuring consistent behavior across browsers!
 
 ### New Security Policy
 
@@ -124,9 +133,9 @@ This month, we've updated our security policy to better handle vulnerabilities a
 
 Previously, we treated security vulnerabilities as regular issues due to the project's pre-alpha status, directing reports through our GitHub issue tracker. However, as we integrate more third-party libraries and engage more with the broader browser ecosystem, it became clear that a more formal approach is necessary.
 
-We’ve now enabled GitHub's [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability) feature, allowing researchers to report issues directly and securely. We’ve also published a [SECURITY.md](https://github.com/LadybirdBrowser/ladybird/blob/master/SECURITY.md) file in our repository, which outlines our guidelines for reporting vulnerabilities and specifies what we consider in-scope.
+We've now enabled GitHub's [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability) feature, allowing researchers to report issues directly and securely. We've also published a [SECURITY.md](https://github.com/LadybirdBrowser/ladybird/blob/master/SECURITY.md) file in our repository, which outlines our guidelines for reporting vulnerabilities and specifies what we consider in-scope.
 
-While we’re not offering bug bounties at this stage, we are committed to transparency and will publish [repository security advisories](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories) for valid vulnerabilities. For more details, see our SECURITY.md file. We welcome feedback to help us improve our security processes as we continue to develop.
+While we're not offering bug bounties at this stage, we are committed to transparency and will publish [repository security advisories](https://docs.github.com/en/code-security/security-advisories/working-with-repository-security-advisories/about-repository-security-advisories) for valid vulnerabilities. For more details, see our SECURITY.md file. We welcome feedback to help us improve our security processes as we continue to develop.
 
 ### Credits
 

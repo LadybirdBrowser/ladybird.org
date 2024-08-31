@@ -792,3 +792,15 @@ table.sponsor-tiers td:first-child {
 .donate .container {
   max-width: none;
 }
+
+p.newsletter-image-caption {
+    text-align: center;
+    font-size: 0.6em;
+    margin-top: -3em;
+    margin-bottom: 3em;
+}
+
+p.newsletter-image-caption a {
+    font-size: inherit;
+    letter-spacing: inherit;
+}

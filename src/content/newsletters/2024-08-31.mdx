@@ -38,6 +38,15 @@ At the time of writing, we're passing 205,399 more subtests than last month, bri
 
 Last month, we adopted Skia as our default rasterizer for high-performance 2D graphics. This month, we've expanded Skia's role beyond HTML document rendering. It now powers the `<canvas>` element and SVG content, and also improves the speed and accuracy of CSS border rendering.
 
+![](/assets/img/newsletter-aug-2024-figma.png)
+
+<p class="newsletter-image-caption">
+  The [Figma](https://figma.com/) home page uses a 2D canvas to render a big
+  animated demo.
+  <br />
+  Thanks to Skia, it looks good and even animates reasonably well!
+</p>
+
 We’ve implemented this as a pluggable graphics backend, to leave the door open for future experiments with other graphics libraries.
 
 The next major task is enabling GPU acceleration for 2D canvas graphics.
@@ -48,7 +57,9 @@ Our text layout system takes a Unicode string and set of fonts as input and retu
 
 We previously used a basic algorithm (inherited from SerenityOS) that worked for simple scripts like Latin and Cyrillic, but this month, BenJilks helped us adopt the [HarfBuzz text shaping library](https://github.com/harfbuzz/harfbuzz) and added support for the `direction` attribute as well. As a result, Ladybird can now render more complex scripts like Hebrew and Arabic.
 
-There is still a lot to be done in this area, but adopting HarfBuzz is a key enabler of future work.
+![](/assets/img/newsletter-aug-2024-aljazeera.png)
+
+There are still many issues to be fixed, but adopting HarfBuzz is a major milestone and unlocks all kinds of improvements!
 
 ### Retained display lists
 

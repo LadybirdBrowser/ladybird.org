@@ -27,7 +27,7 @@ We now have a dedicated server that runs the tests nightly, with results publish
 
 Developers can now run WPT locally as well, using the `WPT.sh` script, to catch regressions before they happen. Documentation for this script is available [here](https://github.com/LadybirdBrowser/ladybird/blob/master/Documentation/RunningTests.md#running-the-web-platform-tests).
 
-Our WPT compliance improved significantly this month, particularly in multi-byte legacy text encodings (thanks to BenJilks) and URL parsing support (thanks to shannonbooth.)
+Our WPT compliance improved significantly this month. We've made significant progress in multi-byte legacy text encodings (thanks to BenJilks) and URL parsing support (thanks to shannonbooth.)
 
 At the time of writing, we're passing 205,399 more subtests than last month, bringing the total to 921,633!
 
@@ -47,7 +47,7 @@ Tim Flynn implemented large parts of the [HTML drag and drop specification](http
 
 ### Skia now powers SVG and 2D canvas
 
-Last month, we adopted Skia as our default rasterizer for high-performance 2D graphics. This month, we've expanded Skia's role beyond HTML document rendering. It now powers the `<canvas>` element and SVG content, and also improves the speed and accuracy of CSS border rendering.
+Last month, we adopted the third-party library Skia as our default rasterizer for high-performance 2D graphics. This month, we've expanded Skia's role beyond HTML document rendering. It now powers the `<canvas>` element and SVG content, and also improves the speed and accuracy of CSS border rendering.
 
 ![](/assets/img/newsletter-aug-2024-figma.png)
 
@@ -56,21 +56,23 @@ Last month, we adopted Skia as our default rasterizer for high-performance 2D gr
   demo.
 </div>
 
-We've implemented this as a pluggable graphics backend, to leave the door open for future experiments with other graphics libraries.
+We've implemented our use of Skia as a pluggable graphics backend, to leave the door open for future experiments with other graphics libraries.
 
-The next major task is enabling GPU acceleration for 2D canvas graphics.
+The next major task is enabling Skia's GPU acceleration support for 2D canvas graphics.
 
 ### HarfBuzz for text layout and RTL support
 
 Our text layout system takes a Unicode string and set of fonts as input and returns a list of positioned glyphs.
 
-We previously used a basic algorithm (inherited from SerenityOS) that worked for simple scripts like Latin and Cyrillic, but this month, BenJilks helped us adopt the [HarfBuzz text shaping library](https://github.com/harfbuzz/harfbuzz) and added support for the `direction` attribute as well. As a result, Ladybird can now render more complex scripts like Hebrew and Arabic.
+We previously used a basic algorithm (inherited from SerenityOS) that worked for simple scripts like Latin and Cyrillic. This month, BenJilks helped us adopt the third-party [HarfBuzz text shaping library](https://github.com/harfbuzz/harfbuzz). BenJilks added support for the `direction` attribute as well. As a result, Ladybird can now render more complex scripts like Hebrew and Arabic.
 
 ![](/assets/img/newsletter-aug-2024-aljazeera.png)
 
 There are still many issues to be fixed, but adopting HarfBuzz is a major milestone and unlocks all kinds of improvements!
 
 ### Retained display lists
+
+We've made significant progress in scrolling performance this month, thanks to an optimization in display list usage.
 
 Our painting process is divided into two stages: First, we build a display list of draw commands. Then, we rasterize the commands, ignoring anything that would fall outside the visible viewport.
 

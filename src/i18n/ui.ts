@@ -80,6 +80,21 @@ export const ui = {
     "sponsors.gold": "Gold",
     "sponsors.silver": "Silver",
     "sponsors.bronze": "Bronze",
+
+    // Donate
+    "donate.firstTitlePart": "Become a ",
+    "donate.secondTitlePart": "supporter",
+    // First paragraph
+    "donate.firstParagraph":
+      "Ladybird is funded entirely by sponsorships and donations from people and companies who care about the open web.",
+    // Second paragraph
+    "donate.secondParagraph":
+      "We accept one-time and recurring monthly donations via ",
+    // Third paragraph
+    "donate.thirdParagraph":
+      "If you or your company would like to make a large donation, we would be happy to display your logo on this website! Please ",
+    "donate.thirdParagraphLink": "contact us",
+    "donate.thirdParagraphSecondPart": " about becoming a sponsor. ",
   },
 
   de: {
@@ -157,5 +172,20 @@ export const ui = {
     "sponsors.gold": "Gold",
     "sponsors.silver": "Silber",
     "sponsors.bronze": "Bronze",
+
+    // Donate
+    "donate.firstTitlePart": "Werde ein ",
+    "donate.secondTitlePart": "Unterstützer",
+    // First paragraph
+    "donate.firstParagraph":
+      "Ladybird finanziert sich ausschließlich durch Sponsorengelder und Spenden von Menschen und Unternehmen, denen das offene Web am Herzen liegt.",
+    // Second paragraph
+    "donate.secondParagraph":
+      "Wir akzeptieren einmalige und wiederkehrende monatliche Spenden über ",
+    // Third paragraph
+    "donate.thirdParagraph":
+      "Wenn Sie oder Ihr Unternehmen eine größere Spende machen möchten, würden wir uns freuen, Ihr Logo auf dieser Website zu zeigen! Bitte ",
+    "donate.thirdParagraphLink": "kontaktiere uns",
+    "donate.thirdParagraphSecondPart": " um Sponsor zu werden.",
   },
 } as const;

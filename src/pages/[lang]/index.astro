@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+import Hero from "@/components/landing/hero.astro";
+import About from "@/components/landing/about.astro";
+import Why from "@/components/landing/why.astro";
+import Posts from "@/components/landing/posts.astro";
+import GeneralInfo from "@/components/landing/general.astro";
+import Sponsors from "@/components/landing/sponsors.astro";
+import Donate from "@/components/landing/donate.astro";
+import FAQ from "@/components/landing/faq.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "de" } }];
+}
+---
+
+<BaseLayout>
+  <Hero />
+  <About />
+  <Why />
+  <Posts />
+  <GeneralInfo />
+  <Sponsors />
+  <Donate />
+  <FAQ />
+</BaseLayout>

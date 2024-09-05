@@ -8,7 +8,10 @@ export async function getStaticPaths() {
     import.meta.env.PROD ? data.draft !== true : true
   );
   return newsletters.map((newsletter) => ({
-    params: { slug: newsletter.data.date.toISOString().split("T")[0] },
+    params: {
+      slug: newsletter.data.date.toISOString().split("T")[0],
+      lang: "en",
+    },
     props: { newsletter },
   }));
 }

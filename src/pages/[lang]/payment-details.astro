@@ -1,5 +1,9 @@
 ---
 import BaseLayout from "@/layouts/base.astro";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "de" } }];
+}
 ---
 
 <BaseLayout

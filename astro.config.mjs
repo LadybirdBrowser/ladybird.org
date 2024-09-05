@@ -21,4 +21,15 @@ export default defineConfig({
     "/why-ladybird.html": "/posts/why-ladybird",
     "/wire.pdf": "/payment-details",
   },
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "de"],
+    fallback: {
+      de: "en",
+    },
+    routing: {
+      prefixDefaultLocale: true,
+      fallbackType: "rewrite",
+    },
+  },
 });

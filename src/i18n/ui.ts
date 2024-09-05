@@ -72,6 +72,14 @@ export const ui = {
     // Links
     "gi.joinDiscord": "Join Discord",
     "gi.getTheCode": "Get the code",
+
+    // Sponsors
+    "sponsors.title": "Sponsors",
+    // Tiers
+    "sponsors.platinum": "Platinum",
+    "sponsors.gold": "Gold",
+    "sponsors.silver": "Silver",
+    "sponsors.bronze": "Bronze",
   },
 
   de: {
@@ -141,5 +149,13 @@ export const ui = {
     // Links
     "gi.joinDiscord": "Discord beitreten",
     "gi.getTheCode": "Hol dir den Code",
+
+    // Sponsors
+    "sponsors.title": "Sponsoren",
+    // Tiers
+    "sponsors.platinum": "Platin",
+    "sponsors.gold": "Gold",
+    "sponsors.silver": "Silber",
+    "sponsors.bronze": "Bronze",
   },
 } as const;

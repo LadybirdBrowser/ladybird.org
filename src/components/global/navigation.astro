@@ -1,3 +1,7 @@
+---
+import LanguagePicker from "./language-picker.astro";
+---
+
 <header class="p-[20px] bg-[#000] relative">
   <div id="header-blobs" class="absolute pointer-events-none z-10 top-0 left-0">
     <img src="/assets/img/header-eclipse.svg" alt="Header Gradient Blobs" />
@@ -19,6 +23,7 @@
       <a href="/#gi" class="font-normal">Get Involved</a>
       <a href="/#sponsors" class="font-normal">Sponsors</a>
       <a href="/#faq" class="font-normal">FAQ</a>
+      <LanguagePicker />
     </div>
     <div id="header-donate" class="hidden lg:block">
       <a href="https://donorbox.org/ladybird" class="btn btn--small">

@@ -1,0 +1,40 @@
+---
+import { languages } from "@/i18n/ui";
+import { getLangFromUrl } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+---
+
+<div id="language-picker" class="relative inline-block text-white">
+  <button title="Pick a language" id="language-picker-button"
+    >{"Language: " + languages[lang].split(" ")[0]}</button
+  >
+  <ul id="language-picker-dropdown" class="hidden absolute z-10">
+    {
+      Object.entries(languages).map(([lang, label]) => (
+        <li class="flex flex-col gap-2 last:border-b last:rounded-lg">
+          <a
+            class="font-normal flex flex-row justify-center items-center border-t border-x rounded-lg p-2"
+            href={`/${lang}/`}
+          >
+            {label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script>
+  function toggleDropdown() {
+    document
+      .getElementById("language-picker-dropdown")
+      ?.classList.toggle("hidden");
+  }
+
+  document
+    .getElementById("language-picker-button")
+    ?.addEventListener("click", () => {
+      toggleDropdown();
+    });
+</script>

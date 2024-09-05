@@ -1,3 +1,10 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <section id="about" class="text-[#fff] bg-[#000] pt-12 lg:pt-0 px-4">
   <div class="container">
     <div
@@ -7,21 +14,15 @@
         <img src="/assets/img/about.webp" alt="" />
       </div>
       <div class="order-1 lg:order-2">
-        <h2 class="mb-1">About <span>Ladybird</span></h2>
+        <h2 class="mb-1">{t("about.title")} <span>Ladybird</span></h2>
         <p class="mb-5 max-w-96">
-          Ladybird is a brand-new browser &amp; web engine. Driven by a web
-          standards first approach, Ladybird aims to render the modern web with
-          good performance, stability and security.
+          {t("about.firstParagraph")}
         </p>
         <p class="mb-5 max-w-96">
-          From its humble beginnings as an HTML viewer for the SerenityOS hobby
-          operating system project, Ladybird has since grown into a
-          cross-platform browser supporting Linux, macOS, and other Unix-like
-          systems.
+          {t("about.secondParagraph")}
         </p>
         <p class="mb-5 max-w-96">
-          Ladybird is currently in heavy development. We are targeting a first
-          Alpha release for early adopters in 2026.
+          {t("about.thirdParagraph")}
         </p>
       </div>
     </div>

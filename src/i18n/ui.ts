@@ -161,6 +161,17 @@ export const ui = {
     "faq.question9.paragraph3Part2":
       " as a successor language, once Swift version 6 is released. (",
     "faq.question9.paragraph3MoreBackgroundLink": "More background.",
+
+    // Footer
+    // Newsletter
+    "newsletter.title": "Sign up for our newsletter",
+    "newsletter.paragraph":
+      "We'll e-mail you once a month with updates about Ladybird.",
+    "newsletter.email.placeholder": "Your e-mail",
+    // Navigation
+    "footer.contactUs": "Contact Us",
+    // Bottom part
+    "footer.allRightsReserved": "All rights reserved.",
   },
 
   de: {
@@ -322,5 +333,16 @@ export const ui = {
     "faq.question9.paragraph3Part2":
       " als Nachfolgesprache beginnen, sobald Swift Version 6 veröffentlicht ist. (",
     "faq.question9.paragraph3MoreBackgroundLink": "Mehr Informationen.",
+
+    // Footer
+    // Newsletter
+    "newsletter.title": "Melde dich für unseren Newsletter an",
+    "newsletter.paragraph":
+      "Wir schicken dir einmal im Monat eine E-Mail mit Neuigkeiten über Ladybird.",
+    "newsletter.email.placeholder": "Deine E-Mail",
+    // Navigation
+    "footer.contactUs": "Kontaktiere uns",
+    // Bottom part
+    "footer.allRightsReserved": "Alle Rechte vorbehalten.",
   },
 } as const;

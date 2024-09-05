@@ -3,9 +3,11 @@ import Head from "@/components/global/head.astro";
 import Navigation from "@/components/global/navigation.astro";
 import Footer from "@/components/global/footer.astro";
 const { title, description, author, image } = Astro.props;
+
+const params = Astro.params;
 ---
 
-<html lang="en">
+<html lang={params["lang"]}>
   <head>
     <Head
       title={title}

@@ -1,17 +1,21 @@
 ---
 import { getCollection } from "astro:content";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const posts = await getCollection("posts");
 posts.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="news" id="news">
   <div class="news__eclipse"></div>
   <div class="container">
     <div class="news__top">
-      <h2>News &amp; Announcements</h2>
+      <h2>{t("posts.title")}</h2>
     </div>
     <div class="news__grid">
       {
@@ -20,7 +24,7 @@ posts.sort(
           .splice(0, 6)
           .map((post) => {
             return (
-              <a href={`/posts/${post.slug}`}>
+              <a href={`/${lang}/posts/${post.slug}`}>
                 <div class="news__box">
                   <div class="news__box-image">
                     <div class="news__box-category">

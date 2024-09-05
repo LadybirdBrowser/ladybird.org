@@ -49,7 +49,11 @@ export const ui = {
     "why.thirdCard.title": "No monetization",
     "why.thirdCard.paragraph":
       'No "default search deals", crypto tokens, or other forms of user monetization, ever.',
+
+    // Posts
+    "posts.title": "News & Announcements",
   },
+
   de: {
     // Navigation
     "nav.about": "Über uns",
@@ -94,5 +98,8 @@ export const ui = {
     "why.thirdCard.title": "Keine Monetarisierung",
     "why.thirdCard.paragraph":
       "Keine Suchmaschinen Deals, Krypto-Token oder andere Formen der Nutzermonetarisierung, niemals.",
+
+    // Posts
+    "posts.title": "Neuigkeiten & Ankündigungen",
   },
 } as const;

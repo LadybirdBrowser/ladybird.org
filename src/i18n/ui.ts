@@ -172,6 +172,23 @@ export const ui = {
     "footer.contactUs": "Contact Us",
     // Bottom part
     "footer.allRightsReserved": "All rights reserved.",
+
+    // Payment Details page
+    "paymentdetails.title": "Payment Details",
+    // Payment details
+    "paymentdetails.beneficiaryName": "Beneficiary account name",
+    "paymentdetails.beneficiaryNumber": "Beneficiary account number",
+    "paymentdetails.beneficiaryAddress": "Beneficiary address",
+    "paymentdetails.bankName": "Bank name",
+    "paymentdetails.bankAdress": "Bank address",
+    "paymentdetails.bankSwiftCode": "Bank SWIFT code",
+    "paymentdetails.achRoutingCode": "ACH routing code",
+    "paymentdetails.wireRoutingCode": "Wire routing code",
+    "paymentdetails.ein": "EIN",
+
+    "paymentdetails.paragraph": "Please ",
+    "paymentdetails.paragraphMailTo": "contact us",
+    "paymentdetails.paragraphPart2": " if you have any questions.",
   },
 
   de: {
@@ -344,5 +361,22 @@ export const ui = {
     "footer.contactUs": "Kontaktiere uns",
     // Bottom part
     "footer.allRightsReserved": "Alle Rechte vorbehalten.",
+
+    // Payment Details page
+    "paymentdetails.title": "Zahlungsinformationen",
+    // Payment details
+    "paymentdetails.beneficiaryName": "Name des Empfängerkontos",
+    "paymentdetails.beneficiaryNumber": "Nummer des Empfängerkontos",
+    "paymentdetails.beneficiaryAddress": "Adresse des Empfängers",
+    "paymentdetails.bankName": "Name der Bank",
+    "paymentdetails.bankAdress": "Adresse der Bank",
+    "paymentdetails.bankSwiftCode": "Bank SWIFT-Code",
+    "paymentdetails.achRoutingCode": "ACH-Routing-Code",
+    "paymentdetails.wireRoutingCode": "Wire-Routing-Code",
+    "paymentdetails.ein": "EIN",
+
+    "paymentdetails.paragraph": "Bitte ",
+    "paymentdetails.paragraphMailTo": "kontaktiere uns",
+    "paymentdetails.paragraphPart2": " falls du Fragen hast.",
   },
 } as const;

@@ -1,25 +1,35 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <section id="gi" class="gi">
   <div class="container">
     <div class="gi__tf">
-      <h2>Get Involved</h2>
+      <h2>{t("gi.title")}</h2>
       <p>
-        Ladybird is currently in heavy development, and there's work to be done
-        in all areas of the browser.
+        {t("gi.firstParagraph")}
       </p>
       <p>
-        We're welcoming new developers every week. The main community hub is
-        <a href="https://discord.gg/nvfjVJ4Svh">our Discord server</a>.
+        {t("gi.secondParagraph")}
+        <a href="https://discord.gg/nvfjVJ4Svh"
+          >{t("gi.secondParagraphDiscordLink")}</a
+        >.
       </p>
       <p>
-        All the code is hosted on
-        <a href="https://github.com/LadybirdBrowser/ladybird">GitHub</a>. Clone
-        it, build it, and join our Discord if you want to collaborate on it!
-        We're looking forward to seeing you there.
+        {t("gi.thirdParagraph")}
+        <a href="https://github.com/LadybirdBrowser/ladybird">GitHub</a>. {
+          t("gi.thirdParagraphSecondPart")
+        }
       </p>
       <div class="space-y-2">
-        <a href="https://discord.gg/nvfjVJ4Svh" class="btn">Join Discord</a>
+        <a href="https://discord.gg/nvfjVJ4Svh" class="btn"
+          >{t("gi.joinDiscord")}</a
+        >
         <a href="https://github.com/LadybirdBrowser/ladybird" class="btn"
-          >Get the code</a
+          >{t("gi.getTheCode")}</a
         >
       </div>
     </div>

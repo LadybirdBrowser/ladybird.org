@@ -28,10 +28,13 @@ export const ui = {
 
     // About
     "about.title": "About",
+    // First paragraph
     "about.firstParagraph":
       "Ladybird is a brand-new browser & web engine. Driven by a web standards first approach, Ladybird aims to render the modern web with good performance, stability and security.",
+    // Second paragraph
     "about.secondParagraph":
       "From its humble beginnings as an HTML viewer for the SerenityOS hobby operating system project, Ladybird has since grown into a cross-platform browser supporting Linux, macOS, and other Unix-like systems.",
+    // Third paragraph
     "about.thirdParagraph":
       "Ladybird is currently in heavy development. We are targeting a first Alpha release for early adopters in 2026.",
 
@@ -52,6 +55,23 @@ export const ui = {
 
     // Posts
     "posts.title": "News & Announcements",
+
+    // Get Involved
+    "gi.title": "Get Involved",
+    // First paragraph
+    "gi.firstParagraph":
+      "Ladybird is currently in heavy development, and there's work to be done in all areas of the browser.",
+    // Second paragraph
+    "gi.secondParagraph":
+      "We're welcoming new developers every week. The main community hub is ",
+    "gi.secondParagraphDiscordLink": "our Discord Server",
+    // Third paragraph
+    "gi.thirdParagraph": "All the code is hosted on",
+    "gi.thirdParagraphSecondPart":
+      "Clone it, build it, and join our Discord if you want to collaborate on it! We're looking forward to seeing you there. ",
+    // Links
+    "gi.joinDiscord": "Join Discord",
+    "gi.getTheCode": "Get the code",
   },
 
   de: {
@@ -76,10 +96,13 @@ export const ui = {
 
     // About
     "about.title": "Über",
+    // First paragraph
     "about.firstParagraph":
       "Ladybird ist ein brandneuer Browser und eine neue Web-Engine. Ladybird verfolgt einen Ansatz, bei dem Webstandards im Vordergrund stehen, und zielt darauf ab, das moderne Web mit guter Leistung, Stabilität und Sicherheit darzustellen.",
+    // Second paragraph
     "about.secondParagraph":
       "Seit seinen bescheidenen Anfängen als HTML-Viewer für das Hobby-Betriebssystemprojekt SerenityOS hat sich Ladybird zu einem plattformübergreifenden Browser entwickelt, der Linux, macOS und andere Unix-ähnliche Systeme unterstützt.",
+    // Third paragraph
     "about.thirdParagraph":
       "Ladybird befindet sich derzeit in einer intensiven Entwicklungsphase. Wir planen eine erste Alpha-Version für frühe Anwender im Jahr 2026.",
 
@@ -101,5 +124,22 @@ export const ui = {
 
     // Posts
     "posts.title": "Neuigkeiten & Ankündigungen",
+
+    // Get Involved
+    "gi.title": "Mitmachen",
+    // First paragraph
+    "gi.firstParagraph":
+      "Ladybird wird derzeit intensiv weiterentwickelt, und es gibt in allen Bereichen des Browsers noch einiges zu tun.",
+    // Second paragraph
+    "gi.secondParagraph":
+      "Wir nehmen jede Woche neue Entwickler auf. Der wichtigste Knotenpunkt der Gemeinschaft ist ",
+    "gi.secondParagraphDiscordLink": "unser Discord Server",
+    // Third paragraph
+    "gi.thirdParagraph": "Der gesamte Code wird gehostet auf",
+    "gi.thirdParagraphSecondPart":
+      "Klont es, baut es und tretet unserem Discord bei, wenn ihr daran mitarbeiten wollt! Wir freuen uns darauf, dich dort zu sehen.",
+    // Links
+    "gi.joinDiscord": "Discord beitreten",
+    "gi.getTheCode": "Hol dir den Code",
   },
 } as const;

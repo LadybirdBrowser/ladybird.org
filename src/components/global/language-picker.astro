@@ -1,13 +1,16 @@
 ---
 import { languages } from "@/i18n/ui";
-import { getLangFromUrl } from "@/i18n/utils";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <div id="language-picker" class="relative inline-block text-white">
   <button title="Pick a language" id="language-picker-button"
-    >{"Language: " + languages[lang].split(" ")[0]}</button
+    >{
+      t("language-picker.language") + ": " + languages[lang].split(" ")[0]
+    }</button
   >
   <ul id="language-picker-dropdown" class="hidden absolute z-10">
     {

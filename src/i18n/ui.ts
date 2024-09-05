@@ -14,8 +14,10 @@ export const ui = {
     "nav.sponsors": "Sponsors",
     "nav.faq": "FAQ",
     "nav.donate": "Donate",
+
     // Language Picker
     "language-picker.language": "Language",
+
     // Hero
     "hero.welcomeTo": "Welcome to ",
     "hero.aTrulyIndependent": "a truly independent",
@@ -23,6 +25,7 @@ export const ui = {
     "hero.paragraph":
       "We are building a brand-new browser from scratch, backed by a non-profit.",
     "hero.getInvolved": "Get Involved",
+
     // About
     "about.title": "About",
     "about.firstParagraph":
@@ -31,6 +34,7 @@ export const ui = {
       "From its humble beginnings as an HTML viewer for the SerenityOS hobby operating system project, Ladybird has since grown into a cross-platform browser supporting Linux, macOS, and other Unix-like systems.",
     "about.thirdParagraph":
       "Ladybird is currently in heavy development. We are targeting a first Alpha release for early adopters in 2026.",
+
     // Why
     "why.firstTitlePart": "What makes ",
     "why.secondTitlePart": "unique",
@@ -54,8 +58,10 @@ export const ui = {
     "nav.sponsors": "Sponsoren",
     "nav.faq": "FAQ",
     "nav.donate": "Spenden",
+
     // Language Picker
     "language-picker.language": "Sprache",
+
     // Hero
     "hero.welcomeTo": "Willkomen bei ",
     "hero.aTrulyIndependent": "ein wirklich unabhängiger",
@@ -63,6 +69,7 @@ export const ui = {
     "hero.paragraph":
       "Wir bauen einen brandneuen Browser von Grund auf, der von einer gemeinnützigen Organisation unterstützt wird.",
     "hero.getInvolved": "Jetzt Mitmachen",
+
     // About
     "about.title": "Über",
     "about.firstParagraph":
@@ -71,6 +78,7 @@ export const ui = {
       "Seit seinen bescheidenen Anfängen als HTML-Viewer für das Hobby-Betriebssystemprojekt SerenityOS hat sich Ladybird zu einem plattformübergreifenden Browser entwickelt, der Linux, macOS und andere Unix-ähnliche Systeme unterstützt.",
     "about.thirdParagraph":
       "Ladybird befindet sich derzeit in einer intensiven Entwicklungsphase. Wir planen eine erste Alpha-Version für frühe Anwender im Jahr 2026.",
+
     // Why
     "why.firstTitlePart": "Was ",
     "why.secondTitlePart": "besonders macht",

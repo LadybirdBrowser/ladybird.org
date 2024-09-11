@@ -1,7 +1,12 @@
 ---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
 const sponsors = [
   {
-    name: "Platinum",
+    name: t("sponsors.platinum"),
     sponsors: [
       {
         name: "FUTO",
@@ -16,7 +21,7 @@ const sponsors = [
     ],
   },
   {
-    name: "Gold",
+    name: t("sponsors.gold"),
     sponsors: [
       {
         name: "Ahrefs",
@@ -26,7 +31,7 @@ const sponsors = [
     ],
   },
   {
-    name: "Silver",
+    name: t("sponsors.silver"),
     sponsors: [
       {
         name: "Cling",
@@ -61,7 +66,7 @@ const sponsors = [
     ],
   },
   {
-    name: "Bronze",
+    name: t("sponsors.bronze"),
     sponsors: [
       {
         name: "Tuple",
@@ -75,7 +80,7 @@ const sponsors = [
     ],
   },
   {
-    name: "Copper",
+    name: t("sponsors.copper"),
     sponsors: [
       {
         name: "Optimising.com.au",
@@ -97,7 +102,7 @@ const sponsors = [
   <div class="sponsors__eclipse-big"></div>
   <div class="sponsors__eclipse-medium"></div>
   <div class="container">
-    <h2 class="text-center mb-12">Sponsors</h2>
+    <h2 class="text-center mb-12">{t("sponsors.title")}</h2>
     {
       sponsors.map((tier) => {
         return (

@@ -6,7 +6,7 @@ import { markdown } from "@/components/md";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.slug, lang: "en" },
     props: { post },
   }));
 }

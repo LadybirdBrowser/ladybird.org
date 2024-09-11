@@ -1,3 +1,10 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <footer class="bg-[#000] py-0 md:px-20">
   <div class="container">
     <div
@@ -5,10 +12,10 @@
     >
       <div class="p-7 md:h-[335px] md:p-10 lg:py-12 lg:px-20">
         <h2 class="text-[#000] mb-1 text-[36px] lg:text-4xl">
-          Sign up for our newsletter
+          {t("newsletter.title")}
         </h2>
         <p class="text-[#000] mb-6 max-w-[832px] lg:text-lg">
-          We'll e-mail you once a month with updates about Ladybird.
+          {t("newsletter.paragraph")}
         </p>
 
         <div class="flex flex-col">
@@ -23,7 +30,7 @@
                 type="email"
                 name="email"
                 class="form-control"
-                placeholder="Your e-mail"
+                placeholder={t("newsletter.email.placeholder")}
                 required
               />
               <button type="submit">
@@ -73,16 +80,25 @@
         <div>
           <div class="flex gap-14">
             <div class="flex flex-col">
-              <a href="/#about" class="mb-3 font-normal">About</a>
-              <a href="/#news" class="mb-3 font-normal">News</a>
-              <a href="/#gi" class="mb-3 font-normal">Get Involved</a>
+              <a href={`/${lang}/#about`} class="mb-3 font-normal"
+                >{t("nav.about")}</a
+              >
+              <a href={`/${lang}/#news`} class="mb-3 font-normal"
+                >{t("nav.news")}</a
+              >
+              <a href={`/${lang}/#gi`} class="mb-3 font-normal">{t("nav.gi")}</a
+              >
             </div>
 
             <div class="flex flex-col">
-              <a href="/#sponsors" class="mb-3 font-normal">Sponsors</a>
-              <a href="/#faq" class="mb-3 font-normal">FAQ</a>
+              <a href={`/${lang}/#sponsors`} class="mb-3 font-normal"
+                >{t("nav.sponsors")}</a
+              >
+              <a href={`/${lang}/#faq`} class="mb-3 font-normal"
+                >{t("nav.faq")}</a
+              >
               <a href="mailto:contact@ladybird.org" class="font-normal mb-0"
-                >Contact Us</a
+                >{t("footer.contactUs")}</a
               >
             </div>
           </div>
@@ -93,7 +109,7 @@
         class="flex sm:flex-row flex-col gap-10 items-center justify-between py-[30px] pb-5 px-0 border-t-[#303030] border-t-[1px] mt-8 border-solid"
       >
         <div class="[&>p]:text-[#404040] font-normal">
-          <p>© 2024. All rights reserved.</p>
+          <p>© 2024. {t("footer.allRightsReserved")}</p>
         </div>
         <div class="flex flex-wrap items-center justify-center gap-1">
           <a

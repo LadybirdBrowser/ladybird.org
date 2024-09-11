@@ -1,5 +1,13 @@
 ---
 import BaseLayout from "@/layouts/base.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+export function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "de" } }];
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <BaseLayout
@@ -10,7 +18,7 @@ import BaseLayout from "@/layouts/base.astro";
     <section class="hero hero_single">
       <div class="container custom-row">
         <div class="hero__tf">
-          <h1 class="text-[#fff]">Payment details</h1>
+          <h1 class="text-[#fff]">{t("paymentdetails.title")}</h1>
         </div>
       </div>
     </section>
@@ -18,45 +26,48 @@ import BaseLayout from "@/layouts/base.astro";
       <div class="container">
         <table class="text-left">
           <tr>
-            <th class="pe-5">Beneficiary account name</th>
+            <th class="pe-5">{t("paymentdetails.beneficiaryName")}</th>
             <td>Ladybird Browser Initiative</td>
           </tr>
           <tr>
-            <th class="pe-5">Beneficiary account number</th>
+            <th class="pe-5">{t("paymentdetails.beneficiaryNumber")}</th>
             <td>80011453086</td>
           </tr>
           <tr>
-            <th class="pe-5">Beneficiary address</th>
+            <th class="pe-5">{t("paymentdetails.beneficiaryAddress")}</th>
             <td>2261 Market Street STE 10029, San Francisco, CA 94114-1612</td>
           </tr>
           <tr>
-            <th class="pe-5">Bank name</th>
+            <th class="pe-5">{t("paymentdetails.bankName")}</th>
             <td>JPMorgan Chase Bank, N.A.</td>
           </tr>
           <tr>
-            <th class="pe-5">Bank address</th>
+            <th class="pe-5">{t("paymentdetails.bankAdress")}</th>
             <td>383 Madison Avenue, New York, United States</td>
           </tr>
           <tr>
-            <th class="pe-5">Bank SWIFT code</th>
+            <th class="pe-5">{t("paymentdetails.bankSwiftCode")}</th>
             <td>CHASUS33XXX</td>
           </tr>
           <tr>
-            <th class="pe-5">ACH routing code</th>
+            <th class="pe-5">{t("paymentdetails.achRoutingCode")}</th>
             <td>322271627</td>
           </tr>
           <tr>
-            <th class="pe-5">Wire routing code</th>
+            <th class="pe-5">{t("paymentdetails.wireRoutingCode")}</th>
             <td>021000021</td>
           </tr>
           <tr>
-            <th class="pe-5">EIN</th>
+            <th class="pe-5">{t("paymentdetails.ein")}</th>
             <td>99-2154861</td>
           </tr>
         </table>
         <p class="mt-16">
-          Please <a href="mailto:contact@ladybird.org">contact us</a> if you have
-          any questions.
+          {t("paymentdetails.paragraph")}
+          <a href="mailto:contact@ladybird.org"
+            >{t("paymentdetails.paragraphMailTo")}</a
+          >
+          {t("paymentdetails.paragraphPart2")}
         </p>
       </div>
     </section>

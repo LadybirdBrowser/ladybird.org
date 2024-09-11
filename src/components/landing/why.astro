@@ -1,9 +1,19 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <section class="why">
   <div class="why__eclipse"></div>
   <div class="container">
     <div class="why__top">
       <div class="why__top-left">
-        <h2>What makes <span>Ladybird</span> unique</h2>
+        <h2>
+          {t("why.title")}<span>Ladybird</span>
+          {t("why.titlePart2")}
+        </h2>
       </div>
     </div>
 
@@ -14,10 +24,9 @@
             <img src="/assets/img/truly-independent.svg" alt="star symbol" />
           </div>
           <div class="why__slide-tf">
-            <h4>Truly independent</h4>
+            <h4>{t("why.card.title")}</h4>
             <p>
-              No code from other browsers. We're building a new engine, based on
-              web standards.
+              {t("why.card.paragraph")}
             </p>
           </div>
         </div>
@@ -29,8 +38,8 @@
             <img src="/assets/img/single-focus.svg" alt="target symbol" />
           </div>
           <div class="why__slide-tf">
-            <h4>Singular focus</h4>
-            <p>We are focused on one thing: the web browser.</p>
+            <h4>{t("why.card2.title")}</h4>
+            <p>{t("why.card2.paragraph")}</p>
           </div>
         </div>
       </div>
@@ -44,10 +53,9 @@
             />
           </div>
           <div class="why__slide-tf">
-            <h4>No monetization</h4>
+            <h4>{t("why.card3.title")}</h4>
             <p>
-              No "default search deals", crypto tokens, or other forms of user
-              monetization, ever.
+              {t("why.card3.paragraph")}
             </p>
           </div>
         </div>

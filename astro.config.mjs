@@ -6,6 +6,7 @@ import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
+  output: "hybrid",
   site: "https://ladybird.org",
   integrations: [tailwind(), sitemap(), mdx()],
   // Special case the initial posts from before the astro transition.
@@ -20,5 +21,17 @@ export default defineConfig({
     "/why-ladybird": "/posts/why-ladybird",
     "/why-ladybird.html": "/posts/why-ladybird",
     "/wire.pdf": "/payment-details",
+  },
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "de"],
+    fallback: {
+      de: "en",
+    },
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: false,
+      fallbackType: "rewrite",
+    },
   },
 });

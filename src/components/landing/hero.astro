@@ -1,19 +1,25 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <section
   class="bg-[#000] relative flex flex-col items-center pt-[80px] px-5 pb-0 lg:flex-row lg:pt-0 lg:min-h-[892px]"
 >
   <div class="container">
     <div class="max-w-[800px] relative z-[2]">
       <h1 class="text-[#fff] mb-4">
-        Welcome to <span
+        {t("hero.welcomeTo")}<span
           class="bg-clip-text text-transparent bg-gradient-to-r from-[#6d98cc] to-[#8a64e5]"
           style="-webkit-background-clip: text;">Ladybird</span
-        >,<br />a truly independent<br />web browser.
+        >,<br />{t("hero.aTrulyIndependent")}<br />{t("hero.webBrowser")}
       </h1>
       <p class="mb-8 text-[#fff]">
-        We are building a brand-new browser from scratch, backed by a
-        non-profit.
+        {t("hero.paragraph")}
       </p>
-      <a href="/#gi" class="btn z-10">Get Involved</a>
+      <a href={`/${lang}/#gi`} class="btn z-10">{t("hero.getInvolved")}</a>
     </div>
   </div>
   <div

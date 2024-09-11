@@ -1,3 +1,11 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import LanguagePicker from "./language-picker.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <header class="p-[20px] bg-[#000] relative">
   <div id="header-blobs" class="absolute pointer-events-none z-10 top-0 left-0">
     <img src="/assets/img/header-eclipse.svg" alt="Header Gradient Blobs" />
@@ -6,7 +14,7 @@
     id="header-nav"
     class="container mx-auto flex flex-row items-center justify-between"
   >
-    <a id="header-logo" href="/">
+    <a id="header-logo" href={`/${lang}/`}>
       <img
         class="w-36 z-10"
         src="/assets/img/logo-new.webp"
@@ -14,15 +22,16 @@
       />
     </a>
     <div id="header-links" class="flex-row gap-3 z-20 text-sm hidden lg:flex">
-      <a href="/#about" class="font-normal">About</a>
-      <a href="/#news" class="font-normal">News</a>
-      <a href="/#gi" class="font-normal">Get Involved</a>
-      <a href="/#sponsors" class="font-normal">Sponsors</a>
-      <a href="/#faq" class="font-normal">FAQ</a>
+      <a href={`/${lang}/#about`} class="font-normal">{t("nav.about")}</a>
+      <a href={`/${lang}/#news`} class="font-normal">{t("nav.news")}</a>
+      <a href={`/${lang}/#gi`} class="font-normal">{t("nav.gi")}</a>
+      <a href={`/${lang}/#sponsors`} class="font-normal">{t("nav.sponsors")}</a>
+      <a href={`/${lang}/#faq`} class="font-normal">{t("nav.faq")}</a>
+      <LanguagePicker />
     </div>
     <div id="header-donate" class="hidden lg:block">
       <a href="https://donorbox.org/ladybird" class="btn btn--small">
-        Donate
+        {t("nav.donate")}
       </a>
     </div>
   </div>

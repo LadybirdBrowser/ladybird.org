@@ -1,3 +1,10 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
 <section class="donate">
   <div class="container">
     <div
@@ -5,20 +12,21 @@
     >
       <div class="p-6 md:p-8 lg:px-16 lg:py-10">
         <h2 class="text-3xl lg:text-4xl mb-[0.8em] lg:mb-[0.4em]">
-          Become a <span>Ladybird</span> supporter
+          {t("donate.title")}
+          <span>Ladybird</span>
+          {t("donate.titlePart2")}
         </h2>
         <p class="mb-5 max-w-2xl">
-          Ladybird is funded entirely by sponsorships and donations from people
-          and companies who care about the open web.
+          {t("donate.paragraph")}
           <p class="mb-5 max-w-2xl">
-            We accept one-time and recurring monthly donations via <a
-              href="https://donorbox.org/ladybird">Donorbox</a
-            >.
+            {t("donate.paragraph2")}
+            <a href="https://donorbox.org/ladybird">Donorbox</a>.
             <p class="mb-5 max-w-2xl">
-              If you or your company would like to make a large donation, we
-              would be happy to display your logo on this website! Please <a
-                href="mailto:contact@ladybird.org">contact us</a
-              > about becoming a sponsor.
+              {t("donate.paragraph3")}
+              <a href="mailto:contact@ladybird.org"
+                >{t("donate.paragraph3Link")}</a
+              >
+              {t("donate.paragraph3Part2")}
             </p>
           </p>
         </p>

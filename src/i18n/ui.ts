@@ -6,6 +6,7 @@ export const languages = {
 export const defaultLang = "en";
 
 export const ui = {
+  // English
   en: {
     // Navigation
     "nav.about": "About",
@@ -80,6 +81,7 @@ export const ui = {
     "sponsors.gold": "Gold",
     "sponsors.silver": "Silver",
     "sponsors.bronze": "Bronze",
+    "sponsors.copper": "Copper",
 
     // Donate
     "donate.title": "Become a ",
@@ -191,6 +193,7 @@ export const ui = {
     "paymentdetails.paragraphPart2": " if you have any questions.",
   },
 
+  // German
   de: {
     // Navigation
     "nav.about": "Über uns",
@@ -266,6 +269,7 @@ export const ui = {
     "sponsors.gold": "Gold",
     "sponsors.silver": "Silber",
     "sponsors.bronze": "Bronze",
+    "sponsors.copper": "Kupfer",
 
     // Donate
     "donate.title": "Werde ein ",

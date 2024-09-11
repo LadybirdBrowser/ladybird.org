@@ -1,8 +1,15 @@
 ---
+import { defaultLang } from "@/i18n/ui";
+
 export const prerender = false;
 
 let preferredLocale = Astro.preferredLocale;
+
+if (preferredLocale) {
+  return Astro.redirect(`/${preferredLocale}/`);
+} else {
+  return Astro.redirect(defaultLang);
+}
 ---
 
 <!-- This root index page is used to redirect to the preferred locale.  -->
-<meta http-equiv="refresh" content={"0;url=/" + preferredLocale} />

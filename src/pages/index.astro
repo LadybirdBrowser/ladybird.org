@@ -1,1 +1,8 @@
-<!-- This root index page is needed to redirect to the default locale ('/en').  -->
+---
+export const prerender = false;
+
+let preferredLocale = Astro.preferredLocale;
+---
+
+<!-- This root index page is used to redirect to the preferred locale.  -->
+<meta http-equiv="refresh" content={"0;url=/" + preferredLocale} />

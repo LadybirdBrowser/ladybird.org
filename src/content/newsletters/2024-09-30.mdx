@@ -7,7 +7,21 @@ draft: true
 
 Hello\!
 
-### Section
+### CSS Transitions
+
+This month, Ladybird gained support for the `transition` property, which allows authors to automatically animate changes to CSS properties. A lot of websites use this for subtle effects and it really makes the browser feel more polished. Many thanks to Matthew Olsson who contributed the bulk of this over the past several months.
+
+### CSS Cascade Layers
+
+It's fairly common for websites to have multiple sets of styles, for example a reset style sheet, a general framework, and then bespoke styling for particular elements. This can run into issues with "specificity", where styles get applied in the wrong order because of the selectors used.
+
+The `@layer` rule give authors the ability to group sets of styles into layers which apply in a particular order, so that one layer always overrides the previous one. This can really help to keep CSS organized and reduce surprises.
+
+We've now implemented `@layer`, which makes a big difference on websites that use it. Even though it's a relatively new feature, it was a focus of the [Interop 2022](https://wpt.fyi/interop-2022) effort and so is expected for all browsers to support it.
+
+### Style Sheet Inspector
+
+As part of an effort to make CSS issues easier to debug, we now have a basic style sheet inspector built into the browser dev tools, which lets you view the contents of any style sheets that apply to the current page.
 
 ### Credits
 

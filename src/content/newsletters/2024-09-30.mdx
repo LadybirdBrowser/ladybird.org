@@ -37,6 +37,14 @@ We've now implemented `@layer`, which makes a big difference on websites that us
 
 As part of an effort to make CSS issues easier to debug, we now have a basic style sheet inspector built into the browser dev tools, which lets you view the contents of any style sheets that apply to the current page.
 
+### Networking with curl
+
+This month we've replaced our home-grown HTTPS stack with the [curl](https://curl.se/) library. It's been a huge boost for both performance and correctness, as we are now able to load many more websites and they all load significantly faster!
+
+### SVG and CSS masks on the GPU
+
+We now offload alpha and luminance mask rendering to the GPU if possible. This is implemented by using Skia's [SkSL shader language](https://skia.org/docs/user/sksl/) and yields a substantial speedup on websites making heavy use of masks.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in September 2024:

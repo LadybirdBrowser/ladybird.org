@@ -45,6 +45,15 @@ This month we've replaced our home-grown HTTPS stack with the [curl](https://cur
 
 We now offload alpha and luminance mask rendering to the GPU if possible. This is implemented by using Skia's [SkSL shader language](https://skia.org/docs/user/sksl/) and yields a substantial speedup on websites making heavy use of masks.
 
+### Emoji support
+
+Before the fork, emoji support was implemented using custom bitmap images hand-drawn by SerenityOS contributors.
+However, it was temporarily broken when we switched to using Skia for rasterization.
+This month, emoji support has been restored, now implemented by rendering emoji glyphs extracted from a font: Apple Color Emoji on macOS and Noto Color Emoji on other platforms.
+Moreover, this support is more complete than before, as now we handle ZWJ sequences by utilizing grapheme-aware text segmentation, thanks to Tim Flynn.
+
+![](/assets/img/newsletter-sep-2024-emoji-zwj.png)
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in September 2024:

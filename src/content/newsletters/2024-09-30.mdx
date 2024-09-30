@@ -70,6 +70,11 @@ We have been replacing our home-grown audio codecs with FFmpeg's excellent libav
 libavcodec, which means that we now support a wide range of audio formats out there on the web!
 Vorbis, MP3, FLAC, Opus, Wave and many more can now be heard in Ladybird.
 
+### Font decoding using Skia
+
+It's already been a couple of months since we switched to using Skia for text rasterization, but it was still piggybacking on our OpenType implementation, which resulted in a need to keep multiple decoded representations in memory for the same typefaces.
+That's no longer the case, and we use Skia (which under the hood uses FontConfig on Linux and Core Text on macOS) to handle everything, including decoding, extracting all required metrics, and rasterization.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in September 2024:

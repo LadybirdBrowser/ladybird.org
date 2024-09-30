@@ -84,6 +84,20 @@ Vorbis, MP3, FLAC, Opus, Wave and many more can now be heard in Ladybird.
 It's already been a couple of months since we switched to using Skia for text rasterization, but it was still piggybacking on our OpenType implementation, which resulted in a need to keep multiple decoded representations in memory for the same typefaces.
 That's no longer the case, and we use Skia (which under the hood uses FontConfig on Linux and Core Text on macOS) to handle everything, including decoding, extracting all required metrics, and rasterization.
 
+### Successor language search progress
+
+Over the past year, our core contributors have been investigating various memory-safe and C++ successor language options.
+We looked at Rust, Swift, Fil-C and various other options. Some popular languages didn't have the C++ interoperability
+or memory safety stories that we were hoping for. The most popular of the successor languages we tried among our core
+developers was the Swift language, with the new Swift 6 interoperability features and cross-platform support push from
+the Swift Foundation. As such, we have selected Swift as our chosen successor language.
+
+We believe that an incremental approach where more and more new code is written in a safer language over time
+is going to be the best path forward for the project. Our C++ code isn't going to go anywhere any time soon, as
+it would be much too costly to actually re-write everything. We will be _slowly_ experimenting with new components written
+in Swift and integration with our existing C++ code in the coming months. Look forward to a dedicated blog post on the
+topic soon.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in September 2024:

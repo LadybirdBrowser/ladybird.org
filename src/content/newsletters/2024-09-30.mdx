@@ -60,6 +60,15 @@ This month has seen great progress on the Web Platform Tests\!
 
 We now have a dashboard to track progress of WPT scores over time. This can be viewed [here](https://grafana.app.ladybird.org/public-dashboards/2365098a185541cf8c7273830a789493?orgId=1).
 
+There has been a focus on improving the speed of WPT runs this month. We have managed to reduce the number of test timeouts
+from 5,798 at the start of the month to 2,970 at the time of writing. These improvements, together with our switch to libcurl
+for networking has reduced the time taken to complete a full test run from 7 hours to under 5 hours.
+
+A long-standing issue in the way we capture reftest images has been fixed this month. Reftests verify that a given page is rendered
+correctly by taking a screenshot of a page and comparing it to a screenshot of a reference page. Previously, we weren't always
+capturing the entirety of the viewport when capturing these screenshots. This meant that some tests appeared to pass when they shouldn't have.
+We now capture these screenshots using the algorithm given in the WebDriver specification, meaning we can be more confident in our results.
+
 At the time of writing we are passing 588,982 more subtests than last month bringing the total to 1,510,615\!
 
 Our current WPT progress can be seen [at wpt.fyi](https://wpt.fyi/results/?product=ladybird).

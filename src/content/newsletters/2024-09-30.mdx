@@ -5,13 +5,11 @@ date: 2024-09-30
 draft: true
 ---
 
-Hello\!
+September 2024 is wrapping up, and it's been another great month for the Ladybird project. We’ve merged 242 PRs from 48 contributors, and made significant progress all over.
 
-### Welcoming new sponsors!
+### Welcoming new sponsors
 
-Ladybird is funded entirely by sponsorships and donations from companies and individuals who care about the open web.
-
-In September, we've welcomed the following new sponsors:
+Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [Guillermo Rauch](https://rauchg.com) with $50,000
 - [Optimising.com.au](https://www.optimising.com.au/?utm_source=ladybird&utm_medium=website&utm_campaign=sponsor) with $1,000
@@ -19,7 +17,40 @@ In September, we've welcomed the following new sponsors:
 - [Mark Goetz](https://markandrewgoetz.com/) with $1,000
 - [Broadband Map](https://broadbandmap.com/) with $1,000
 
-Please [contact us](mailto:contact@ladybird.org) if you are interested in sponsoring the project.
+We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Networking with curl
+
+We've replaced our in-house HTTPS implementation with the [curl](https://curl.se/) library. This change has dramatically improved both compatibility and performance (it's often more than 5x faster), allowing us to load _more_ websites _faster_ than ever before!
+
+### Web Platform Tests
+
+We've made _significant_ progress in Web Platform Test (WPT) coverage this month. The number of test timeouts has been reduced from 5,798 to 2,970, and switching to curl for networking has cut down the full test run time from 7 hours to under 5 hours.
+
+In addition, we've fixed a long-standing issue with reftest image capture, improving our test accuracy. We're now passing **588,982** more subtests compared to last month, bringing the total to **1,510,615**. You can track our progress via [our new WPT dashboard](https://grafana.app.ladybird.org/public-dashboards/2365098a185541cf8c7273830a789493?orgId=1) or check out the results [on wpt.fyi](https://wpt.fyi/results/?product=ladybird).
+
+For context, here are the latest scores from the 3 major browsers, and the 3 minor up-and-coming ones:
+
+![](/assets/img/wpt-2024-09-30.jpg)
+
+### Better audio support with FFmpeg
+
+We have been replacing our home-grown audio codecs with [FFmpeg](https://ffmpeg.org)'s excellent libavformat and
+libavcodec, which means that we now support a wide range of audio formats out there on the web!
+Vorbis, MP3, FLAC, Opus, Wave and many more can now be heard in Ladybird
+
+### Improved emoji support
+
+Earlier this year, we temporarily regressed our emoji support when transitioning to Skia for rasterization. We've now restored full emoji functionality, and even improved upon it.
+
+Ladybird now uses glyphs from system fonts like Apple Color Emoji (on macOS) and Noto Color Emoji (on other platforms). We also added support for [ZWJ](https://en.wikipedia.org/wiki/Zero-width_joiner) emoji sequences (such as the "fireman" and "heart on fire" emojis which are actually combinations of multiple emojis). Special thanks to Tim Flynn for implementing grapheme-aware text segmentation, which is what makes this work.
+
+![](/assets/img/newsletter-sep-2024-emoji-zwj.png)
+
+### Font decoding using Skia
+
+It's already been a couple of months since we switched to using Skia for text rasterization, but it was still piggybacking on our OpenType implementation, which resulted in a need to keep multiple decoded representations in memory for the same typefaces.
+That's no longer the case, and we use Skia (which under the hood uses FontConfig on Linux and Core Text on macOS) to handle everything, including decoding, extracting all required metrics, and rasterization.
 
 ### CSS Transitions
 
@@ -27,80 +58,32 @@ This month, Ladybird gained support for the `transition` property, which allows 
 
 ### CSS Cascade Layers
 
-It's fairly common for websites to have multiple sets of styles, for example a reset style sheet, a general framework, and then bespoke styling for particular elements. This can run into issues with "specificity", where styles get applied in the wrong order because of the selectors used.
+Websites often juggle multiple style sheets—resets, frameworks, and custom styles—leading to issues with "specificity" when styles get applied in the wrong order.
 
-The `@layer` rule give authors the ability to group sets of styles into layers which apply in a particular order, so that one layer always overrides the previous one. This can really help to keep CSS organized and reduce surprises.
+The new `@layer` rule helps by grouping styles into layers that apply in a predictable sequence, ensuring more control over which styles take precedence. Ladybird now supports `@layer`, a feature highlighted in the [Interop 2022](https://wpt.fyi/interop-2022) initiative, making it a valuable addition for developers.
 
-We've now implemented `@layer`, which makes a big difference on websites that use it. Even though it's a relatively new feature, it was a focus of the [Interop 2022](https://wpt.fyi/interop-2022) effort and so is expected for all browsers to support it.
+### Style sheet inspector
 
-### Style Sheet Inspector
-
-As part of an effort to make CSS issues easier to debug, we now have a basic style sheet inspector built into the browser dev tools, which lets you view the contents of any style sheets that apply to the current page.
-
-### Networking with curl
-
-This month we've replaced our home-grown HTTPS stack with the [curl](https://curl.se/) library. It's been a huge boost for both performance and correctness, as we are now able to load many more websites and they all load significantly faster!
+Debugging CSS has gotten easier with the addition of a basic style sheet inspector in Ladybird's dev tools. You can now view the style sheets that apply to the current page, making it simpler to troubleshoot CSS issues.
 
 ### SVG and CSS masks on the GPU
 
-We now offload alpha and luminance mask rendering to the GPU if possible. This is implemented by using Skia's [SkSL shader language](https://skia.org/docs/user/sksl/) and yields a substantial speedup on websites making heavy use of masks.
-
-### Emoji support
-
-Before the fork, emoji support was implemented using custom bitmap images hand-drawn by SerenityOS contributors.
-However, it was temporarily broken when we switched to using Skia for rasterization.
-This month, emoji support has been restored, now implemented by rendering emoji glyphs extracted from a font: Apple Color Emoji on macOS and Noto Color Emoji on other platforms.
-Moreover, this support is more complete than before, as now we handle ZWJ sequences by utilizing grapheme-aware text segmentation, thanks to Tim Flynn.
-
-![](/assets/img/newsletter-sep-2024-emoji-zwj.png)
-
-### Web Platform Tests
-
-This month has seen great progress on the Web Platform Tests\!
-
-We now have a dashboard to track progress of WPT scores over time. This can be viewed [here](https://grafana.app.ladybird.org/public-dashboards/2365098a185541cf8c7273830a789493?orgId=1).
-
-There has been a focus on improving the speed of WPT runs this month. We have managed to reduce the number of test timeouts
-from 5,798 at the start of the month to 2,970 at the time of writing. These improvements, together with our switch to libcurl
-for networking has reduced the time taken to complete a full test run from 7 hours to under 5 hours.
-
-A long-standing issue in the way we capture reftest images has been fixed this month. Reftests verify that a given page is rendered
-correctly by taking a screenshot of a page and comparing it to a screenshot of a reference page. Previously, we weren't always
-capturing the entirety of the viewport when capturing these screenshots. This meant that some tests appeared to pass when they shouldn't have.
-We now capture these screenshots using the algorithm given in the WebDriver specification, meaning we can be more confident in our results.
-
-At the time of writing we are passing 588,982 more subtests than last month bringing the total to 1,510,615\!
-
-Our current WPT progress can be seen [at wpt.fyi](https://wpt.fyi/results/?product=ladybird).
-
-### Audio support
-
-We have been replacing our home-grown audio codecs with FFmpeg's excellent libavformat and
-libavcodec, which means that we now support a wide range of audio formats out there on the web!
-Vorbis, MP3, FLAC, Opus, Wave and many more can now be heard in Ladybird.
-
-### Font decoding using Skia
-
-It's already been a couple of months since we switched to using Skia for text rasterization, but it was still piggybacking on our OpenType implementation, which resulted in a need to keep multiple decoded representations in memory for the same typefaces.
-That's no longer the case, and we use Skia (which under the hood uses FontConfig on Linux and Core Text on macOS) to handle everything, including decoding, extracting all required metrics, and rasterization.
+We now use the GPU for rendering alpha and luminance masks, thanks to Skia's [SkSL shader language](https://skia.org/docs/user/sksl/). This results in significant performance improvements for sites that rely heavily on these effects.
 
 ### Successor language search progress
 
-Over the past year, our core contributors have been investigating various memory-safe and C++ successor language options.
-We looked at Rust, Swift, Fil-C and various other options. Some popular languages didn't have the C++ interoperability
-or memory safety stories that we were hoping for. The most popular of the successor languages we tried among our core
-developers was the Swift language, with the new Swift 6 interoperability features and cross-platform support push from
-the Swift Foundation. As such, we have selected Swift as our chosen successor language.
+Over the past year, our core contributors have been exploring potential safe languages to complement or succeed C++.
+We evaluated several options, including Rust, Swift, Fil-C, and others. While some languages offered compelling
+features, many fell short in either C++ interoperability or providing the level of memory safety we needed.
 
-We believe that an incremental approach where more and more new code is written in a safer language over time
-is going to be the best path forward for the project. Our C++ code isn't going to go anywhere any time soon, as
-it would be much too costly to actually re-write everything. We will be _slowly_ experimenting with new components written
-in Swift and integration with our existing C++ code in the coming months. Look forward to a dedicated blog post on the
-topic soon.
+After extensive testing and discussion, [Swift](https://swift.org) emerged as the top choice among our core developers, thanks to the new Swift 6 interoperability features and its growing cross-platform support. As a result, we've decided to adopt Swift as our C++ successor language.
+
+That said, this will be an incremental shift. The existing C++ codebase is deeply embedded in the project,
+and a complete rewrite would be impractical. Instead, we'll be gradually introducing new components in Swift,
+carefully integrating them with our existing C++ code over time. Look forward to a dedicated blog post on the topic soon.
 
 ### Credits
 
 We thank the following people who contributed code to Ladybird in September 2024:
-_list,
-of,
-people_
+
+_Alec Murphy, Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, Annya, Arhcout, Asutosh Variar, Bastiaan van der Plaat, BenJilks, Chase Willden, ChaseKnowlden, Colin Reeder, Daniel La Rocque, Douwe Zumker, Francesco Gazzetta, Gingeh, Han, HolonProduction, Jamie Mansfield, Jelle Raaijmakers, Johan Dahlin, Julius Elshoff, Kevin Perdlich, Khaled Lakehal, Kostya Farber, Kuba314, Laura Braun, Lucas CHOLLET, marcin mikołajczak, Matthew Olsson, mierenhoop, Mohamed amine Bounya, Noah Bright, Olekoop, Pavel Panchekha, PiyushXCoder, rmg-x, ronak69, Saleem Abdulrasool, Sam Atkins, sideshowbarker, Simon Wanner, Tim Ledbetter, Timothy Flynn, Vitaly Takmazov_

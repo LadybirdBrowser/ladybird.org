@@ -17,12 +17,6 @@ const { newsletter } = Astro.props;
 const { Content } = await newsletter.render();
 ---
 
-<Layout
-  frontmatter={newsletter.data}
-  title={newsletter.data.title}
-  description={newsletter.data.description}
-  image={newsletter.data.image}
-  author={newsletter.data.author}
->
+<Layout frontmatter={newsletter.data}>
   <Content components={markdown} />
 </Layout>

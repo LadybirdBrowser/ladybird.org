@@ -1,5 +1,12 @@
 ---
 import "../../styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+  author?: string;
+  image?: string;
+};
 const { title, description, author, image } = Astro.props;
 ---
 

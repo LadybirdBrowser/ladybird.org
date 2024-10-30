@@ -90,6 +90,15 @@ Work is still ongoing to allow nesting other rules, such as `@media` queries.
 CSS has an increasingly-large variety of ways of declaring colors, and this month Lucas Chollet implemented the
 `lab()`, `lch()`, and `color()` functions. `color()` in particular lets authors use specify what color space to use.
 
+### Progress on input events and contenteditable support
+
+With the following changes being made, it's now possible to chat on Discord using Ladybird:
+
+- Added basic support for dispatching `input` and `beforeinput` events. This is required by Slate.js, which is used on Discord and intercepts all input events, managing the contenteditable state on the JS side.
+- Made a large refactoring to combine the internal representation of caret position and selection into a single object. It solved a bug where Slate.js wants to update the caret position using the Selection API, which didn't work because we were not synchronizing the state of selection with the object that controls the input position.
+
+![](/assets/img/newsletter-oct-2024-chat-on-discord.gif)
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in October 2024:

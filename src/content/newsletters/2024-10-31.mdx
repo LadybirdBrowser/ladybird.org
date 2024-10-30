@@ -106,6 +106,15 @@ WebAudio allows you to set up complex audio processing graphs using a comprehens
 of small improvements in supporting these APIs such as `BaseAudioContext.decodeAudioData()`, which among others, allows
 you to pass the loading screen of [ZType](https://zty.pe/) and actually play the game!
 
+### Improvements to our testing infrastructure
+
+This month we've begun importing tests from WPT into our own internal test suite. This means we're getting some parts of WPT coverage in our CI system as well.
+
+More tests means more time waiting for CI, so we've also made two big changes to improve performance:
+
+- Our internal test suite now runs in parallel across multiple processes.
+- We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in October 2024:

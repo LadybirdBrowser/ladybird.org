@@ -43,6 +43,53 @@ We support blurring, drop shadows, grayscale, sepia, and many more.
 
 ![](/assets/img/newsletter-oct-2024-css-filter.png)
 
+### Nested styling
+
+This month we implemented basic support for CSS nesting, allowing style rules to be nested within each other.
+This can help with organising large CSS files by grouping related styling together.
+For example, we now support this:
+
+```css
+a {
+  color: blue;
+  text-decoration: underline;
+
+  &:hover {
+    color: magenta;
+    text-decoration: none;
+  }
+
+  > img {
+    border: 1px dotted currentcolor;
+  }
+}
+
+/*
+ * ...which is equivalent to:
+ */
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: magenta;
+  text-decoration: none;
+}
+
+a > img {
+  border: 1px dotted currentcolor;
+}
+```
+
+Work is still ongoing to allow nesting other rules, such as `@media` queries.
+
+### More colors
+
+CSS has an increasingly-large variety of ways of declaring colors, and this month Lucas Chollet implemented the
+`lab()`, `lch()`, and `color()` functions. `color()` in particular lets authors use specify what color space to use.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in October 2024:

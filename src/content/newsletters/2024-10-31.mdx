@@ -10,45 +10,72 @@ draft: true
 Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [JetBrains](https://www.jetbrains.com) with $5,000
+- [Jonathan Lahijani](http://jonathanlahijani.com) with $1,000
 
 We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
-
-### First-ever pizza ordered with Ladybird
-
-A new kind of first this month: [the first-ever pizza ordered with Ladybird arrived safely and was reportedly delicious!](https://x.com/awesomekling/status/1846607417343463524)
-
-Congratulations to X user [@Blasenblaeser](https://x.com/Blasenblaeser) for this exciting success!
-
-![](/assets/img/newsletter-oct-2024-pizza.png)
 
 ### Expanding our Board of Directors
 
 We've added two new board members:
 
-- [Tim Flynn](https://ladybird.org/posts/tim-flynn-joins-board/): one of our long-term independent contributors. Ladybird leans on the OSS community, and we want to ensure our project remains open and pleasant for independent contributors!
+- [Tim Flynn](https://ladybird.org/posts/tim-flynn-joins-board/): a long-time independent contributor. Ladybird leans on the OSS community, and Tim's presence ensures we stay an inviting place for open-source contributors!
 
-- [Mike Shaver](https://ladybird.org/posts/mike-shaver-joins-board/): a browser industry veteran, former VP of Engineering at Mozilla, Director of Engineering at Facebook, and many other things. Mike is a hardcore engineering leader and will help us raise the bar for Ladybird and ourselves.
+- [Mike Shaver](https://ladybird.org/posts/mike-shaver-joins-board/): an industry veteran, former VP of Engineering at Mozilla, and former Director of Engineering at Facebook. Mike brings engineering leadership and deep experience that will help us push Ladybird to new heights.
 
-### Fixing excessive repainting by locking refresh rate
+### Web Platform Tests (WPT)
 
-Until recently, we used a "push" model for repainting. Any event that might invalidate rendering, like scrolling a page, would schedule event loop processing to perform style, layout, or painting updates if necessary. Repainting in this fashion often resulted in excessive work, as we produced more frames than the display could render.
+October saw strong progress on WPT compliance.
 
-This month, we solved this issue by switching to a "pull" model, where the repainting task is always scheduled 60 times per second and performs style, layout, and paint updates if necessary. Making this change also aligned us more closely with the model described in the HTML specification.
+We're now passing **54,590** more subtests than last month, reaching **1,565,597** total!
+
+Particular effort has been made this month in improving our WebDriver implementation. We now implement all of the
+endpoints required by the WebDriver specification. This allows us to run many more tests, which use WebDriver to
+simulate various kinds of user interaction.
+
+### Improvements to our testing infrastructure
+
+To increase CI coverage, we've begun importing parts of WPT directly into our own test suite.
+
+More tests means more time waiting for CI, so we've also made two changes to improve performance there:
+
+- Our internal test suite now runs in parallel across multiple processes.
+- We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
+
+### Smarter repainting with a locked refresh rate
+
+We've overhauled our approach to repainting. Previously, any rendering-related event, like scrolling, would trigger style, layout, and/or paint updates, often creating excess frames that weren't even displayed.
+
+The new approach is a "pull" model, syncing repaints to a 60fps schedule, and aligning us more closely with the rendering model in the HTML specification. This drastically reduces redundant work and improves performance.
+
+### Progress on input events and contenteditable
+
+Big strides were made on input events, especially around `input` and `beforeinput` events.
+
+We also reworked how we manage caret positions and selection to sync seamlessly with JavaScript-managed contenteditable states like those in Slate.js.
+
+Ladybird can now handle chat on platforms like Discord thanks to these improvements!
+
+![](/assets/img/newsletter-oct-2024-chat-on-discord.gif)
+
+### WebAudio improvements
+
+WebAudio allows you to set up complex audio processing graphs using a comprehensive API. This month, we've seen a number
+of small improvements in supporting these APIs such as `BaseAudioContext.decodeAudioData()`, which among other things allows
+you to pass the loading screen of [ZType](https://zty.pe/) and actually play the game!
 
 ### CSS filter support
 
-Although Ladybird already implemented a number of CSS backdrop filters, it now has support for the CSS `filter` property
-with which you can modify the graphical appearance of elements.
-
-We support blurring, drop shadows, grayscale, sepia, and many more.
+We've implemented the CSS `filter` property, with support for various visual effects like blur, drop shadows, grayscale, hue rotation, and many more!
 
 ![](/assets/img/newsletter-oct-2024-css-filter.png)
 
+### More colors
+
+This month, Lucas Chollet added support for lab(), lch(), and color() functions in CSS. These provide more options for color declarations, with color() letting you specify the color space directly.
+
 ### Nested styling
 
-This month we implemented basic support for CSS nesting, allowing style rules to be nested within each other.
-This can help with organising large CSS files by grouping related styling together.
-For example, we now support this:
+Basic support for CSS nesting with the `&` selector is now in Ladybird! This allows style rules to be grouped, keeping large style sheets tidier:
 
 ```css
 a {
@@ -61,7 +88,7 @@ a {
   }
 
   > img {
-    border: 1px dotted currentcolor;
+    border: 1px dotted green;
   }
 }
 
@@ -80,59 +107,27 @@ a:hover {
 }
 
 a > img {
-  border: 1px dotted currentcolor;
+  border: 1px dotted green;
 }
 ```
 
-Work is still ongoing to allow nesting other rules, such as `@media` queries.
-
-### More colors
-
-CSS has an increasingly-large variety of ways of declaring colors, and this month Lucas Chollet implemented the
-`lab()`, `lch()`, and `color()` functions. `color()` in particular lets authors use specify what color space to use.
-
-### Progress on input events and contenteditable support
-
-With the following changes being made, it's now possible to chat on Discord using Ladybird:
-
-- Added basic support for dispatching `input` and `beforeinput` events. This is required by Slate.js, which is used on Discord and intercepts all input events, managing the contenteditable state on the JS side.
-- Made a large refactoring to combine the internal representation of caret position and selection into a single object. It solved a bug where Slate.js wants to update the caret position using the Selection API, which didn't work because we were not synchronizing the state of selection with the object that controls the input position.
-
-![](/assets/img/newsletter-oct-2024-chat-on-discord.gif)
-
-### WebAudio improvements
-
-WebAudio allows you to set up complex audio processing graphs using a comprehensive API. This month, we've seen a number
-of small improvements in supporting these APIs such as `BaseAudioContext.decodeAudioData()`, which among others, allows
-you to pass the loading screen of [ZType](https://zty.pe/) and actually play the game!
-
-### Improvements to our testing infrastructure
-
-This month we've begun importing tests from WPT into our own internal test suite. This means we're getting some parts of WPT coverage in our CI system as well.
-
-More tests means more time waiting for CI, so we've also made two big changes to improve performance:
-
-- Our internal test suite now runs in parallel across multiple processes.
-- We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
+Support for nesting `@media` queries is coming up next.
 
 ### Clip-path shapes
 
-For a long time we've supported `clip-path: polygon(...)`, but there are a lot of other ways of declaring the clip-path.
-This month, Gingeh implemented the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, along with
-fill-rule support. This makes websites that use clip-paths look much nicer.
+Gingeh extended our `clip-path` capabilities to include the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, as well as `fill-rule` support. With these new options, websites that use clip-paths look much sharper in Ladybird.
 
 In the screenshot below, each black element is clipped, revealing the gray of its parent.
 
 ![](/assets/img/newsletter-oct-2024-clip-path-shapes.png)
 
-### Web Platform Tests
+### First-ever pizza ordered with Ladybird
 
-We continue to make solid progress in our Web Platform Test compliance. We are now passing **40,568** more subtests
-than last month, bringing our total to **1,551,575** passing subtests!
+A new kind of first this month: [the first-ever pizza ordered via Ladybird arrived safely and was reportedly delicious!](https://x.com/awesomekling/status/1846607417343463524)
 
-Particular effort has been made this month in improving our WebDriver implementation. We now implement all of the
-endpoints required by the WebDrover specification. This allows us to run many more tests, which use WebDriver to
-simulate various kinds of user interaction.
+Congratulations to X user [@Blasenblaeser](https://x.com/Blasenblaeser) on this one-of-a-kind accomplishment!
+
+![](/assets/img/newsletter-oct-2024-pizza.png)
 
 ### Credits
 

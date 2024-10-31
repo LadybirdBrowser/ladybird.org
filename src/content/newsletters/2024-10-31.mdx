@@ -51,7 +51,7 @@ More tests mean longer CI wait times, so we've also made two changes to optimize
 
 ### Smarter repainting with a locked refresh rate
 
-We've overhauled our approach to repainting. Previously, any rendering-related event, like scrolling, would trigger style, layout, and/or paint updates, often creating excess frames that weren't even displayed.
+We've overhauled our approach to repainting. Previously, any rendering-related event such as scrolling would trigger style, layout or paint updates - often creating excess frames that weren't even displayed.
 
 The new approach is a "pull" model, syncing repaints to a 60fps schedule and aligning us more closely with the rendering model in the HTML specification. This drastically reduces redundant work and improves performance.
 
@@ -73,7 +73,7 @@ you to pass the loading screen of [ZType](https://zty.pe/) and actually play the
 
 ### CSS filter support
 
-We've added support for the CSS `filter` property, supporting visual effects like blur, drop shadows, grayscale, and hue rotation!
+We've added support for the CSS `filter` property, implementing visual effects like blur, drop shadows, grayscale, and hue rotation!
 
 ![](/assets/img/newsletter-oct-2024-css-filter.png)
 

@@ -5,6 +5,8 @@ date: 2024-10-31
 draft: true
 ---
 
+October 2024 is coming to an end, and we've had another solid month in the Ladybird project. We've merged 378 PRs from 72 contributors, making progress across many areas.
+
 ### Welcoming new sponsors
 
 Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
@@ -28,15 +30,13 @@ October saw strong progress on WPT compliance.
 
 We're now passing **54,590** more subtests than last month, reaching **1,565,597** total!
 
-Particular effort has been made this month in improving our WebDriver implementation. We now implement all of the
-endpoints required by the WebDriver specification. This allows us to run many more tests, which use WebDriver to
-simulate various kinds of user interaction.
+We focused particularly on improving our WebDriver implementation. We now implement all of the endpoints required by the WebDriver specification. This allows us to run many more tests, which use WebDriver to simulate various kinds of user interaction.
 
 ### Improvements to our testing infrastructure
 
 To increase CI coverage, we've begun importing parts of WPT directly into our own test suite.
 
-More tests means more time waiting for CI, so we've also made two changes to improve performance there:
+More tests mean more time waiting for CI, so we've also made two changes to improve performance there:
 
 - Our internal test suite now runs in parallel across multiple processes.
 - We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
@@ -65,17 +65,17 @@ you to pass the loading screen of [ZType](https://zty.pe/) and actually play the
 
 ### CSS filter support
 
-We've implemented the CSS `filter` property, with support for various visual effects like blur, drop shadows, grayscale, hue rotation, and many more!
+We've implemented the CSS `filter` property, supporting various visual effects such as blur, drop shadows, grayscale, hue rotation, and many more!
 
 ![](/assets/img/newsletter-oct-2024-css-filter.png)
 
 ### More colors
 
-This month, Lucas Chollet added support for lab(), lch(), and color() functions in CSS. These provide more options for color declarations, with color() letting you specify the color space directly.
+This month, Lucas Chollet added support for `lab()`, `lch()`, and `color()` functions in CSS. These provide more options for color declarations, with `color()` letting you specify the color space directly.
 
 ### Nested styling
 
-Basic support for CSS nesting with the `&` selector is now in Ladybird! This allows style rules to be grouped, keeping large style sheets tidier:
+Basic support for CSS nesting with the `&` selector is now in Ladybird! This allows style rules to be grouped for a tidier structure in large style sheets:
 
 ```css
 a {
@@ -115,7 +115,7 @@ Support for nesting `@media` queries is coming up next.
 
 ### Clip-path shapes
 
-Gingeh extended our `clip-path` capabilities to include the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, as well as `fill-rule` support. With these new options, websites that use clip-paths look much sharper in Ladybird.
+Gingeh extended our `clip-path` capabilities to include the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, as well as `fill-rule` support. With these new options, pages that use clip paths look much nicer in Ladybird.
 
 In the screenshot below, each black element is clipped, revealing the gray of its parent.
 

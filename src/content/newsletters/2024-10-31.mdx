@@ -115,6 +115,16 @@ More tests means more time waiting for CI, so we've also made two big changes to
 - Our internal test suite now runs in parallel across multiple processes.
 - We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
 
+### Clip-path shapes
+
+For a long time we've supported `clip-path: polygon(...)`, but there are a lot of other ways of declaring the clip-path.
+This month, Gingeh implemented the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, along with
+fill-rule support. This makes websites that use clip-paths look much nicer.
+
+In the screenshot below, each black element is clipped, revealing the gray of its parent.
+
+![](/assets/img/newsletter-oct-2024-clip-path-shapes.png)
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in October 2024:

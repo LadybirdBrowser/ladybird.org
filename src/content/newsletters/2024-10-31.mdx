@@ -5,7 +5,7 @@ date: 2024-10-31
 draft: true
 ---
 
-October 2024 is coming to an end, and we've had another solid month in the Ladybird project. We've merged 378 PRs from 72 contributors, making progress across many areas.
+October 2024 is coming to an end, and we've had another solid month in the Ladybird project. We've merged 378 PRs from 72 contributors, making strides across many areas.
 
 ### Welcoming new sponsors
 
@@ -26,17 +26,25 @@ We've added two new board members:
 
 ### Web Platform Tests (WPT)
 
-October saw strong progress on WPT compliance.
+October saw strong progress on WPT compliance, **54,590** more passing subtests than last month, bringing our total to **1,565,597**.
 
-We're now passing **54,590** more subtests than last month, reaching **1,565,597** total!
+This improvement reflects ongoing work across the engine, driving Ladybird’s standards compliance forward.
 
-We focused particularly on improving our WebDriver implementation. We now implement all of the endpoints required by the WebDriver specification. This allows us to run many more tests, which use WebDriver to simulate various kinds of user interaction.
+For context, here's our one-month progress on WPT alongside 3 major engines and 2 fellow underdogs.
+
+![](/assets/img/newsletter-oct-2024-wpt-graph.gif)
+
+And since 60% of the WPT score is legacy CJK text encoding tests, let's also look at the score with those tests omitted:
+
+![](/assets/img/newsletter-oct-2024-wpt-graph-no-encoding.gif)
 
 ### Improvements to our testing infrastructure
 
-To increase CI coverage, we've begun importing parts of WPT directly into our own test suite.
+Our WebDriver implementation keeps improving, and we now implement all of the endpoints required by the specification. This allows us to run many more WPT tests, which use WebDriver to simulate various kinds of user interaction.
 
-More tests mean more time waiting for CI, so we've also made two changes to improve performance there:
+Furthermore, to increase CI coverage, we've begun importing parts of WPT directly into our own test suite.
+
+More tests mean longer CI wait times, so we've also made two changes to optimize CI performance:
 
 - Our internal test suite now runs in parallel across multiple processes.
 - We've switched our CI builds from Debug+Sanitizers to ReleaseWithDebugInfo+Sanitizers.
@@ -45,13 +53,13 @@ More tests mean more time waiting for CI, so we've also made two changes to impr
 
 We've overhauled our approach to repainting. Previously, any rendering-related event, like scrolling, would trigger style, layout, and/or paint updates, often creating excess frames that weren't even displayed.
 
-The new approach is a "pull" model, syncing repaints to a 60fps schedule, and aligning us more closely with the rendering model in the HTML specification. This drastically reduces redundant work and improves performance.
+The new approach is a "pull" model, syncing repaints to a 60fps schedule and aligning us more closely with the rendering model in the HTML specification. This drastically reduces redundant work and improves performance.
 
-### Progress on input events and contenteditable
+### Improving input events and contenteditable
 
 Big strides were made on input events, especially around `input` and `beforeinput` events.
 
-We also reworked how we manage caret positions and selection to sync seamlessly with JavaScript-managed contenteditable states like those in Slate.js.
+We also reworked how we manage caret positions and selection to sync seamlessly with JavaScript-managed `contenteditable` states like those in [Slate.js](https://www.slatejs.org).
 
 Ladybird can now handle chat on platforms like Discord thanks to these improvements!
 
@@ -65,13 +73,13 @@ you to pass the loading screen of [ZType](https://zty.pe/) and actually play the
 
 ### CSS filter support
 
-We've implemented the CSS `filter` property, supporting various visual effects such as blur, drop shadows, grayscale, hue rotation, and many more!
+We've added support for the CSS `filter` property, supporting visual effects like blur, drop shadows, grayscale, and hue rotation!
 
 ![](/assets/img/newsletter-oct-2024-css-filter.png)
 
 ### More colors
 
-This month, Lucas Chollet added support for `lab()`, `lch()`, and `color()` functions in CSS. These provide more options for color declarations, with `color()` letting you specify the color space directly.
+We now support the `lab()`, `lch()`, and `color()` functions in CSS, enabling authors to specify colors in additional color spaces.
 
 ### Nested styling
 
@@ -109,15 +117,15 @@ Support for nesting `@media` queries is coming up next.
 
 ### Clip-path shapes
 
-Gingeh extended our `clip-path` capabilities to include the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, as well as `fill-rule` support. With these new options, pages that use clip paths look much nicer in Ladybird.
+Gingeh extended our `clip-path` capabilities to include the `inset()`, `xywh()`, `rect()`, `circle()`, and `ellipse()` functions, as well as `fill-rule` support. With these new options, pages that use clip paths render more accurately in Ladybird.
 
-In the screenshot below, each black element is clipped, revealing the gray of its parent.
+In the screenshot below, each black element is clipped, revealing the gray of its parent:
 
 ![](/assets/img/newsletter-oct-2024-clip-path-shapes.png)
 
-### First-ever pizza ordered with Ladybird
+### First-ever pizza ordered with Ladybird!
 
-A new kind of first this month: [the first-ever pizza ordered via Ladybird arrived safely and was reportedly delicious!](https://x.com/awesomekling/status/1846607417343463524)
+A new kind of first this month: [the first-ever pizza ordered via Ladybird was delivered successfully and reportedly tasted great!](https://x.com/awesomekling/status/1846607417343463524)
 
 Congratulations to X user [@Blasenblaeser](https://x.com/Blasenblaeser) on this one-of-a-kind accomplishment!
 

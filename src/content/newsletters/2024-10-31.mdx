@@ -79,36 +79,19 @@ Basic support for CSS nesting with the `&` selector is now in Ladybird! This all
 
 ```css
 a {
-  color: blue;
   text-decoration: underline;
 
-  &:hover {
-    color: magenta;
-    text-decoration: none;
-  }
-
-  > img {
-    border: 1px dotted green;
-  }
+  &:hover { text-decoration: none; }
+  > img { border: 1px dotted green; }
 }
 
-/*
- * ...which is equivalent to:
- */
+/* ...which is equivalent to... */
 
-a {
-  color: blue;
-  text-decoration: underline;
-}
+a { text-decoration: underline; }
 
-a:hover {
-  color: magenta;
-  text-decoration: none;
-}
+a:hover { text-decoration: none; }
 
-a > img {
-  border: 1px dotted green;
-}
+a > img { border: 1px dotted green; }
 ```
 
 Support for nesting `@media` queries is coming up next.

@@ -48,6 +48,11 @@ FIXME: Specifics.
 
 FIXME
 
+### GPU-accelerated `<canvas>` and texture caching
+
+The Skia GPU backend now powers not only page rendering but also CanvasRenderingContext2D rendering, delivering better performance.
+Additionally, a major GPU painting performance issue has been addressed, removing the necessity to re-upload textures to the GPU for each frame.
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in November 2024:

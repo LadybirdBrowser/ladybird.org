@@ -33,9 +33,45 @@ We now support the `scale`, `rotate` and `translate` CSS properties, which offer
 
 ### CSS nesting
 
-We now support `@media` rules inside a CSS nesting context.
+We completed our implementation of CSS nesting by adding support for `@media`, `@supports` and `@layer` rules inside a CSS nesting context. For example:
 
-FIXME: Add example.
+```css
+.thing {
+  font-size: 20px;
+
+  img {
+    max-width: 100%;
+  }
+
+  @media (min-width: 800px) {
+    font-size: 30px;
+
+    img {
+      max-width: 25%;
+    }
+  }
+}
+
+/* ...which is equivalent to... */
+
+.thing {
+  font-size: 20px;
+}
+
+.thing img {
+  max-width: 100%;
+}
+
+@media (min-width: 800px) {
+  .thing {
+    font-size: 30px;
+  }
+
+  .thing img {
+    max-width: 25%;
+  }
+}
+```
 
 ### Vertical text
 

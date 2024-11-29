@@ -53,6 +53,12 @@ FIXME
 The Skia GPU backend now powers not only page rendering but also CanvasRenderingContext2D rendering, delivering better performance.
 Additionally, a major GPU painting performance issue has been addressed, removing the necessity to re-upload textures to the GPU for each frame.
 
+### `mask-image` CSS property support
+
+With support of this property we can now accurately render the relatively complex "torch effect" on null.com, which is composed of `mask-image`, `background-clip`, and a radial gradient.
+
+![](/assets/img/newsletter-nov-2024-null-com.png)
+
 ### Credits
 
 We thank the following people who contributed code to Ladybird in November 2024:

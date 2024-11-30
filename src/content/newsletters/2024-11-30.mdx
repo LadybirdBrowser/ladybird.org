@@ -5,7 +5,7 @@ date: 2024-11-30
 draft: true
 ---
 
-November is wrapping up, and it’s been another productive month for the Ladybird project. We merged ?? PRs from ?? contributors, with improvements across multiple areas. Here’s what we’ve been working on:
+November is wrapping up, and it's been another productive month for the Ladybird project. We merged ?? PRs from ?? contributors, with improvements across multiple areas. Here's what we've been working on:
 
 ### Welcoming new sponsors
 
@@ -16,17 +16,17 @@ This month, we welcomed several new sponsors:
 - [Puter](https://www.puter.com) with $1,000
 - [Follower24.de](http://follower24.de) with $1,000
 
-We are incredibly grateful for their support! If you’re interested in sponsoring, [contact us](mailto:contact@ladybird.org).
+We are incredibly grateful for their support! If you're interested in sponsoring, [contact us](mailto:contact@ladybird.org).
 
 ### Web Platform Tests (WPT)
 
 We've continued actively improving our WPT score in November, totaling 63,031 more passing subtests than last month, bringing our total to 1,628,628.
 
-For context, here’s our one-month progress on WPT alongside 3 major engines and 2 fellow underdogs.
+For context, here's our one-month progress on WPT alongside 3 major engines and 2 fellow underdogs.
 
 ![](/assets/img/newsletter-nov-2024-wpt-graph.gif)
 
-And since 60% of the WPT score is legacy CJK text encoding tests, let’s also look at the score with those tests omitted:
+And since 60% of the WPT score is legacy CJK text encoding tests, let's also look at the score with those tests omitted:
 
 ![](/assets/img/newsletter-nov-2024-wpt-graph-no-encoding.gif)
 
@@ -35,6 +35,15 @@ And since 60% of the WPT score is legacy CJK text encoding tests, let’s also l
 [Temporal](https://tc39.es/proposal-temporal/docs/) is a modern date/time API proposal for ECMAScript. We implemented it a couple of years ago, but the spec has since changed significantly.
 
 Rather than trying to retrofit our old implementation, we opted for a complete rewrite this month. The result is a clean, up-to-date implementation that brings our overall [ECMAScript conformance](https://test262.fyi/#) to 97%, the highest of any engine.
+
+### Swift language adoption
+
+We've announced that we're looking at Swift 6 as a possible C++ successor language for the project. This work has largely been exploratory so far, but we're excited about the benefits Swift could bring!
+
+Initial work into the build system integration has led to some promising prototypes using the C++ interop features of Swift. We're still investigating how to best introduce Swift code into the codebase without causing
+a mad dash to rewrite everything in Swift.
+
+For more details on how we're approaching this, check out this post we made on the [Swift Forums](https://forums.swift.org/t/ladybird-browser-and-swift-garbage-collection/76084).
 
 ### Individual CSS transform properties
 
@@ -68,7 +77,7 @@ This produces the same result as writing out fully qualified selectors manually.
 
 ### Vertical text
 
-Initial support for vertical text layout with the `writing-mode` property is now available. This improves layout and rendering for pages like MDN’s browser compatibility tables.
+Initial support for vertical text layout with the `writing-mode` property is now available. This improves layout and rendering for pages like MDN's browser compatibility tables.
 
 ![](/assets/img/newsletter-nov-2024-mdn-vertical-text.png)
 
@@ -78,11 +87,22 @@ The Web Crypto API has been expanded to include support for HMAC and ECDH, along
 
 ### DNS over TLS
 
-We’ve added support for DNS-over-TLS (DoT), which encrypts DNS queries to improve privacy and security.
+We've added support for DNS-over-TLS (DoT), which encrypts DNS queries to improve privacy and security.
 
 ### GPU-accelerated `<canvas>`
 
 The Skia GPU backend now powers `<canvas>` rendering in addition to page rendering, delivering significant performance improvements for 2D graphics. A major GPU texture caching issue was also fixed, reducing redundant uploads and improving frame rates.
+
+### Ladybird at GitHub Universe
+
+Last month, GitHub held its annual Universe conference in San Francisco, California. We were invited to participate in their Open Source Zone exhibition area, where 5 projects
+each day of the conference had a booth to showcase their project.
+
+We had a great time talking to attendees about Ladybird and showing off some of the cool features we've been working on.
+The highlights of the conference were the time we had to chat with GitHub's Open Source Developer Relations team, and the opportunity to meet some of the other projects in the Open Source Zone.
+Make sure to check out the [Home Assistant blog post](https://www.home-assistant.io/blog/2024/11/18/event-wrapup-github-universe-24/) about their time at the event!
+
+![](/assets/img/newsletter-nov-2024-github-universe.png)
 
 ### `mask-image` CSS property
 
@@ -108,27 +128,8 @@ The CSS `color()` function now supports additional color spaces, including `a98-
 
 Work on the `document.execCommand()` API has started, beginning with basic commands like `delete`. This lays the groundwork for future rich-text editing support.
 
-### Swift Adoption
-
-We've announced that we're looking at Swift 6 as a possible C++ successor language to integrate into the project. This work has largely been exploratory so far, but we're excited about the potential benefits Swift could bring.
-Initial work into the build system integration has led to some promising prototypes using the C++ Interoperability features of Swift. We're still investigating how to best introduce Swift code into the codebase without causing
-a mad dash to rewrite everything in Swift. For more details on how we're approaching this, check out this post we made on the [Swift Forums](https://forums.swift.org/t/ladybird-browser-and-swift-garbage-collection/76084).
-
-### Ladybird at GitHub Universe
-
-Last month, GitHub held its annual Universe conference in San Francisco, California. We were invited to participate in their Open Source Zone exhibition area, where 5 projects
-each day of the conference had a booth to showcase their project.
-
-![](/assets/img/newsletter-nov-2024-github-universe-oss-zone.jpg)
-
-We had a great time talking to attendees about Ladybird and showing off some of the cool features we've been working on.
-The highlights of the conference were the time we had to chat with GitHub's Open Source Developer Relations team, and the opportunity to meet some of the other projects in the Open Source Zone.
-Make sure to check out the [Home Assistant blog post](https://www.home-assistant.io/blog/2024/11/18/event-wrapup-github-universe-24/) about their time at the event!
-
-![](/assets/img/newsletter-nov-2024-github-universe-ladybird-booth.jpg)
-
 ### Credits
 
-We’d like to thank everyone who contributed code this month:
+We'd like to thank everyone who contributed code this month:
 
 _list of names_

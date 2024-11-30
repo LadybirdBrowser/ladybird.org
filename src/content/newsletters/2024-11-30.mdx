@@ -81,9 +81,9 @@ We have some initial support for vertical text layout and rendering with the `wr
 
 ### Web Crypto API
 
-We've added support for many new algorithms.
-
-FIXME: Specifics.
+The Web Crypto API allows web applications to perform cryptographic operations such as hashing, signature generation
+and verification, and encryption/decryption of data. This month, we've added support for new algorithms such as HMAC and
+ECDH, and improved support for existing algorithms.
 
 ### DNS over TLS
 
@@ -102,7 +102,7 @@ With support of this property we can now accurately render the relatively comple
 
 ### Pointer events support
 
-We implemnted dispatching for pointerup, pointerdown and pointermove events.
+We implemented dispatching for pointerup, pointerdown and pointermove events.
 Combined with couple of other fixes, it's now possible to paint on https://excalidraw.com/
 
 ![](/assets/img/newsletter-nov-2024-excalidraw.png)
@@ -117,6 +117,12 @@ We can now start enforcing Content Security Policies delivered to us from websit
 ### More CSS `color()` support
 
 We gained support for the a98-rgb, display-p3, prophoto-rgb, rec2020, srgb, srgb-linear, and xyz-d65 color spaces in the CSS `color()` function.
+
+### Editing API
+
+Originally introduced by Internet Explorer, `document.execCommand()` allows you to manipulate editable contents on a
+website in a way that feels very similar to what any rich-text editor has to offer. This month, we've started adding
+support for this API implementing commands such as `delete` and laying the groundwork for all other commands.
 
 ### Credits
 

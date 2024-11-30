@@ -5,35 +5,46 @@ date: 2024-11-30
 draft: true
 ---
 
-November 2024 is coming to an end, and we've had another solid month in the Ladybird project. We've merged ?? PRs from ?? contributors, making strides across many areas.
+November is wrapping up, and it’s been another productive month for the Ladybird project. We merged ?? PRs from ?? contributors, with improvements across multiple areas. Here’s what we’ve been working on:
 
 ### Welcoming new sponsors
 
-Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+This month, we welcomed several new sponsors:
 
 - [37signals](https://www.37signals.com) with $10,000
 - [Paul Copplestone](https://paul.copplest.one) with $10,000
 - [Puter](https://www.puter.com) with $1,000
 - [Follower24.de](http://follower24.de) with $1,000
 
-We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+We are incredibly grateful for their support! If you’re interested in sponsoring, [contact us](mailto:contact@ladybird.org).
 
-### Temporal do-over
+### Web Platform Tests (WPT)
 
-[Temporal](https://tc39.es/proposal-temporal/docs/) is a proposal to bring a modern and featureful date/time API to the ECMAScript language.
-We implemented this proposal a couple of years ago, but in the time since, the proposal has been refactored substantially, and we had not kept up.
-We decided it would not have been feasible to make our existing implementation fit the rewritten proposal, so we re-implemented it from scratch
-this month.
+We've continued actively improving our WPT score in November, totaling 63,031 more passing subtests than last month, bringing our total to 1,628,628.
 
-In doing so, our overall [ECMAScript conformance](https://test262.fyi/#) has risen to 97%, which is the highest of any engine!
+For context, here’s our one-month progress on WPT alongside 3 major engines and 2 fellow underdogs.
+
+![](/assets/img/newsletter-nov-2024-wpt-graph.gif)
+
+And since 60% of the WPT score is legacy CJK text encoding tests, let’s also look at the score with those tests omitted:
+
+![](/assets/img/newsletter-nov-2024-wpt-graph-no-encoding.gif)
+
+### Temporal rewrite
+
+[Temporal](https://tc39.es/proposal-temporal/docs/) is a modern date/time API proposal for ECMAScript. We implemented it a couple of years ago, but the spec has since changed significantly.
+
+Rather than trying to retrofit our old implementation, we opted for a complete rewrite this month. The result is a clean, up-to-date implementation that brings our overall [ECMAScript conformance](https://test262.fyi/#) to 97%, the highest of any engine.
 
 ### Individual CSS transform properties
 
-We now support the `scale`, `rotate` and `translate` CSS properties, which offer a simplified way to assign specific transforms without using the generic `transform` property.
+Support for the `scale`, `rotate`, and `translate` CSS properties is now available. These properties provide a simpler way to apply individual transforms without using the `transform` shorthand.
 
-### CSS nesting
+### CSS nesting improvements
 
-We completed our implementation of CSS nesting by adding support for `@media`, `@supports` and `@layer` rules inside a CSS nesting context. For example:
+Our CSS nesting implementation is now complete, with support for nesting inside `@media`, `@supports`, and `@layer` rules.
+
+Example:
 
 ```css
 .thing {
@@ -51,81 +62,54 @@ We completed our implementation of CSS nesting by adding support for `@media`, `
     }
   }
 }
-
-/* ...which is equivalent to... */
-
-.thing {
-  font-size: 20px;
-}
-
-.thing img {
-  max-width: 100%;
-}
-
-@media (min-width: 800px) {
-  .thing {
-    font-size: 30px;
-  }
-
-  .thing img {
-    max-width: 25%;
-  }
-}
 ```
+
+This produces the same result as writing out fully qualified selectors manually.
 
 ### Vertical text
 
-We have some initial support for vertical text layout and rendering with the `writing-mode` property. For example, the browser compatibility tables on MDN look much better: (Before on the left, after on the right.)
+Initial support for vertical text layout with the `writing-mode` property is now available. This improves layout and rendering for pages like MDN’s browser compatibility tables.
 
 ![](/assets/img/newsletter-nov-2024-mdn-vertical-text.png)
 
 ### Web Crypto API
 
-The Web Crypto API allows web applications to perform cryptographic operations such as hashing, signature generation
-and verification, and encryption/decryption of data. This month, we've added support for new algorithms such as HMAC and
-ECDH, and improved support for existing algorithms.
+The Web Crypto API has been expanded to include support for HMAC and ECDH, along with improvements to existing algorithms. These additions make it easier for web applications to perform cryptographic operations like hashing, signing, and encryption.
 
 ### DNS over TLS
 
-DNS-over-TLS (DoT) is a popular protocol for encrypted DNS, preventing third parties from intercepting or monitoring queries, which are otherwise sent in plaintext with standard DNS. This month, we added support for DoT to improve privacy and protect against eavesdropping or tampering of DNS queries.
+We’ve added support for DNS-over-TLS (DoT), which encrypts DNS queries to improve privacy and security.
 
-### GPU-accelerated `<canvas>` and texture caching
+### GPU-accelerated `<canvas>`
 
-The Skia GPU backend now powers not only page rendering but also CanvasRenderingContext2D rendering, delivering better performance.
-Additionally, a major GPU painting performance issue has been addressed, removing the necessity to re-upload textures to the GPU for each frame.
+The Skia GPU backend now powers `<canvas>` rendering in addition to page rendering, delivering significant performance improvements for 2D graphics. A major GPU texture caching issue was also fixed, reducing redundant uploads and improving frame rates.
 
-### `mask-image` CSS property support
+### `mask-image` CSS property
 
-With support of this property we can now accurately render the relatively complex "torch effect" on https://null.com/, which is composed of `mask-image`, `background-clip`, and a radial gradient.
+With support for the `mask-image` property, Ladybird can now render complex visual effects like the “torch effect” on [null.com](https://null.com).
 
 ![](/assets/img/newsletter-nov-2024-null-com.png)
 
-### Pointer events support
+### Pointer events
 
-We implemented dispatching for pointerup, pointerdown and pointermove events.
-Combined with couple of other fixes, it's now possible to paint on https://excalidraw.com/
+Support for `pointerup`, `pointerdown`, and `pointermove` events has been added. Combined with other fixes, this makes interactive apps like [Excalidraw](https://excalidraw.com) functional in Ladybird.
 
 ![](/assets/img/newsletter-nov-2024-excalidraw.png)
 
 ### Content Security Policy
 
-We have started implementing [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), which allows websites to intentionally
-restrict what they are allowed to do. This is primiarily used to reduce the impact of vulnerabilities, such as Cross-Site Scripting (XSS).
+Initial support for [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) has been added. This lets Ladybird enforce site-defined restrictions to reduce vulnerabilities like XSS. Websites like GitHub and PayPal now enforce their CSPs in Ladybird.
 
-We can now start enforcing Content Security Policies delivered to us from websites such as [GitHub](https://github.com/) and [PayPal](https://paypal.com/)!
+### More CSS `color()` Support
 
-### More CSS `color()` support
-
-We gained support for the a98-rgb, display-p3, prophoto-rgb, rec2020, srgb, srgb-linear, and xyz-d65 color spaces in the CSS `color()` function.
+The CSS `color()` function now supports additional color spaces, including `a98-rgb`, `display-p3`, `prophoto-rgb`, `rec2020`, `srgb-linear`, and `xyz-d65`.
 
 ### Editing API
 
-Originally introduced by Internet Explorer, `document.execCommand()` allows you to manipulate editable contents on a
-website in a way that feels very similar to what any rich-text editor has to offer. This month, we've started adding
-support for this API implementing commands such as `delete` and laying the groundwork for all other commands.
+Work on the `document.execCommand()` API has started, beginning with basic commands like `delete`. This lays the groundwork for future rich-text editing support.
 
 ### Credits
 
-We thank the following people who contributed code to Ladybird in November 2024:
+We’d like to thank everyone who contributed code this month:
 
 _list of names_

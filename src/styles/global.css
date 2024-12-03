@@ -86,12 +86,19 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 180px;
-  min-height: 64px;
-  background: linear-gradient(var(--lb-sky), var(--lb-purple));
+  min-width: 170px;
+  min-height: 60px;
+  background: linear-gradient(45deg, var(--lb-purple), var(--lb-sky));
   color: #fff;
   border-radius: 100px;
-  text-shadow: #000 1px 0 2px;
+  transition: all 200ms;
+  /* text-shadow: #000 1px 0 2px; */
+}
+
+.btn:hover {
+  background-position: left center;
+  transform: scale(1.02);
+  filter: contrast(1.2);
 }
 
 .btn--small {

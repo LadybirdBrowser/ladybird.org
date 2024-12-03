@@ -1,3 +1,7 @@
+---
+import { Icon } from 'astro-icon/components'
+---
+
 <header class="p-[20px] bg-[#000] relative">
   <div id="header-blobs" class="absolute pointer-events-none z-10 top-0 left-0">
     <img src="/assets/img/header-eclipse.svg" alt="Header Gradient Blobs" />
@@ -22,6 +26,7 @@
     </div>
     <div id="header-donate" class="hidden lg:block">
       <a href="https://donorbox.org/ladybird" class="btn btn--small">
+        <Icon name="mdi:donation-outline" class="size-5"/>
         Donate
       </a>
     </div>

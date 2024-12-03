@@ -1,3 +1,7 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
 <section id="gi" class="gi">
   <div class="container">
     <div class="gi__tf">
@@ -16,11 +20,15 @@
         it, build it, and join our Discord if you want to collaborate on it!
         We're looking forward to seeing you there.
       </p>
-      <div class="space-y-2">
-        <a href="https://discord.gg/nvfjVJ4Svh" class="btn">Join Discord</a>
-        <a href="https://github.com/LadybirdBrowser/ladybird" class="btn"
-          >Get the code</a
-        >
+      <div class="py-2 flex flex-col sm:flex-row gap-4">
+        <a href="https://discord.gg/nvfjVJ4Svh" class="btn">
+          <Icon name="mdi:discord" class="size-6"/>
+          Join Discord
+        </a>
+        <a href="https://github.com/LadybirdBrowser/ladybird" class="btn">
+          <Icon name="mdi:code" class="size-6"/>
+          Get the code
+        </a>
       </div>
     </div>
   </div>

@@ -86,6 +86,9 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
+  padding-left: 18px;
+  padding-right: 18px;
   min-width: 170px;
   min-height: 60px;
   background: linear-gradient(45deg, var(--lb-purple), var(--lb-sky));

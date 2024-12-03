@@ -1,5 +1,14 @@
 ---
-const sponsors = [
+type SponsorList = {
+  name: string,
+  sponsors: {
+    name: string,
+    href?: string,
+    logo?: string
+  }[]
+}
+
+const sponsors: SponsorList[] = [
   {
     name: "Platinum",
     sponsors: [

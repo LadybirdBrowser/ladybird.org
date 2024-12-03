@@ -382,6 +382,13 @@ header a, footer a {
   position: relative;
   max-width: 360px;
   margin: 0 auto;
+  padding: 10px;
+  border-radius: 25px;
+  transition: background-color 300ms;
+}
+
+.news__box:hover {
+  background-color: #8a64e533;
 }
 
 @media (min-width: 991px) {

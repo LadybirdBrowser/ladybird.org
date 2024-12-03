@@ -382,7 +382,7 @@ header a, footer a {
   position: relative;
   max-width: 360px;
   margin: 0 auto;
-  padding: 10px;
+  padding: 12px;
   border-radius: 25px;
   transition: background-color 300ms;
 }

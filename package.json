@@ -12,10 +12,13 @@
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.2.1",
+    "@iconify-json/mdi-light": "^1.2.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.7",
     "@tailwindcss/typography": "^0.5.13",
     "@types/bun": "latest",
+    "astro-icon": "^1.1.4",
     "fast-xml-parser": "^4.4.0",
     "kleur": "^4.1.5",
     "prettier": "^3.3.3",

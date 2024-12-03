@@ -3,11 +3,12 @@ import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
 
 import mdx from "@astrojs/mdx";
+import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://ladybird.org",
-  integrations: [tailwind(), sitemap(), mdx()],
+  integrations: [tailwind(), sitemap(), mdx(), icon()],
   // Special case the initial posts from before the astro transition.
   // These are the super-SEO'd links that were shared around.
   redirects: {

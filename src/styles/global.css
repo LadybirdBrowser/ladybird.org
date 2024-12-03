@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --lb-sky: #6d98cc;
+  --lb-purple: #8a64e5;
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -83,7 +88,7 @@ img {
   justify-content: center;
   min-width: 180px;
   min-height: 64px;
-  background: linear-gradient(#6d98cc, #8a64e5);
+  background: linear-gradient(var(--lb-sky), var(--lb-purple));
   color: #fff;
   border-radius: 100px;
   text-shadow: #000 1px 0 2px;
@@ -125,7 +130,7 @@ h2 {
 
 h1 span,
 h2 span {
-  background-image: linear-gradient(#6d98cc, #8a64e5);
+  background-image: linear-gradient(var(--lb-sky), var(--lb-purple));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -281,11 +286,11 @@ header a, footer a {
 }
 
 .why__slide-icon.lightgrey {
-  background-color: #6d98cc;
+  background-color: var(--lb-sky);
 }
 
 .why__slide-icon.lightpurple {
-  background-color: #8a64e5;
+  background-color: var(--lb-purple);
 }
 
 .why__slide-icon.darkpurple {
@@ -695,9 +700,9 @@ blockquote {
   display: inline-block;
   width: 100%;
   padding: 0 0 0 16px;
-  border-left: 3px solid #6d98cc;
+  border-left: 3px solid var(--lb-sky);
   margin: 0 0 25px;
-  background: var(--Linear, linear-gradient(90deg, #6d98cc 0%, #8a64e5 100%));
+  background: var(--Linear, linear-gradient(90deg, var(--lb-sky) 0%, var(--lb-purple) 100%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

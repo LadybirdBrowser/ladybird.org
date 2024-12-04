@@ -20,5 +20,6 @@ export default defineConfig({
     "/why-ladybird": "/posts/why-ladybird",
     "/why-ladybird.html": "/posts/why-ladybird",
     "/wire.pdf": "/payment-details",
+    "/posts.xml": "/posts.rss",
   },
 });

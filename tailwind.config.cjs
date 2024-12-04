@@ -59,8 +59,8 @@ module.exports = {
         white: "#d8e7e7",
         eagle: "#a4b3b3",
         "pop-blue": "#2541ea",
-        'lb-sky': '#6d98cc',
-        'lb-purple': '#8a64e5',
+        'lb-slate-blue': '#6d98cc',
+        'lb-violet': '#8a64e5',
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],

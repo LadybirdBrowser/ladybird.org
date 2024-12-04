@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --lb-sky: #6d98cc;
-  --lb-purple: #8a64e5;
+  --lb-slate-blue: #6d98cc;
+  --lb-violet: #8a64e5;
+  --lb-violet-transparent: #8a64e533;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -91,7 +92,7 @@ img {
   padding-right: 18px;
   min-width: 170px;
   min-height: 60px;
-  background: linear-gradient(45deg, var(--lb-purple), var(--lb-sky));
+  background: linear-gradient(45deg, var(--lb-violet), var(--lb-slate-blue));
   color: #fff;
   border-radius: 100px;
   transition: all 200ms;
@@ -140,7 +141,7 @@ h2 {
 
 h1 span,
 h2 span {
-  background-image: linear-gradient(var(--lb-sky), var(--lb-purple));
+  background-image: linear-gradient(var(--lb-slate-blue), var(--lb-violet));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -296,11 +297,11 @@ header a, footer a {
 }
 
 .why__slide-icon.lightgrey {
-  background-color: var(--lb-sky);
+  background-color: var(--lb-slate-blue);
 }
 
 .why__slide-icon.lightpurple {
-  background-color: var(--lb-purple);
+  background-color: var(--lb-violet);
 }
 
 .why__slide-icon.darkpurple {
@@ -388,7 +389,7 @@ header a, footer a {
 }
 
 .news__box:hover {
-  background-color: #8a64e533;
+  background-color: var(--lb-violet-transparent);
 }
 
 @media (min-width: 991px) {
@@ -409,7 +410,7 @@ header a, footer a {
 }
 
 .news__box-category span {
-  background: #8a64e5;
+  background: var(--lb-violet);
   border: 3px solid #fff;
   border-radius: 5px;
   font-size: 16px;
@@ -568,10 +569,10 @@ header a, footer a {
 }
 
 .faq__wrapper .ac-header-number {
-  color: #8a64e5;
+  color: var(--lb-violet);
   font-size: 36px;
   font-weight: 500;
-  border: 3px solid #8a64e5;
+  border: 3px solid var(--lb-violet);
   border-radius: 9999px;
   margin-left: 24px;
   margin-right: 24px;
@@ -717,9 +718,9 @@ blockquote {
   display: inline-block;
   width: 100%;
   padding: 0 0 0 16px;
-  border-left: 3px solid var(--lb-sky);
+  border-left: 3px solid var(--lb-slate-blue);
   margin: 0 0 25px;
-  background: var(--Linear, linear-gradient(90deg, var(--lb-sky) 0%, var(--lb-purple) 100%));
+  background: var(--Linear, linear-gradient(90deg, var(--lb-slate-blue) 0%, var(--lb-violet) 100%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

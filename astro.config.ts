@@ -6,6 +6,7 @@ import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
+  output: "static",
   site: "https://ladybird.org",
   integrations: [tailwind(), sitemap(), mdx()],
   // Special case the initial posts from before the astro transition.

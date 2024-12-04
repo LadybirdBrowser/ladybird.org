@@ -12,7 +12,7 @@ describe("RSS Feeds", () => {
   const mdFiles = fs
     .readdirSync(srcDir)
     .filter((file) => file.endsWith(".mdx"));
-  const xmlFile = fs.readFileSync(path.join(distDir, "posts.xml"));
+  const xmlFile = fs.readFileSync(path.join(distDir, "posts.rss"));
 
   const parser = new XMLParser();
   const parsedXML = parser.parse(xmlFile);

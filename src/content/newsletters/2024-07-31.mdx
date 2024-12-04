@@ -15,7 +15,7 @@ On July 1st, we launched the Ladybird Browser Initiative, a 501(c)(3) nonprofit 
 
 Ladybird is funded entirely by sponsorships and donations from companies and individuals who care about the open web.
 
-In July, we’ve welcomed the following new sponsors:
+In July, we've welcomed the following new sponsors:
 
 - [FUTO](https://futo.org/) with $201,000
 - [Packet Clearing House](http://pch.net) with $10,000
@@ -24,17 +24,17 @@ In July, we’ve welcomed the following new sponsors:
 - [Tuple](https://tuple.app/) with $5,000
 - [Bastian Müller](https://turbolent.com) with $5,000
 
-We’ve also received $7,572 in donations from 230 individual supporters\!
+We've also received $7,572 in donations from 230 individual supporters\!
 
 ### Web Platform Tests
 
-There’s been incredible progress on the Web Platform Tests in July\!
+There's been incredible progress on the Web Platform Tests in July\!
 
 WPT is a shared project that all browsers contribute to. Its goal is to accumulate tests for the web platform that browsers can run to verify correct functionality. It has over a million subtests (although over 60% of them are focused on legacy Chinese, Japanese and Korean text encodings\!)
 
-We’ve been working on a Ladybird WPT runner for some time, and things are finally starting to come together.
+We've been working on a Ladybird WPT runner for some time, and things are finally starting to come together.
 
-As of this month, we’ve begun publishing runs to the staging area of the [common WPT dashboard at wpt.fyi](https://wpt.fyi)\! Our runs are not yet automated (Tim is running them overnight on his home PC\!) but we’ve recently gotten a dedicated machine and we’re working on moving them over. Once we have automated runs going, we’ll begin publishing them to [wpt.fyi](https://wpt.fyi) proper.
+As of this month, we've begun publishing runs to the staging area of the [common WPT dashboard at wpt.fyi](https://wpt.fyi)\! Our runs are not yet automated (Tim is running them overnight on his home PC\!) but we've recently gotten a dedicated machine and we're working on moving them over. Once we have automated runs going, we'll begin publishing them to [wpt.fyi](https://wpt.fyi) proper.
 
 For anyone curious about getting into Ladybird development, the WPT dashboard is an absolute treasure trove of approachable unit test failures that you can figure out and fix\!
 
@@ -50,7 +50,7 @@ Have a look at the progress graphs on our development tracking website [here](ht
 
 ### More 3rd party libraries
 
-We're continuing to lean on more of the OSS ecosystem. This month we’ve integrated the following 3rd party libraries to improve our functionality and performance:
+We're continuing to lean on more of the OSS ecosystem. This month we've integrated the following 3rd party libraries to improve our functionality and performance:
 
 - [libjxl](https://github.com/libjxl/libjxl): JPEG XL image support
 - [libavif](https://github.com/AOMediaCodec/libavif): AVIF image support
@@ -59,7 +59,7 @@ We're continuing to lean on more of the OSS ecosystem. This month we’ve integr
 
 ### Skia is now our default 2D graphics library
 
-We’re now using the open-source Skia library to rasterize 2D graphics. This is significantly faster than the home-grown LibGfx rasterizer we inherited from SerenityOS.
+We're now using the open-source Skia library to rasterize 2D graphics. This is significantly faster than the home-grown LibGfx rasterizer we inherited from SerenityOS.
 
 With Skia, we get:
 
@@ -68,7 +68,7 @@ With Skia, we get:
 - More speed\! Before switching to Skia, the rasterization process dominated performance profiles on many websites. Now recording a display list that describes what needs to be rasterized often takes longer than the rasterization process itself.
 - CSS 2D transforms just work\! With LibGfx, CSS transforms support was limited to `translate()` and `scale()`, but with Skia, we automatically gained support for `matrix()`, `rotate()`, `skew()`, and more.
 
-We’re also using Skia to rasterize text, although text layout and shaping is still performed by our legacy LibGfx code. That will change in the near future.
+We're also using Skia to rasterize text, although text layout and shaping is still performed by our legacy LibGfx code. That will change in the near future.
 
 ### Pseudo-element style invalidation
 
@@ -80,7 +80,7 @@ This makes the interactive part of the [Acid2 test](http://acid2.acidtests.org/)
 
 This month, we gained some basic support for CSS counters. Numbered lists have been a part of HTML since the early days, but more recently CSS gave web authors the ability to create their own automatically-incrementing counters using the `counter-set`, `counter-reset`, and `counter-increment` properties, and display them on the page with the `counter()` and `counters()` in the `content` property. A common use for this is to automatically number page headings.
 
-While not complete, we now support enough of this that we are able to use it for the line numbers of Ladybird’s “view source” feature\!
+While not complete, we now support enough of this that we are able to use it for the line numbers of Ladybird's “view source” feature\!
 
 ![](/assets/img/counters.png)
 
@@ -90,7 +90,7 @@ Early in the month, we gained support for the `hwb()`, `oklab()` and `oklch()` c
 
 ### New CSS selectors
 
-This month we’ve added support for the `:has` and `:host` selectors.
+This month we've added support for the `:has` and `:host` selectors.
 
 `:has` is going to need a fair bit of optimization work still, but at least the basic functionality is in place.
 
@@ -110,7 +110,7 @@ As you can see in the before/after screenshots, CSS Grid layout with `fit-conten
 
 ### More new web APIs
 
-As usual, we’ve added various new web APIs this month. Here are some:
+As usual, we've added various new web APIs this month. Here are some:
 
 - [Element.checkVisibility()](https://github.com/LadybirdBrowser/ladybird/commit/5f154ba372f9a667351a026aa4a31306c45fd2a5)
 - [HTMLMediaElement.textTracks](https://github.com/LadybirdBrowser/ladybird/commit/65be928d4e18108146645e177b586a3d9117aebc)
@@ -133,7 +133,7 @@ As usual, we’ve added various new web APIs this month. Here are some:
 
 - Our `StringBuilder` class can now construct the final `String` without reallocating the data storage. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/29879a69a4b2eda4f0315027cb1e86964d333221)
 - We now pre-allocate the final buffer when resolving rope strings. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/e8f4ae487d).
-- The JavaScript `typeof` operator was made faster by caching all the possible results (there aren’t that many\!). [Commit](https://github.com/LadybirdBrowser/ladybird/commit/d0b11af3876a64e6b254b5fc3f474d9bbe552024)
+- The JavaScript `typeof` operator was made faster by caching all the possible results (there aren't that many\!). [Commit](https://github.com/LadybirdBrowser/ladybird/commit/d0b11af3876a64e6b254b5fc3f474d9bbe552024)
 - We now avoid converting from UTF-8 to UTF-16 if all we wanted to know was the length in UTF-16 code units. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/4a166a45ec9db910542893133f08cc7de4ec974f)
 - We changed `background-repeat: repeat` to use an optimized shader for repeated image painting instead of rendering each repetition unit as a separate image. [Commit](https://github.com/LadybirdBrowser/ladybird/commit/c5afe70f779)
 

@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 
 const posts = await getCollection("posts");
 posts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 ---
 
@@ -20,7 +20,7 @@ posts.sort(
           .splice(0, 6)
           .map((post) => {
             return (
-              <a href={`/posts/${post.slug}`}>
+              <a href={`/posts/${post.id}`}>
                 <div class="news__box">
                   <div class="news__box-image">
                     <div class="news__box-category">

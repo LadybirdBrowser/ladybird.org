@@ -1,5 +1,12 @@
 ---
 import "../../styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+  author?: string;
+  image?: string;
+};
 const { title, description, author, image } = Astro.props;
 ---
 
@@ -36,5 +43,5 @@ const { title, description, author, image } = Astro.props;
   rel="alternate"
   type="application/rss+xml"
   title="Ladybird Browser Posts"
-  href={new URL("posts.xml", Astro.site)}
+  href={new URL("posts.rss", Astro.site)}
 />

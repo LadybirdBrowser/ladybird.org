@@ -1,13 +1,18 @@
 ---
+import type { Newsletter } from "@/content.config";
 import BaseLayout from "@/layouts/base.astro";
-const { frontmatter, title, description, author, image } = Astro.props;
+
+type Props = {
+  frontmatter: Newsletter;
+  children: any;
+};
+
+const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout
-  title={title}
-  description={description}
-  author={author}
-  image={image}
+  title={frontmatter.title}
+  description={frontmatter.description}
 >
   <div class="min-h-screen">
     <section class="hero hero_single">

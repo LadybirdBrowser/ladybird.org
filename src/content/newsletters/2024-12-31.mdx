@@ -19,6 +19,42 @@ We are incredibly grateful for their support! If you're interested in sponsoring
 
 This month, number go up!
 
+### CSS `calc()` improvements
+
+We now support `calc()` inside `@media` queries, for example:
+
+```css
+@media (width >= calc(30em + 60px)) {
+  /* ... */
+}
+```
+
+Behind the scenes, we have been busy modernizing how `calc()` and other math functions work. The specification has
+changed a lot since we first implemented it, for example, allowing `calc()` to multiply and divide different types
+together, as long as the end result is the correct type. We now support this much better internally.
+
+### Switch input
+
+We implemented the experimental "switch" form control. These are commonly used in native iOS and Android apps, so it is
+good to see them becoming part of the web platform too. For example, this HTML:
+
+```html
+<input type="checkbox" switch /> Off
+<br />
+<input type="checkbox" switch checked /> On
+```
+
+Now looks like this by default:
+
+![](/assets/img/newsletter-dec-2024-switch-input.png)
+
+### Font variants
+
+We now implement the CSS `font-variant` shorthand property, and its longhands `font-variant-alternates`,
+`font-variant-caps`, `font-variant-east-asian`, `font-variant-emoji`, `font-variant-ligatures`, `font-variant-numeric`,
+and `font-variant-positional`. These are used to configure options on fonts, giving authors more control over their
+typography.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

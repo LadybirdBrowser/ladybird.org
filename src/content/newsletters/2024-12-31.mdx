@@ -58,6 +58,17 @@ We now implement the CSS `font-variant` shorthand property, and its longhands `f
 and `font-variant-positional`. These are used to configure options on fonts, giving authors more control over their
 typography.
 
+### WebGL
+
+There was some initial groundwork to implement [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) with the
+homegrown LibGL from the SerenityOS project in June 2022. This only saw the implementation of the "clear" draw operation, as
+LibGL did not support shaders. This month, we've started implementing WebGL with the [ANGLE library](<https://en.wikipedia.org/wiki/ANGLE_(software)>),
+allowing major progress to be made!
+
+![](/assets/img/newsletter-dec-2024-webgl-github.png)
+![](/assets/img/newsletter-dec-2024-webgl-shadertoy.png)
+![](/assets/img/newsletter-dec-2024-webgl-unity-game.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

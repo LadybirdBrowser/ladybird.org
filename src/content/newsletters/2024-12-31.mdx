@@ -22,6 +22,24 @@ In addition to these new sponsors, Ladybird has been chosen as one of ten benefi
 
 This month, number go up!
 
+### Replacing home-grown crypto with OpenSSL
+
+We've begun adopting OpenSSL as a mature replacement for our home-grown LibCrypto (inherited from SerenityOS).
+
+This gives us battle-hardened correctness as well as a boost in performance.
+
+So far, only the hashing functions have been ported, and there's more work to do.
+
+### Canvas2D filters
+
+We now support the `filter` property on `CanvasRenderingContext2D`.
+
+FIXME: Visual example.
+
+### RegExp.escape proposal implemented
+
+We've implemented the [RegExp.escape stage 3 proposal](https://tc39.es/proposal-regex-escaping/) for JavaScript.
+
 ### CSS `calc()` improvements
 
 We now support `calc()` inside `@media` queries, for example:

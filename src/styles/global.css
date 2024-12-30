@@ -804,3 +804,7 @@ div.newsletter-image-caption a {
 th {
   font-weight: 600;
 }
+
+.astro-code {
+  padding: 1em;
+}

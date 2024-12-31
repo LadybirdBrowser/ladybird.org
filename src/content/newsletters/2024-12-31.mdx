@@ -5,7 +5,7 @@ date: 2024-12-31
 draft: true
 ---
 
-December is wrapping up, and it's been another productive month for the Ladybird project. We merged ?? PRs from ?? contributors, here are some highlights:
+December is wrapping up, and although many of us took time off for Christmas, it's been another productive month for the Ladybird project! We merged ?? PRs from ?? contributors, here are some highlights:
 
 ### Welcoming new sponsors
 
@@ -24,19 +24,31 @@ This month we've continued to make significant improvements WPT compliance - **1
 
 A large part of this increase comes from the WPT suite now including more tests of WebAssembly core semantics, the majority of which we now pass.
 
+### WebGL
+
+This month we've made great strides in our support for WebGL (and WebGL 2.0).
+We're building on top of the [ANGLE library](<https://en.wikipedia.org/wiki/ANGLE_(software)>)
+which lets us focus on the web APIs instead of worrying about all the different underlying platforms.
+
+Some screenshots of WebGL in action:
+
+![](/assets/img/newsletter-dec-2024-webgl-github.png)
+![](/assets/img/newsletter-dec-2024-webgl-shadertoy.png)
+![](/assets/img/newsletter-dec-2024-webgl-unity-game.png)
+
 ### Replacing home-grown crypto with OpenSSL
 
 We've begun adopting OpenSSL as a mature replacement for our home-grown LibCrypto (inherited from SerenityOS).
 
 This gives us battle-hardened correctness as well as a boost in performance.
 
-So far, only the hashing functions have been ported, and there's more work to do.
+So far, only the hashing functions have been ported, so there's more work to do here.
 
 ### WebCrypto API improvements
 
-We've implemented a number of features in the WebCrypto API this month, and we now have enough functionality to support the QR code login system on Discord.
+We've continued fleshing out our implementation of the WebCrypto API, and we now have enough functionality to support the QR code login system on Discord!
 
-FIXME: Add screenshot of that.
+![](/assets/img/newsletter-dec-2024-discord-qr-code.webp)
 
 ### Canvas2D filters
 
@@ -83,17 +95,6 @@ We now implement the CSS `font-variant` shorthand property, and its longhands `f
 `font-variant-caps`, `font-variant-east-asian`, `font-variant-emoji`, `font-variant-ligatures`, `font-variant-numeric`,
 and `font-variant-positional`. These are used to configure options on fonts, giving authors more control over their
 typography.
-
-### WebGL
-
-There was some initial groundwork to implement [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) with the
-homegrown LibGL from the SerenityOS project in June 2022. This only saw the implementation of the "clear" draw operation, as
-LibGL did not support shaders. This month, we've started implementing WebGL with the [ANGLE library](<https://en.wikipedia.org/wiki/ANGLE_(software)>),
-allowing major progress to be made!
-
-![](/assets/img/newsletter-dec-2024-webgl-github.png)
-![](/assets/img/newsletter-dec-2024-webgl-shadertoy.png)
-![](/assets/img/newsletter-dec-2024-webgl-unity-game.png)
 
 ### Credits
 

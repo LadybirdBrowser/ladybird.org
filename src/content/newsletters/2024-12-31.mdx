@@ -5,7 +5,7 @@ date: 2024-12-31
 draft: true
 ---
 
-December is wrapping up, and although many of us took time off for Christmas, it's been another productive month for the Ladybird project! We merged ?? PRs from ?? contributors, here are some highlights:
+December is wrapped up, and although many of us took time off for Christmas, it's been another productive month for the Ladybird project! We merged 325 PRs from 54 contributors.
 
 ### Welcoming new sponsors
 
@@ -20,9 +20,9 @@ In addition to these new sponsors, Ladybird has been chosen as one of ten benefi
 
 ### Web Platform Tests (WPT)
 
-This month we've continued to make significant improvements WPT compliance - **123,181** more passing subtests than last month. This brings our total to **1,739,336**.
+We've continued making significant improvements in WPT compliance: **123,181** more passing subtests than last month! This brings our total to **1,739,336**.
 
-A large part of this increase comes from the WPT suite now including more tests of WebAssembly core semantics, the majority of which we now pass.
+A large part of this increase comes from the WPT suite now including more tests of WebAssembly core semantics, the majority of which we now pass. Excluding WebAssembly tests, we've increased our pass count by **16,831**.
 
 ### WebGL
 
@@ -46,15 +46,15 @@ So far, only the hashing functions have been ported, so there's more work to do 
 
 ### WebCrypto API improvements
 
-We've continued fleshing out our implementation of the WebCrypto API, and we now have enough functionality to support the QR code login system on Discord!
+Our implementation coverage of the WebCrypto API has continued growing, and we now have enough functionality to support the QR code login system on Discord!
 
 ![](/assets/img/newsletter-dec-2024-discord-qr-code.webp)
 
 ### Canvas2D filters
 
-We now support the `filter` property on `CanvasRenderingContext2D`.
+We now support the `filter` property on `CanvasRenderingContext2D`, built on the same primitives as our CSS filters.
 
-FIXME: Visual example.
+![](/assets/img/newsletter-dec-2024-canvas-filter.png)
 
 ### RegExp.escape proposal implemented
 
@@ -70,13 +70,13 @@ We now support `calc()` inside `@media` queries, for example:
 }
 ```
 
-Behind the scenes, we have been busy modernizing how `calc()` and other math functions work. The specification has
-changed a lot since we first implemented it, for example, allowing `calc()` to multiply and divide different types
+Behind the scenes, we've been busy modernizing how `calc()` and other math functions work. The specification has
+changed a lot since we first implemented it. For example, allowing `calc()` to multiply and divide different types
 together, as long as the end result is the correct type. We now support this much better internally.
 
 ### Switch input
 
-We implemented the experimental "switch" form control. These are commonly used in native iOS and Android apps, so it is
+We implemented the experimental "switch" form control. These are commonly used in native iOS and Android apps, so it's
 good to see them becoming part of the web platform too. For example, this HTML:
 
 ```html
@@ -89,7 +89,7 @@ Now looks like this by default:
 
 ![](/assets/img/newsletter-dec-2024-switch-input.png)
 
-### Font variants
+### CSS font variants
 
 We now implement the CSS `font-variant` shorthand property, and its longhands `font-variant-alternates`,
 `font-variant-caps`, `font-variant-east-asian`, `font-variant-emoji`, `font-variant-ligatures`, `font-variant-numeric`,

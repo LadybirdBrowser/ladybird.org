@@ -60,6 +60,13 @@ The amount of work required to update style after the hovered element changes is
 
 We've started implementing [invalidating sets](https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/edit?pli=1&tab=t.0#heading=h.xa3ovcncd2vp). This optimization technique allows to narrow number of invalidated elements by using metadata collected from CSS rules.
 
+### Google BotGuard support
+
+When signing into Google, an anti-bot script is ran in the background. This failed to run to completion in Ladybird, resulting in the "This browser or app is not secure" error message.
+After tracking the issue to a missing deoptimization required by eval, BotGuard now runs to completion, allowing us to sign into Google!
+
+![](/assets/img/newsletter-jan-2025-google-calendar-before-block-size.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

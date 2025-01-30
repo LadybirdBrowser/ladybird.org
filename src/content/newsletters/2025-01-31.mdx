@@ -19,9 +19,32 @@ We are incredibly grateful for their support! If you're interested in sponsoring
 
 FIXME
 
-### Add more sections here!
+### CSS `contain` property
 
-FIXME
+Ladybird now understands the `contain` property, which lets authors restrict an element's effect on the rest of the page, for example preventing them affecting other elements' layout.
+This opens the way for a variety of future optimizations.
+
+### CSS `isolation` property
+
+We now support `isolation: isolate`, which prevents an element from visually blending with what is behind it, even if it would usually do so.
+
+### CSS `user-select` property
+
+This property lets authors control which elements on the page are selectable, and how that selection works.
+For example, always selecting the entire element, or not allowing a click-and-drag selection to extend outside where it started.
+
+### Color-scheme
+
+Our support for light and dark mode improved this month.
+Web pages can now declare whether they prefer light or dark mode, or both, using `<meta name="color-scheme">`, and they can control this for each element using the `color-scheme` CSS property.
+Additionally in CSS, we now support the `light-dark()` function, which lets an element pick a color based on whether it is in light or dark mode.
+
+## `calc()` simplification
+
+Calculations in CSS such as `calc()`, `min()`, or `sin()` are required to be simplified as much as possible.
+This month we made some progress towards that, by simplifying calculations just after parsing them.
+While doing so, we found and reported a couple of issues with the spec algorithm.
+We see it as part of our role to find these issues, as the clearer and more correct the specs can be, the easier it is for all browsers to implement them, and behave consistently.
 
 ### Credits
 

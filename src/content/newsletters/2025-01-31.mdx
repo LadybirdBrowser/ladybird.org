@@ -52,6 +52,14 @@ We see it as part of our role to find these issues, as the clearer and more corr
 We added a number of missing algorithms to our WebCrypto implementation this month. We now have support for Ed448 and RSA-PSS, as well as the P-521 elliptic curve.
 We've also continued to migrate our existing, home-grown implementation to use OpenSSL, which has significantly improved both correctness and performance.
 
+## Optimized `:hover` style invalidation
+
+The amount of work required to update style after the hovered element changes is drastically reduced by recalculating style only for elements that match a different set of :hover selectors, instead of recalculating the entire subtree.
+
+## Optimized style invalidation triggered by attribute changes
+
+We've started implementing [invalidating sets](https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/edit?pli=1&tab=t.0#heading=h.xa3ovcncd2vp). This optimization technique allows to narrow number of invalidated elements by using metadata collected from CSS rules.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

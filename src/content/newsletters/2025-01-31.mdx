@@ -47,6 +47,11 @@ This month we made some progress towards that, by simplifying calculations just 
 While doing so, we found and reported a couple of issues with the spec algorithm.
 We see it as part of our role to find these issues, as the clearer and more correct the specs can be, the easier it is for all browsers to implement them, and behave consistently.
 
+## WebCrypto API improvements
+
+We added a number of missing algorithms to our WebCrypto implementation this month. We now have support for Ed448 and RSA-PSS, as well as the P-521 elliptic curve.
+We've also continued to migrate our existing, home-grown implementation to use OpenSSL, which has significantly improved both correctness and performance.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

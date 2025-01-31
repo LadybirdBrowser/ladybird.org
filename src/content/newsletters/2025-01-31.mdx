@@ -40,23 +40,23 @@ Our support for light and dark mode improved this month.
 Web pages can now declare whether they prefer light or dark mode, or both, using `<meta name="color-scheme">`, and they can control this for each element using the `color-scheme` CSS property.
 Additionally in CSS, we now support the `light-dark()` function, which lets an element pick a color based on whether it is in light or dark mode.
 
-## `calc()` simplification
+### `calc()` simplification
 
 Calculations in CSS such as `calc()`, `min()`, or `sin()` are required to be simplified as much as possible.
 This month we made some progress towards that, by simplifying calculations just after parsing them.
 While doing so, we found and reported a couple of issues with the spec algorithm.
 We see it as part of our role to find these issues, as the clearer and more correct the specs can be, the easier it is for all browsers to implement them, and behave consistently.
 
-## WebCrypto API improvements
+### WebCrypto API improvements
 
 We added a number of missing algorithms to our WebCrypto implementation this month. We now have support for Ed448 and RSA-PSS, as well as the P-521 elliptic curve.
 We've also continued to migrate our existing, home-grown implementation to use OpenSSL, which has significantly improved both correctness and performance.
 
-## Optimized `:hover` style invalidation
+### Optimized `:hover` style invalidation
 
 The amount of work required to update style after the hovered element changes is drastically reduced by recalculating style only for elements that match a different set of :hover selectors, instead of recalculating the entire subtree.
 
-## Optimized style invalidation triggered by attribute changes
+### Optimized style invalidation triggered by attribute changes
 
 We've started implementing [invalidating sets](https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/edit?pli=1&tab=t.0#heading=h.xa3ovcncd2vp). This optimization technique allows to narrow number of invalidated elements by using metadata collected from CSS rules.
 
@@ -81,7 +81,7 @@ we are now able to load Figma!
 
 ![](/assets/img/newsletter-jan-2025-figma.png)
 
-## Partial layout tree updates
+### Partial layout tree updates
 
 In the past, whenever the structure of the DOM changes, we've rebuilt our layout tree (analogous to the CSS "box tree") from scratch every time.
 

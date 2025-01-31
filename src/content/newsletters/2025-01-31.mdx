@@ -99,6 +99,23 @@ In the past, whenever the structure of the DOM changes, we've rebuilt our layout
 
 Starting this month, we're learning to incrementally patch the existing tree on common operations like inserting or removing a DOM node. This avoids a lot of redundant work on dynamic pages.
 
+### Editing commands
+
+The `.execCommand()` family of methods allows a website to dynamically interact with editable contents to format text,
+create lists, etc. Although the API is deprecated, it is still in use on the web - so we need to support it! This month,
+we implemented almost all commands in the specification which resulted in a big increase in our WPT score.
+
+### Block elements inside inline elements
+
+Ladybird learned how to properly layout block elements inside inline elements. For example, an `<img>` inside an `<a>`
+should behave as if it's part of the link, even if there's text surrounding it. As a bonus, our support for the CSS
+property `pointer-events` was improved to take advantage of the improved layout.
+
+### Performance improvements for Vulkan backend
+
+Websites with lots of `<iframe>`s or SVG images might see a significant reduction in load times since we started reusing
+the graphics context that we set up behind the scenes.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

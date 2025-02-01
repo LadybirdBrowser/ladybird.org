@@ -5,105 +5,69 @@ date: 2025-01-31
 draft: true
 ---
 
-January has come to an end! We merged ?? PRs from ?? contributors, let's take a look at some of the highlights!
-
-### Welcoming new sponsors
-
-Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
-
-- Pending approval
-
-We are incredibly grateful for their support! If you're interested in sponsoring, [contact us](mailto:contact@ladybird.org).
+January has come to an end! We merged 242 PRs from 33 contributors, let's take a look at some of the highlights!
 
 ### Web Platform Tests (WPT)
 
-We've continued to make progress on improving our WPT compliance in January with 24,898 more passing subtests than last month, bringing our total to 1,763,289.
-In particular, significant progress has been made in our Web Crypto API coverage, where we now have a subtest pass rate of over 99%, which is higher than any other major browser!
+We've continued improving our WPT score in January, with 24,898 more passing subtests than last month, bringing our total to 1,763,289.
+
+In particular, we've made significant progress in our Web Crypto API coverage, reaching a subtest pass rate of over 99%, higher than any other browser!
 
 ![](/assets/img/newsletter-jan-2025-wpt-graph.gif)
 
 ### test262 (JS spec compliance)
 
-We're also doing rather well on test262, the official compliance test suite for the JavaScript language.
+We're also doing really well on test262, the official compliance test suite for the JavaScript language.
 
 In fact, according to [test262.fyi](https://test262.fyi), we are currently beating all other engines on correctness:
 
 ![](/assets/img/newsletter-jan-2025-test262.png)
 
-We of course acknowledge that spec compliance is just one important aspect of what makes a good JavaScript engine. Nevertheless, we're happy with our progress on this metric and will continue to improve it.
+Of course spec compliance is just one important aspect of what makes a good JavaScript engine. Nevertheless, we're happy with our progress on this metric and will continue to improve it!
 
-### CSS `contain` property
+### Google BotGuard support
 
-Ladybird now understands the `contain` property, which lets authors restrict an element's effect on the rest of the page, for example preventing them affecting other elements' layout.
-This opens the way for a variety of future optimizations.
+When signing into Google, an anti-bot script is run in the background. This script failed to finish in Ladybird, resulting in the "This browser or app is not secure" error message.
 
-### CSS `isolation` property
+After tracking the issue to a missing deoptimization required by `eval()`, BotGuard now runs to completion, allowing us to use Google services like Gmail:
 
-We now support `isolation: isolate`, which prevents an element from visually blending with what is behind it, even if it would usually do so.
+![](/assets/img/newsletter-jan-2025-gmail.png)
 
-### CSS `user-select` property
+### New CSS properties
 
-This property lets authors control which elements on the page are selectable, and how that selection works.
-For example, always selecting the entire element, or not allowing a click-and-drag selection to extend outside where it started.
+This month, we've implemented several new CSS properties, including:
 
-### Color-scheme
+- `contain`: lets authors restrict an element's effect on the rest of the page, for example, preventing them from affecting other elements' layout. This paves the way for future optimizations.
+- `isolation`: prevents an element from visually blending with what is behind it, even if it would normally do so.
+- `user-select`: lets authors control which elements on the page are selectable, and how that selection works. For example, always selecting the entire element, or not allowing a click-and-drag selection to extend outside where it started.
+- `block-size`, `min-block-size` and `max-block-size`: let authors set the height or width of an element, if the writing mode is horizontal or vertical respectively.
 
-Our support for light and dark mode improved this month.
-Web pages can now declare whether they prefer light or dark mode, or both, using `<meta name="color-scheme">`, and they can control this for each element using the `color-scheme` CSS property.
+Google Calendar uses some of these properties for its UI components, and now looks quite good:
+
+![](/assets/img/newsletter-jan-2025-google-calendar-after-block-size.png)
+
+### Improvements to light/dark mode
+
+Web pages can now specify a preference for light or dark mode, or support both, using `<meta name="color-scheme">`, and they can control this for each element using the `color-scheme` CSS property.
 Additionally in CSS, we now support the `light-dark()` function, which lets an element pick a color based on whether it is in light or dark mode.
 
 ### `calc()` simplification
 
 Calculations in CSS such as `calc()`, `min()`, or `sin()` are required to be simplified as much as possible.
-This month we made some progress towards that, by simplifying calculations just after parsing them.
-While doing so, we found and reported a couple of issues with the spec algorithm.
-We see it as part of our role to find these issues, as the clearer and more correct the specs can be, the easier it is for all browsers to implement them, and behave consistently.
+We've made progress toward that by simplifying calculations right after parsing them.
+While doing this, we also found and reported a couple of issues with the spec algorithm.
 
 ### WebCrypto API improvements
 
-We added a number of missing algorithms to our WebCrypto implementation this month. We now have support for Ed448 and RSA-PSS, as well as the P-521 elliptic curve.
+We added a number of missing algorithms to our WebCrypto implementation this month. We now have support for `Ed448` and `RSA-PSS`, as well as the `P-521` elliptic curve.
+
 We've also continued to migrate our existing, home-grown implementation to use OpenSSL, which has significantly improved both correctness and performance.
-
-### Optimized `:hover` style invalidation
-
-The amount of work required to update style after the hovered element changes is drastically reduced by recalculating style only for elements that match a different set of :hover selectors, instead of recalculating the entire subtree.
-
-### Optimized style invalidation triggered by attribute changes
-
-We've started implementing [invalidating sets](https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/edit?pli=1&tab=t.0#heading=h.xa3ovcncd2vp). This optimization technique allows to narrow number of invalidated elements by using metadata collected from CSS rules.
-
-### Google BotGuard support
-
-When signing into Google, an anti-bot script is ran in the background. This failed to run to completion in Ladybird, resulting in the "This browser or app is not secure" error message.
-After tracking the issue to a missing deoptimization required by eval, BotGuard now runs to completion, allowing us to sign into Google!
-
-![](/assets/img/newsletter-jan-2025-google-calendar-before-block-size.png)
-
-### CSS `block-size`, `min-block-size` and `max-block-size` properties
-
-These properties allow authors to set the height or width of an element, if the writing mode is horizontal or vertical respectively.
-Google Calendar uses these properties for setting the height of UI components, such as buttons:
-
-![](/assets/img/newsletter-jan-2025-google-calendar-after-block-size.png)
-
-### Figma support
-
-Expanding on the WebGL support introduced last month, with an additional fix to send Cookies in the WebSocket handshake,
-we are now able to load Figma!
-
-![](/assets/img/newsletter-jan-2025-figma.png)
-
-### Partial layout tree updates
-
-In the past, whenever the structure of the DOM changes, we've rebuilt our layout tree (analogous to the CSS "box tree") from scratch every time.
-
-Starting this month, we're learning to incrementally patch the existing tree on common operations like inserting or removing a DOM node. This avoids a lot of redundant work on dynamic pages.
 
 ### Editing commands
 
 The `.execCommand()` family of methods allows a website to dynamically interact with editable contents to format text,
-create lists, etc. Although the API is deprecated, it is still in use on the web - so we need to support it! This month,
-we implemented almost all commands in the specification which resulted in a big increase in our WPT score.
+create lists, etc. Although the API is deprecated, it's still widely used, so we need to support it! This month,
+we implemented nearly all commands in the specification, leading to a big increase in our WPT score.
 
 ### Block elements inside inline elements
 
@@ -111,13 +75,32 @@ Ladybird learned how to properly layout block elements inside inline elements. F
 should behave as if it's part of the link, even if there's text surrounding it. As a bonus, our support for the CSS
 property `pointer-events` was improved to take advantage of the improved layout.
 
+### Style invalidation optimizations
+
+We've begun implementing [invalidation sets](https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/edit?pli=1&tab=t.0#heading=h.xa3ovcncd2vp), a clever technique invented by Chromium that allows us to narrow the number of invalidated elements by using metadata collected from CSS rules.
+
+Additionally, we've made considerable improvements to `:hover` invalidation, reducing the number of elements that get updated when the user moves the mouse cursor around.
+
+### Figma support
+
+Expanding on the WebGL support introduced last month, with an additional fix to send cookies in the WebSocket handshake,
+we are now able to load [Figma](https://figma.com), a very complex web app built on WebGL and Wasm!
+
+![](/assets/img/newsletter-jan-2025-figma.png)
+
+### Partial layout tree updates
+
+In the past, whenever the structure of the DOM changed, we'd rebuild our layout tree (analogous to the CSS "box tree") from scratch every time.
+
+Starting this month, we're incrementally updating the layout tree for common operations, such as inserting or removing a DOM node. This avoids a lot of redundant work on dynamic pages.
+
 ### Performance improvements for Vulkan backend
 
-Websites with lots of `<iframe>`s or SVG images might see a significant reduction in load times since we started reusing
+Websites with many `<iframe>`s or SVG images might see a significant reduction in load times since we started reusing
 the graphics context that we set up behind the scenes.
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_list, of, people_
+_Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, aplefull, Arhcout, devgianlu, Feng Yu, Gingeh, InvalidUsernameException, Ivan Zuzak, Jaycadox, Jelle Raaijmakers, Lucas CHOLLET, Luke Warlow, Luke Wilde, matan-h, mikiubo, Nicolas Ramz, Noah Bright, Pavel Shliak, Psychpsyo, rmg-x, Rok Povsic, Ryan Liptak, Sam Atkins, Shannon Booth, sideshowbarker, stasoid, stelar7, Tim Ledbetter, Timothy Flynn, Tyler Dence_

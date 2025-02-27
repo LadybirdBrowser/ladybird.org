@@ -34,6 +34,33 @@ from the DevTools console!
 
 ![](/assets/img/newsletter-feb-2025-devtools.png)
 
+### Filtering the inspector
+
+Our own dev-tools also got an upgrade, with the ability to filter the property lists, making it easier to find what you are looking for.
+We also fixed a long-standing bug that made the browser crash if you tried to inspect a `::marker` pseudo-element.
+
+![](/assets/img/newsletter-feb-2025-inspector-filtering.png)
+
+### Image cursors
+
+We now support custom images in the `cursor` property, so you can browse like it's the 90s again!
+
+![](/assets/img/newsletter-feb-2025-sheep-cursor.png)
+
+### Better CSS serialization
+
+We continued our work to serialize CSS more correctly. When JavaScript asks for the style of an element, it gets the value as a string, and it's important that it's a consistent format from browser to browser: the same values in the same order. This also impacts our WPT
+score, as many tests check these style strings to see if a property is supported. If we support it, but produce a wrong string, the
+test fails. This month we worked on serializing font properties and math functions closer to spec.
+
+### New pseudo-classes
+
+We gained a few new pseudo-classes this month: `:valid`, `:invalid`, `:user-valid`, and `:user-invalid` all apply to input elements
+that have valid or invalid values. They are commonly used to highlight form elements that need correcting.
+
+`:open` now also matches any input elements that have a picker currently open. Currently that means `<input type=color>` and
+`<input type=file>`.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

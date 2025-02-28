@@ -123,6 +123,17 @@ We have been using GitHub Actions for pull request testing for a long time, but 
 advantage of GitHub's [new public aarch64 Linux runners](https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/)
 to add a nightly aarch64 Linux job. Adding the job required fixing some rough edges in aarch64 Linux support.
 
+### Resource Timing
+
+We've implemented the [Resource Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing), which allows a website to get timing information about the
+network resources it requests. This was implemented as part of an initative to support Cloudflare Turnstile, an anti-bot solution.
+
+Resource Timing is also used by monitoring tools such as Sentry:
+
+![](/assets/img/newsletter-feb-2025-resource-timing-sentry-1.png)
+
+![](/assets/img/newsletter-feb-2025-resource-timing-sentry-2.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

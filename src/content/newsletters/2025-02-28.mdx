@@ -109,6 +109,20 @@ The work on moving off of our own home-grown cryptography library and onto the b
 - X25519
 - X448
 
+### libcurl adoption continues
+
+Last fall we moved the bulk of our networking stack to libcurl, but left a few stragglers behind that were still using our own home-grown
+socket abstractions and TLS code. This month we moved our WebSocket implementation to use libcurl. There are still features that
+libcurl's WebSocket implementation doesn't support, such as per-message compression and WebSockets over HTTP/2. The new libcurl
+backend for our WebSocket implementation means that we are using libcurl for almost all networking the the browser and
+associated helper programs.
+
+### aarch64 Linux continuous integration
+
+We have been using GitHub Actions for pull request testing for a long time, but we only had x86_64 Linux and aarch64 macOS runners. This month we took
+advantage of GitHub's [new public aarch64 Linux runners](https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/)
+to add a nightly aarch64 Linux job. Adding the job required fixing some rough edges in aarch64 Linux support.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

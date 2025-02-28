@@ -96,6 +96,19 @@ We now support the `inert` attribute, which can be added to any element to make 
 
 We've made several incremental optimizations to reduce unnecessary style recalculations, but the most significant change is that presence of styles using `:has()` no longer trigger a full-page recalculation. Instead, only the relevant ancestor elements are updated, making the process much more efficient in the worst case.
 
+### OpenSSL adoption continues
+
+The work on moving off of our own home-grown cryptography library and onto the battle-tested OpenSSL goes on. This month we've ported the following features to OpenSSL and removed our own implementations:
+
+- TLS 1.2
+- HKDF
+- PBKDF2
+- Curve25519
+- Ed25519
+- Ed448
+- X25519
+- X448
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

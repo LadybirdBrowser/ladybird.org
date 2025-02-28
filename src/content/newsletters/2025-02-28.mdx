@@ -92,6 +92,10 @@ Currently, we have implemented the `required` attribute, which checks that the e
 
 We now support the `inert` attribute, which can be added to any element to make it non-interactive, non-focusable and non-findable. This is useful for modals, popups, and other content that should not be interacted with.
 
+## Style invalidation optimizations
+
+We've made several incremental optimizations to reduce unnecessary style recalculations, but the most significant change is that presence of styles using `:has()` no longer trigger a full-page recalculation. Instead, only the relevant ancestor elements are updated, making the process much more efficient in the worst case.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

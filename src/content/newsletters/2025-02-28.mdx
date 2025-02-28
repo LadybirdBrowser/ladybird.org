@@ -12,37 +12,37 @@ It's been a short but productive month for the Ladybird project! We've merged 28
 Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [Shopify](https://shopify.com/) (renewed sponsorship)
-- [Proton](https://proton.me) with $50,000 ([raised with the help of their community](https://proton.me/blog/2024-lifetime-fundraiser-results) and a matching donation from [Proton VPN](https://protonvpn.com))
+- [Proton](https://proton.me), with $50,000 ([raised with the help of their community](https://proton.me/blog/2024-lifetime-fundraiser-results) and a matching donation from [Proton VPN](https://protonvpn.com))
 
 We are incredibly grateful for their support! If you're interested in sponsoring, [contact us](mailto:contact@ladybird.org).
 
 ### Web Platform Tests (WPT)
 
-We've continued making improvements in WPT compliance: **9836** more passing subtests than last month! This brings our total to **1773799**.
+We've continued making improvements in WPT compliance: **9,836** more passing subtests than last month! This brings our total to **1,773,799**.
 
 The low-hanging fruit is exhausted at this point, but the upward grind must continue!
 
-Here is the last month's progress for all browsers:
+Here's the last month's progress for all browsers:
 
 ![](/assets/img/newsletter-feb-2025-wpt-graph.gif)
 
-Let's also zoom out and take a look at overall WPT progress since we started tracking it back in August of 2024.
-
-The dashed green line is Apple's required 90% pass rate for eligibility as an alternative browser engine on iOS. That's our next target. After that, the three major engines await..
+Let's also zoom out and take a look at overall WPT progress since we started tracking it back in August of 2024:
 
 ![](/assets/img/newsletter-feb-2025-wpt-all.png)
+
+The dashed green line is Apple's required 90% pass rate for eligibility as an alternative browser engine on iOS. That's our next target. After that, the 3 major engines await...
 
 ### Waiting for CSS to download before rendering
 
 We now delay the initial rendering of pages until we've loaded all the CSS referenced by `<link>` elements. This is an important part of preventing [FOUC (flash of unstyled content)](https://en.wikipedia.org/wiki/Flash_of_unstyled_content).
 
-Pictured below are three stages of loading our GitHub repo in Ladybird while CSS is downloading. Before, we would render the first two stages. With these new changes, we hold off until we have enough to show you the final stage directly.
+Pictured below are 3 stages of loading our GitHub repo in Ladybird while CSS is downloading. Before, we would render the first two stages. With these new changes, we hold off until we have enough to show you the final stage directly.
 
 ![](/assets/img/newsletter-feb-2025-fouc.webp)
 
 ### OpenSSL adoption
 
-The work on moving off of our own home-grown cryptography library and onto the battle-tested [OpenSSL](https://openssl-library.org) goes on. This month we've ported the following features to OpenSSL and removed our own implementations:
+The work on moving off of our own home-grown cryptography library and onto the battle-tested [OpenSSL](https://openssl-library.org) goes on. This month, we've ported the following features to OpenSSL and removed our own implementations:
 
 - TLS 1.2
 - HKDF
@@ -57,14 +57,13 @@ The work on moving off of our own home-grown cryptography library and onto the b
 
 We've also continued migrating our networking stack to [curl](https://curl.se). The latest piece of functionality to move onto curl is our [WebSockets](https://websockets.spec.whatwg.org) implementation.
 
-Note that there are some features that curl's WebSocket backend doesn't support yet,
-such as per-message compression and WebSockets over HTTP/2.
+Note that there are some features that curl's WebSocket backend doesn't support, such as per-message compression and WebSockets over HTTP/2.
 
 ### Firefox DevTools protocol support
 
 We're working on making it possible to use Firefox's DevTools suite with Ladybird.
 
-DevTools are not only vital to web development, but also crucial for browser developers to investigate websites that aren't yet working correctly.
+DevTools are not only vital to web development, but also crucial for browser developers to investigate websites that don't yet work correctly.
 
 Ladybird already had its own home-grown debug tooling, but by adding support for Firefox's
 DevTools protocol, we gain access to sophisticated tools very quickly.
@@ -82,7 +81,7 @@ We now support custom images in the CSS `cursor` property, a rarely used but pre
 
 ### New CSS pseudo-classes
 
-We added a couple new pseudo-classes this month:
+We added a couple of new pseudo-classes this month:
 
 - `:valid`
 - `:invalid`
@@ -91,7 +90,7 @@ We added a couple new pseudo-classes this month:
 
 These all apply to input elements that have valid or invalid values. They are commonly used to highlight form elements that need correcting.
 
-Furthermore, `:open` now matches any input element that has a picker open. Currently relevant for `<input type=color>` and `<input type=file>`.
+Furthermore, `:open` now matches any input element that has a picker open. This is currently relevant for `<input type="color">` and `<input type="file">`.
 
 ### Text decorations for errors
 
@@ -131,14 +130,14 @@ We now support the `inert` attribute, which can be added to any element to make 
 
 We've made several incremental optimizations to reduce unnecessary style recalculations.
 
-The most significant change is that presence of the `:has()` selector no longer triggers a full-page recalculation. Instead, only the relevant ancestor elements are updated, making the process much more efficient in the worst case.
+The most significant change is that the presence of `:has()` selectors no longer triggers a full-page recalculation. Instead, only the relevant ancestor elements are updated, making the process much more efficient in the worst case.
 
 ### aarch64 Linux continuous integration
 
 We've been using GitHub Actions for PR testing for a long time,
 but we only had x86_64 Linux and aarch64 macOS runners.
 
-This month we took advantage of GitHub's [new public aarch64 Linux runners](https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/)
+This month, we took advantage of GitHub's [new public aarch64 Linux runners](https://github.blog/changelog/2025-01-16-linux-arm64-hosted-runners-now-available-for-free-in-public-repositories-public-preview/)
 to add a nightly aarch64 Linux job. Adding the job required fixing some rough edges in
 aarch64 Linux support.
 

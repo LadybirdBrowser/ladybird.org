@@ -1,13 +1,19 @@
 ---
 import BaseLayout from "@/layouts/base.astro";
-const { frontmatter, title, description, author, image } = Astro.props;
+import type { Post } from "@/content/config";
+
+type Props = {
+  frontmatter: Post;
+  children: any;
+};
+const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout
-  title={title}
-  description={description}
-  author={author}
-  image={image}
+  title={frontmatter.title}
+  description={frontmatter.description}
+  author={frontmatter.author}
+  image={frontmatter.image}
 >
   <div class="min-h-screen">
     <section class="hero hero_single">

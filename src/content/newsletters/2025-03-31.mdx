@@ -79,6 +79,26 @@ intrinsic sizes during the process of determining a box's final size, requiring 
 constraints. Caching these intrinsic measurements for boxes unaffected by layout invalidation is a good step towards
 improving layout performance and reducing redundant computations during relayout.
 
+### FFmpeg Demuxing
+
+In June 2024, we switched to decoding videos with FFmpeg, which gave us access to decoding non-VP9 videos. However, we
+did not demux video containers with FFmpeg and still used our homegrown Matroska demuxer. For example, this meant we
+could only play H.264 videos if they were in an MKV container file. This month, we've replaced our Matroska demuxer
+with FFmpeg's libavformat demuxer. This provides us access to all the container files FFmpeg supports, the most popular
+one being MP4.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2025-video-chrome-for-devs-view-transitions-demo.mp4"></source>
+</video>
+
+If we don't advertise support for (Managed)MediaSource, we can even play the 360p H.264 fallback videos YouTube provides!
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2025-video-rickroll.mp4"></source>
+</video>
+
+Try playing the above MP4 videos in Ladybird!
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

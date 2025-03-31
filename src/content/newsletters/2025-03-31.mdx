@@ -71,6 +71,14 @@ able to find a restaurant, order the food, pay for it and even track the order t
 
 ![](/assets/img/newsletter-mar-2025-ubereats.png)
 
+### Add intrinsic sizes cache for faster relayout
+
+Intrinsic size refers to the dimensions a box would naturally take based on its content when constrained by available
+space, for example, the maximum height of a box when the available width is 100px. Layout algorithms compute many such
+intrinsic sizes during the process of determining a box's final size, requiring additional layout passes with varying
+constraints. Caching these intrinsic measurements for boxes unaffected by layout invalidation is a good step towards
+improving layout performance and reducing redundant computations during relayout.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

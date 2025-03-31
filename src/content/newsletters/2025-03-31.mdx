@@ -99,6 +99,12 @@ If we don't advertise support for (Managed)MediaSource, we can even play the 360
 
 Try playing the above MP4 videos in Ladybird!
 
+### Move rasterization into separate thread
+
+Over a year ago, we introduced display lists that represent an immutable, serialized sequence of painting commands.
+This month, we finally took advantage of that architecture by moving rasterization of display lists off the main thread.
+As a result, the main thread now has more time to handle other tasks like garbage collection and script execution.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

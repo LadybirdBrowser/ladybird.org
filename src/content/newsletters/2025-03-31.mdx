@@ -5,11 +5,11 @@ date: 2025-03-31
 draft: true
 ---
 
-March 2025 is all wrapped up, and it's been another solid month for the Ladybird project. We’ve merged 285 PRs from 47 contributors, and made progress on all fronts.
+March 2025 is all wrapped up, and it's been another solid month for the Ladybird project. We’ve merged 285 PRs from 47 contributors and made progress on all fronts.
 
 ### Welcoming new sponsors
 
-Ladybird is fully funded through the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [ohne-makler.net](https://www.ohne-makler.net) with $50,000
 - [Sourcegraph](https://sourcegraph.com) with $5,000
@@ -17,26 +17,89 @@ Ladybird is fully funded through the generous support of companies and individua
 
 We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
-### Site Isolation
+### Web Platform Tests (WPT)
+
+Although we've exhausted the low-hanging fruit, we nevertheless continue to improve our WPT score by fixing engine bugs and implementing more features.
+
+This month, we have **8,249** new passing tests, bringing the total to **1,782,048**.
+
+It's also noteworthy that Safari overtook Firefox this month.
+
+![](/assets/img/newsletter-mar-2025-wpt.gif)
+
+### Video improvements + very basic YouTube support
+
+Last year, we began using [FFmpeg](https://ffmpeg.org) to decode videos, which gave us access to a lot more formats than just VP9.
+However, we didn't use FFmpeg to demux video containers, instead keeping our home-grown Matroska implementation. This meant we could only play H.264 videos if they were in an MKV container file.
+
+This month, we've replaced our Matroska demuxer with FFmpeg's `libavformat` demuxer. This lets us handle all containers handled by FFmpeg, such as the very popular MP4.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2025-video-chrome-for-devs-view-transitions-demo.mp4"></source>
+</video>
+
+If we don't advertise support for `ManagedMediaSource`, we can even play 360p H.264 fallback videos on YouTube!
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2025-video-rickroll.mp4"></source>
+</video>
+
+Try playing the above MP4 videos in Ladybird :^)
+
+### Site isolation (AKA process per origin)
 
 Site isolation is an important security feature in modern browsers, ensuring that two different websites never share the
-same OS process. This helps ensure a malicious website cannot access your data from any other website. We have started
-implementing this feature in Ladybird, and although it is not complete, it is a crucial step towards protecting users.
+same OS process. This helps prevent malicious websites from accessing your data on other websites. We've started
+implementing this feature in Ladybird, and although it's not yet complete, it's a crucial step toward protecting users.
+
+### Settings UI overhaul
+
+We've begun implementing a unified settings page for Ladybird, available now at `about:settings`. This will allow us to
+centralize all Ladybird settings in a single interface, providing a common experience across all platforms.
+
+![](/assets/img/newsletter-mar-2025-settings.png)
+
+### `background-blend-mode`
+
+We've implemented the `background-blend-mode` property, which lets authors apply different blending modes to their
+backgrounds for a variety of visual effects.
+
+![](/assets/img/newsletter-mar-2025-background-blend-mode.png)
+
+### Firefox DevTools, continued
+
+Last month, we started implementing the Firefox DevTools protocol, making it possible to use Firefox's developer tools
+with Ladybird. This month, we've added the ability to inspect style sheets and fonts, and expanded our integration
+with the JavaScript console. We also added support for performing live edits of web elements directly from DevTools.
+
+We have now implemented enough of the protocol that we were able to remove our home-grown tooling. As a result, we now rely entirely on DevTools!
+
+### Caching intrinsic sizes for faster relayout
+
+In CSS, "intrinsic sizes" (simplified) are the sizes an element would occupy in each axis if it were given either minimal or limitless available space.
+
+Unlike normal layout metrics which often change due to context differences, intrinsic sizes tend to remain the exact same between relayouts. Given this, we now strive to aggressively cache intrinsic sizes. This significantly reduces the amount of work done by each relayout.
+
+### Moving rasterization into separate thread
+
+Over a year ago, we introduced _display lists_ that represent an immutable, serialized sequence of painting commands.
+This month, we finally took advantage of that architecture by moving rasterization of display lists off the main thread.
+As a result, the main thread now has more time to handle other tasks like layout, JavaScript execution, and garbage collection.
 
 ### New `@supports` features
 
 We now support the `font-format()` and `font-tech()` functions inside `@supports` rules, which allow authors to choose
 what CSS to apply based on our font support.
 
-Also, we fixed a couple of bugs with `@supports selector()`, so that works more reliably.
+Also, we fixed a couple of bugs with `@supports selector()`, making it work more reliably.
 
 Behind the scenes, `@media` and `@supports` now share the same code for parsing and evaluating a boolean expression.
 This makes them easier to maintain, and prepares us for future CSS features such as `@when`.
 
-### Pseudo-elements
+### Pseudo-element improvements
 
-This month, we started generating a lot of the pseudo-element code from a JSON file, similar to how we do for
-pseudo-classes. This makes it simpler to add new ones, but also makes it easier to add a few new features such as
+This month, we started generating much of our pseudo-element code from JSON at compile time, like we do for
+pseudo-classes. This makes it simpler to add new ones, and also makes it easier to add a few new features such as
 aliases, and limiting which properties can be applied to different pseudo-elements.
 
 This has allowed us to replace our `::-webkit-*` pseudo-elements, which we implemented in the past for a few form
@@ -46,73 +109,36 @@ versions.
 We also have support for function pseudo-elements, for example `::foo(bar)`, which are being used more and more in
 recent CSS features.
 
-### `background-blend-mode`
+### Team workshop
 
-We implemented the `background-blend-mode` property, which lets authors apply different blending modes to their
-backgrounds, for a variety of visual effects.
+A bunch of us got together in London this month and spent a week working on Ladybird in a small kitchen. Here's what it looked like, filtered through OpenAI's new 4o image generation tool, which launched this week (and which we quickly got working in Ladybird):
 
-![](/assets/img/newsletter-mar-2025-background-blend-mode.png)
+![](/assets/img/newsletter-mar-2025-corporate-memphis.png)
 
-### Settings Page
+Throughout the week we were [dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) the [Uber Eats](https://ubereats.com) website, using it as our primary way of ordering food while actively hunting down bugs.
 
-We've begun implementing a unified settings page for Ladybird, available now at `about:settings`. This will allow us to
-centralize all Ladybird settings in a single interface, providing a common experience across all platforms.
-
-![](/assets/img/newsletter-mar-2025-settings.png)
-
-### Firefox DevTools
-
-Last month, we started implementing the Firefox DevTools protocol, making it possible to use Firefox's developer tools
-with Ladybird. This month, we've implemented the ability to inspect style sheets and fonts, and expanded our integration
-with the JavaScript console. We have also added support for performing live-edits of web elements directly from DevTools.
-
-We have implemented enough of the protocol that we were able to remove our home-grown tooling, and now rely entirely on
-DevTools!
-
-### Debugging our dinner
-
-Last week, we've been dogfooding Ladybird on UberEats.com - using it as our primary way to order food while actively
-hunting down bugs. A lot of little quirks and major blocking issues were fixed to the point where we were successfully
+A lot of little quirks and major blocking issues were fixed to the point where we were successfully
 able to find a restaurant, order the food, pay for it and even track the order to our doorstep!
 
 ![](/assets/img/newsletter-mar-2025-ubereats.png)
 
-### Add intrinsic sizes cache for faster relayout
+### Ladybird roadshow
 
-Intrinsic size refers to the dimensions a box would naturally take based on its content when constrained by available
-space, for example, the maximum height of a box when the available width is 100px. Layout algorithms compute many such
-intrinsic sizes during the process of determining a box's final size, requiring additional layout passes with varying
-constraints. Caching these intrinsic measurements for boxes unaffected by layout invalidation is a good step towards
-improving layout performance and reducing redundant computations during relayout.
+We presented Ladybird at two conferences this month:
 
-### FFmpeg Demuxing
+Don't Be Evil at [FUTO](https://futo.org) in Austin, TX:
 
-In June 2024, we switched to decoding videos with FFmpeg, which gave us access to decoding non-VP9 videos. However, we
-did not demux video containers with FFmpeg and still used our homegrown Matroska demuxer. For example, this meant we
-could only play H.264 videos if they were in an MKV container file. This month, we've replaced our Matroska demuxer
-with FFmpeg's libavformat demuxer. This provides us access to all the container files FFmpeg supports, the most popular
-one being MP4.
+![](/assets/img/newsletter-mar-2025-futo.jpg)
 
-<video controls style="margin-bottom: 2em">
-  <source src="/assets/img/newsletter-mar-2025-video-chrome-for-devs-view-transitions-demo.mp4"></source>
-</video>
+[State of the Browser](https://2025.stateofthebrowser.com/) in London, UK:
 
-If we don't advertise support for (Managed)MediaSource, we can even play the 360p H.264 fallback videos YouTube provides!
+![](/assets/img/newsletter-mar-2025-sotb.jpg)
 
-<video controls style="margin-bottom: 2em">
-  <source src="/assets/img/newsletter-mar-2025-video-rickroll.mp4"></source>
-</video>
-
-Try playing the above MP4 videos in Ladybird!
-
-### Move rasterization into separate thread
-
-Over a year ago, we introduced display lists that represent an immutable, serialized sequence of painting commands.
-This month, we finally took advantage of that architecture by moving rasterization of display lists off the main thread.
-As a result, the main thread now has more time to handle other tasks like garbage collection and script execution.
+Both talks were very well-received and there was palpable excitement about our work. We'd like to thank everyone who came out to hear about Ladybird in person!
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_Names go here!_
+_Alec Murphy, Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, Feng Yu, Gingeh, Glenn Skrzypczak, InvalidUsernameException,
+Jelle Raaijmakers, Jess, Kevin Mas Ruiz, Lucas CHOLLET, Lucien Fiorini, Lukas Scheller, Luke Wilde, Manuel Zahariev, Mehran Kamal, Noah, NotAShelf, Oliver Medhurst, Piotr Bartoszewicz, Psychpsyo, R-Goc, Rok Povsic, Ryan Liptak, SINF-KEN, Sam Atkins, Shannon Booth, Tim Ledbetter, Timothy Flynn, Tommy van der Vorst, Totto16, Vaxry, Vishal Biswas, Yaroslav Lelkin, aplefull, devgianlu, mikiubo, rmg-x, sideshowbarker, stasoid, stelar7_

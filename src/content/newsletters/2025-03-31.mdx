@@ -32,7 +32,7 @@ It's also noteworthy that Safari overtook Firefox this month.
 Last year, we began using [FFmpeg](https://ffmpeg.org) to decode videos, which gave us access to a lot more formats than just VP9.
 However, we didn't use FFmpeg to demux video containers, instead keeping our home-grown Matroska implementation. This meant we could only play H.264 videos if they were in an MKV container file.
 
-This month, we've replaced our Matroska demuxer with FFmpeg's `libavformat` demuxer. This lets us handle all containers handled by FFmpeg, such as the very popular MP4.
+This month, we've replaced our Matroska demuxer with FFmpeg's `libavformat` demuxer. This lets us handle all containers supported by FFmpeg, such as the very popular MP4.
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-mar-2025-video-chrome-for-devs-view-transitions-demo.mp4"></source>

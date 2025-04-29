@@ -1,0 +1,52 @@
+---
+title: This Month in Ladybird - April 2025
+description: ?
+date: 2025-04-30
+draft: true
+---
+
+We did some things in April!
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web.
+
+SPONSOR THINGS HERE
+
+We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Web Platform Tests (WPT)
+
+TESTS GO BRRRR
+
+### Dialog backdrops
+
+Our support for the `<dialog>` element got better this month, as we now generate `::backdrop` pseudo-elements.
+These are commonly used to blur or fade out the rest of the page when a modal dialog is open.
+
+Seen below is our settings page using `::backdrop` to make the other settings less distracting while configuring languages.
+
+![](/assets/img/newsletter-apr-2025-dialog-backdrop.png)
+
+### Descriptor parsing
+
+Descriptors are the CSS term for properties in `@font-face` and other at-rules, which so something other than set an
+element's style. For a long time these have been hard-coded for `@font-face` only, but this month we replaced that with
+a more flexible system similar to how we process style properties. This means we can now expose them to JavaScript
+through `CSSFontFaceRule.style`, and also should make it easier to add new at-rules and descriptors in the future.
+
+### CSS URLs
+
+CSS uses URLs for loading images and fonts, and `@import`-ing other style sheets, among other uses. In the past, we
+would always complete any relative URLs (`like/this/one.png`) during parsing, However, we are supposed to instead wait
+until the URL is used before doing so, with a few spec algorithms telling us exactly when to do so. The most visible
+place this matters is that several JavaScript APIs expect to get the original URL text, but there are other subtle
+bugs that can happen if the page rearranges the style sheets after the CSS has been parsed.
+
+This month we started correcting this, so far for `@import` and image loading, with the other places to follow soon.
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_NAMES_

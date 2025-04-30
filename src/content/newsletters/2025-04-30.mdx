@@ -45,6 +45,17 @@ bugs that can happen if the page rearranges the style sheets after the CSS has b
 
 This month we started correcting this, so far for `@import` and image loading, with the other places to follow soon.
 
+### Streams
+
+[Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) are how data retrieved from the network is
+processed. There is a comprehensive API to interact with streams available to web developers. Streams are also used
+extensively by the browser itself to internally handle downloaded resources.
+
+We've refined our implementation of the Streams API this month to better align ourselves with the spec. In particular,
+our [stream piping](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream/pipeTo) operations have been greatly
+improved. This ensures that we handle fetched resources more correctly, and makes the browser more resilient to various
+errors.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

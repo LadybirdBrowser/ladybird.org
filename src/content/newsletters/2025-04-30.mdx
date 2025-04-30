@@ -112,6 +112,19 @@ Since linear input scanning is the default and most common mode, it's crucial to
 
 We've also improved the heuristic for converting alternations into decision trees. For example, a pattern like `/ab|ac|d/` is now more efficiently represented, reducing unnecessary backtracking and yielding up to a 4x performance boost on its own.
 
+### JavaScript benchmarks
+
+At the end of March, we've started tracking our JavaScript performance by running our curated JS benchmarks suite for
+every change in the Ladybird repository. Originally we only tracked these for the Linux x86-64 platform, but since this
+month we also have a dedicated Mac Mini M4 chugging along to provide us with additional macOS ARM64 results which can
+be seen on [the public dashboard](https://linegodown.lol).
+
+### Floating & clearing elements
+
+Thanks to rigorous testing and bug reporting from the community, we've improved the outcome of many situations where
+`float: ..` or `clear: ..` were used to create or avoid floating elements. Ladybird now handles most websites with these
+correctly, but make sure to let us know if you find one where it does not!
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

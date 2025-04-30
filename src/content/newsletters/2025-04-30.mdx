@@ -114,7 +114,7 @@ We've also improved the heuristic for converting alternations into decision tree
 
 ### JavaScript benchmarks
 
-At the end of March, we've started tracking our JavaScript performance by running our curated JS benchmarks suite for
+At the end of March, we started tracking our JavaScript performance by running our curated JS benchmarks suite for
 every change in the Ladybird repository. Originally we only tracked these for the Linux x86-64 platform, but since this
 month we also have a dedicated Mac Mini M4 chugging along to provide us with additional macOS ARM64 results which can
 be seen on [the public dashboard](https://linegodown.lol).
@@ -124,6 +124,13 @@ be seen on [the public dashboard](https://linegodown.lol).
 Thanks to rigorous testing and bug reporting from the community, we've improved the outcome of many situations where
 `float: ..` or `clear: ..` were used to create or avoid floating elements. Ladybird now handles most websites with these
 correctly, but make sure to let us know if you find one where it does not!
+
+### IndexedDB Progress
+
+Many websites use IndexedDB to store data locally. This month we made a number of improvements to our implementation that have increased our WPT score in the IndexedDB category by more than 2x.
+We now pass close to 1/3 of the tests for IndexedDB. While our implementation still has a long way to go, the scaffolding continues to improve.
+
+We currently store IndexedDB data in memory in each renderer process, but we plan to move to a more robust storage solution in the future once the Web APIs are fleshed out.
 
 ### Credits
 

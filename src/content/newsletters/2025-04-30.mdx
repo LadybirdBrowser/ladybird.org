@@ -69,6 +69,49 @@ our [stream piping](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStr
 improved. This ensures that we handle fetched resources more correctly, and makes the browser more resilient to various
 errors.
 
+### Performance work
+
+Performance is one of our main weak points, but this month we've invested some time in improving it!
+
+We've focused particulary on the Speedometer benchmark, versions 2 and 3.
+
+FIXME: Add before/after scores etc!
+
+### Faster JavaScript function calls
+
+We've made a number of changes to how function call work in our JavaScript engine. All with the goal of reducing the amount of work that happens before we begin executing the callee function.
+
+In the past, stack frames had separate storage for local variables, temporary registers, constants, and function arguments. This has gone from multiple heap allocations to a single stack allocation.
+
+We've also made it the caller's responsibility to set up the callee stack frame. This allows the caller to put callee arguments directly in the right memory location.
+
+Our bytecode ISA also gained a new operand type: argument. This allows instructions to refer to arguments directly, instead of first having to copy them from the stack frame.
+
+### Flexbox layout optimization
+
+When analyzing layout performance on the Speedometer benchmark, we found an interesting optimization opportunity.
+
+For flex items that have `auto` minimum size in the main axis (so `min-width: auto` in flex row layouts and `min-height: auto` in flex column layouts), we're supposed to calculate an "automatic minimum size". In the common case, this size calculation requires determining the intrinsic size of the flex item. Intrinsic size determination can be very expensive, as it requires an entirely separate layout pass over the flex container and its descendants.
+
+We realized that the automatic minimum size is not actually required in case the flex line is large enough to accommodate all flex items at their normal "base" sizes. This turned out to be extremely common on the web as well, so we now do a lot less flex layout work on many of the major websites!
+
+### Script-blocking style sheets
+
+This is a correctness fix that ends up improving performance as well!
+
+Per the HTML spec, some style sheets are supposed to prevent JavaScript from executing until the CSS is fully downloaded.
+In the past, we would just run scripts without waiting, which could lead to elements having unexpected metrics/etc, since they were being observed without style applied.
+
+Now that we implement script-blocking style sheets, we don't perform intermediate layout work with incorrect style information, meaning less overall work (faster!), and no glitches from missing style information (better!)
+
+### Regular expression engine optimizations
+
+Regular expressions are widely used for string manipulation. This month we introduced a number of significant optimizations, both large and small, that improve regex performance by up to 16x.
+
+Since linear input scanning is the default and most common mode, it's crucial to reject invalid positions as quickly as possible. We've added an optimization that skips entering the regex virtual machine when the first comparison or assertion would immediately fail. This allows for fast seeking in patterns like `/x(...)/`.
+
+We've also improved the heuristic for converting alternations into decision trees. For example, a pattern like `/ab|ac|d/` is now more efficiently represented, reducing unnecessary backtracking and yielding up to a 4x performance boost on its own.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

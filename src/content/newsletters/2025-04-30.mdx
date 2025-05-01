@@ -5,19 +5,71 @@ date: 2025-04-30
 draft: true
 ---
 
-We did some things in April!
-
-### Welcoming new sponsors
-
-Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web.
-
-SPONSOR THINGS HERE
-
-We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+April is done! It's been a pleasantly productive month for the Ladybird project. We’ve merged 288 PRs from 36 contributors and made strong progress on multiple fronts.
 
 ### Web Platform Tests (WPT)
 
-TESTS GO BRRRR
+As usual, we've been making solid progress on WPT. This month, we've squeezed out a new **17,214** passing tests for a total of **1,799,262**.
+
+For context, here are the top 6 engines at the end of March vs end of April:
+
+![](/assets/img/newsletter-apr-2025-wpt.gif)
+
+### Performance work
+
+Performance is one of our weak points, but this month we've invested some time in improving it!
+
+We've focused particularly on the [Speedometer 2](https://browserbench.org/Speedometer2.1) and [Speedometer 3](https://browserbench.org/Speedometer3.1) benchmarks, which are designed to test browser responsiveness and performance when using popular frameworks.
+
+We've improved our Speedometer 2 score by 47%, and our Speedometer 3 score by 38%. (But we have a long way to go before matching the performance of major browser engines.)
+
+### Faster JavaScript function calls
+
+We've made a number of changes to how function calls work in our JavaScript engine, all with the goal of reducing the amount of work that happens before we begin executing a called function.
+
+In the past, stack frames had separate storage for local variables, temporary registers, constants, and function arguments. This has gone from multiple heap allocations to a single stack allocation.
+
+We've also made it the caller's responsibility to set up the callee stack frame. This allows the caller to put callee arguments directly in the right memory location.
+
+Our bytecode ISA also gained a new operand type: _argument_. This allows instructions to reference arguments directly, instead of first having to copy them from the stack frame.
+
+### Flexbox layout optimization
+
+When analyzing layout performance on Speedometer, we found an interesting optimization opportunity.
+
+For flex items that have `auto` minimum size in the main axis (so `min-width:auto` in row layouts and `min-height:auto` in column layouts), we're supposed to calculate an ["automatic minimum size"](https://drafts.csswg.org/css-flexbox-1/#min-size-auto). Usually, this size calculation requires determining the intrinsic size of the flex item. This can be very expensive, as it requires an entirely separate layout pass over the flex container and its descendants.
+
+We realized that the automatic minimum size is not actually required in cases where the flex line is large enough to accommodate all flex items at their normal "base" sizes. This turns out to be extremely common on the web, so we now do a lot less flex layout work on tons of websites!
+
+### Script-blocking style sheets
+
+Per the HTML spec, some style sheets are supposed to prevent JavaScript from executing until the CSS is fully downloaded.
+In the past, we'd just run scripts without waiting. This could lead to elements having unexpected metrics, etc. since they were being observed without style applied.
+
+Now that we implement script-blocking style sheets, we don't perform intermediate layout work with incorrect style information, meaning less overall work (faster!), and no glitches from missing style information (better!)
+
+### RegExp engine optimizations
+
+Regular expressions are widely used for string manipulation. This month we introduced a number of significant optimizations, both large and small, that improve RegExp performance by up to 16x.
+
+Since linear input scanning is the default and most common mode, it's crucial to reject invalid positions as quickly as possible. We've added an optimization that skips entering the RegExp virtual machine when the first comparison or assertion would immediately fail. This allows for fast seeking in patterns like `/x(...)/`.
+
+We've also improved the heuristic for converting alternations into decision trees. For example, a pattern like `/ab|ac|d/` is now more efficiently represented, reducing unnecessary backtracking and yielding up to a 4x performance boost on its own.
+
+### Google Maps 3D View
+
+Our WebGL support keeps improving, and now it's even possible to use the 3D View in Google Maps (although it's very unstable and requires `User-Agent` spoofing).
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-apr-2025-google-maps.mp4"></source>
+</video>
+
+### JavaScript benchmarking
+
+At the end of March, we started tracking our JavaScript performance by running a range of JavaScript benchmark suites for
+every change in the Ladybird repository. Originally we only tracked these for the Linux x86-64 platform, but since this
+month we also have a dedicated Mac Mini M4, chugging along to provide us with additional macOS ARM64 results which can
+be seen on [the public dashboard](https://linegodown.lol).
 
 ### Dialog backdrops
 
@@ -33,26 +85,23 @@ Seen below is our settings page using `::backdrop` to make the other settings le
 In modern browsers, scrollbars are actually painted as part of the web content by the rendering engine itself. This is
 how browsers handle multiple scrollable areas on the web page at once, as well as the various CSS `overflow` properties.
 
-We've enhanced our scrollbar interactions this month to slightly widen the scrollbar when it is hovered. This makes it
-a bit easier to click-and-drag the scrollbar. We've also added a gutter to the scrollbars, to allow users to click
-anywhere within the gutter to scroll to that position.
+We've enhanced our scrollbar interactions this month to slightly widen the scrollbar when it is hovered. This makes it easier to click-and-drag the scrollbar. We've also added a gutter to the scrollbars to allow users to click anywhere within the gutter to scroll to that position.
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-apr-2025-scroll.mp4"></source>
 </video>
 
-### Descriptor parsing
+### CSS descriptor parsing
 
-Descriptors are the CSS term for properties in `@font-face` and other at-rules, which so something other than set an
+Descriptors are the CSS term for properties in `@font-face` and other at-rules, which control behavior other than setting an
 element's style. For a long time these have been hard-coded for `@font-face` only, but this month we replaced that with
 a more flexible system similar to how we process style properties. This means we can now expose them to JavaScript
-through `CSSFontFaceRule.style`, and also should make it easier to add new at-rules and descriptors in the future.
+through `CSSFontFaceRule.style`, and should also make it easier to add new at-rules and descriptors in the future.
 
 ### CSS URLs
 
 CSS uses URLs for loading images and fonts, and `@import`-ing other style sheets, among other uses. In the past, we
-would always complete any relative URLs (`like/this/one.png`) during parsing, However, we are supposed to instead wait
-until the URL is used before doing so, with a few spec algorithms telling us exactly when to do so. The most visible
+would always complete any relative URLs (`like/this/one.png`) during parsing. However, we're supposed to wait until the URL is used before doing so, with a few spec algorithms telling us exactly when to do so. The most visible
 place this matters is that several JavaScript APIs expect to get the original URL text, but there are other subtle
 bugs that can happen if the page rearranges the style sheets after the CSS has been parsed.
 
@@ -69,56 +118,6 @@ our [stream piping](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStr
 improved. This ensures that we handle fetched resources more correctly, and makes the browser more resilient to various
 errors.
 
-### Performance work
-
-Performance is one of our main weak points, but this month we've invested some time in improving it!
-
-We've focused particulary on the Speedometer benchmark, versions 2 and 3.
-
-FIXME: Add before/after scores etc!
-
-### Faster JavaScript function calls
-
-We've made a number of changes to how function call work in our JavaScript engine. All with the goal of reducing the amount of work that happens before we begin executing the callee function.
-
-In the past, stack frames had separate storage for local variables, temporary registers, constants, and function arguments. This has gone from multiple heap allocations to a single stack allocation.
-
-We've also made it the caller's responsibility to set up the callee stack frame. This allows the caller to put callee arguments directly in the right memory location.
-
-Our bytecode ISA also gained a new operand type: argument. This allows instructions to refer to arguments directly, instead of first having to copy them from the stack frame.
-
-### Flexbox layout optimization
-
-When analyzing layout performance on the Speedometer benchmark, we found an interesting optimization opportunity.
-
-For flex items that have `auto` minimum size in the main axis (so `min-width: auto` in flex row layouts and `min-height: auto` in flex column layouts), we're supposed to calculate an "automatic minimum size". In the common case, this size calculation requires determining the intrinsic size of the flex item. Intrinsic size determination can be very expensive, as it requires an entirely separate layout pass over the flex container and its descendants.
-
-We realized that the automatic minimum size is not actually required in case the flex line is large enough to accommodate all flex items at their normal "base" sizes. This turned out to be extremely common on the web as well, so we now do a lot less flex layout work on many of the major websites!
-
-### Script-blocking style sheets
-
-This is a correctness fix that ends up improving performance as well!
-
-Per the HTML spec, some style sheets are supposed to prevent JavaScript from executing until the CSS is fully downloaded.
-In the past, we would just run scripts without waiting, which could lead to elements having unexpected metrics/etc, since they were being observed without style applied.
-
-Now that we implement script-blocking style sheets, we don't perform intermediate layout work with incorrect style information, meaning less overall work (faster!), and no glitches from missing style information (better!)
-
-### Regular expression engine optimizations
-
-Regular expressions are widely used for string manipulation. This month we introduced a number of significant optimizations, both large and small, that improve regex performance by up to 16x.
-
-Since linear input scanning is the default and most common mode, it's crucial to reject invalid positions as quickly as possible. We've added an optimization that skips entering the regex virtual machine when the first comparison or assertion would immediately fail. This allows for fast seeking in patterns like `/x(...)/`.
-
-We've also improved the heuristic for converting alternations into decision trees. For example, a pattern like `/ab|ac|d/` is now more efficiently represented, reducing unnecessary backtracking and yielding up to a 4x performance boost on its own.
-
-### JavaScript benchmarks
-
-At the end of March, we started tracking our JavaScript performance by running our curated JS benchmarks suite for
-every change in the Ladybird repository. Originally we only tracked these for the Linux x86-64 platform, but since this
-month we also have a dedicated Mac Mini M4 chugging along to provide us with additional macOS ARM64 results which can
-be seen on [the public dashboard](https://linegodown.lol).
-
 ### Floating & clearing elements
 
 Thanks to rigorous testing and bug reporting from the community, we've improved the outcome of many situations where
@@ -134,9 +133,9 @@ We currently store IndexedDB data in memory in each renderer process, but we pla
 
 ### URLPattern
 
-This month we implemented [URLPattern](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern), a web-platform primitive for declarative
+This month we implemented [URLPattern](https://developer.mozilla.org/en-US/docs/Web/API/URLPattern), a web platform primitive for declarative
 URL matching using pattern syntax. The syntax is based off the popular [path-to-regexp](https://github.com/pillarjs/path-to-regexp)
-library which sees nearly 70 million downloads per week on NPM.
+library.
 
 `URLPattern` is already in use by several emerging web specifications, including the
 [Service Worker Static Routing API](https://github.com/WICG/service-worker-static-routing-api), the
@@ -149,8 +148,8 @@ We have added support for the `moveBefore()` DOM API. This allows for reparentin
 effects of running the [removing steps](https://dom.spec.whatwg.org/#concept-node-remove-ext) and
 [insertion steps](https://dom.spec.whatwg.org/#concept-node-insert-ext).
 
-Unlike `insertBefore()`, which implicitly remove and re-insert the node, `moveBefore()` performs an atomic move.
-The resulting state preservation is useful in many cases, including for:
+Unlike `insertBefore()`, which implicitly removes and re-inserts the node, `moveBefore()` performs an atomic move.
+The resulting state preservation is useful in many cases, including:
 
 - `<iframe>` elements (prevents reloads or browsing context destruction).
 - Active selections or focused form controls.
@@ -161,4 +160,37 @@ The resulting state preservation is useful in many cases, including for:
 
 We'd like to thank everyone who contributed code this month:
 
-_NAMES_
+_0GreenClover0,
+Ali Mohammad Pur,
+Aliaksandr Kalenik,
+Andreas Kling,
+Andrew Kaster,
+Gingeh,
+Glenn Skrzypczak,
+Hikmat Jafarli,
+InvalidUsernameException,
+Jelle Raaijmakers,
+Jess,
+Jonne Ransijn,
+Kenneth Myhra,
+Lukas Scheller,
+Luke Wilde,
+Mehran Kamal,
+Pavel Shliak,
+R-Goc,
+Sam Atkins,
+Shannon Booth,
+Simon Farre,
+Tim Ledbetter,
+Timothy Flynn,
+Viktor Szépe,
+Vishal Biswas,
+aplefull,
+devgianlu,
+mikiubo,
+mkljczk,
+rmg-x,
+sideshowbarker,
+stasoid,
+stelar7,
+teaalltr_

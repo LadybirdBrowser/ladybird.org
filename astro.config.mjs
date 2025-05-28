@@ -15,11 +15,12 @@ export default defineConfig({
     "/announcement.html": "/posts/announcement",
     "/fork": "/posts/fork",
     "/fork.html": "/posts/fork",
+    "/payment-details": "/organization#bank-details",
     "/thanks": "/posts/thanks",
     "/thanks.html": "/posts/thanks",
     "/why-ladybird": "/posts/why-ladybird",
     "/why-ladybird.html": "/posts/why-ladybird",
-    "/wire.pdf": "/payment-details",
+    "/wire.pdf": "/organization#bank-details",
     "/posts.xml": "/posts.rss",
   },
 });

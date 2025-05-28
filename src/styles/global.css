@@ -669,7 +669,6 @@ header a, footer a {
 .single-content p,
 .single-content ul,
 .single-content a {
-  /* color: rgba(3, 2, 4, 0.55); */
   color: rgba(0, 0, 0, 0.75);
   margin-bottom: 25px;
 }
@@ -791,8 +790,48 @@ div.newsletter-image-caption a {
 
 th {
   font-weight: 600;
+  vertical-align: top;
 }
 
-.astro-code {
-  padding: 1em;
+.headshot {
+  max-width: 360px;
+}
+
+.headshot img {
+  aspect-ratio: 1/1;
+  border-radius: 24px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.headshot p {
+  margin: 0;
+}
+
+.headshots-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+}
+
+.headshots-grid:not(:last-child) {
+  margin-bottom: 64px;
+}
+
+@media (min-width: 768px) {
+  .headshots-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+}
+
+@media (min-width: 991px) {
+  .headshots-grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.public-records ul {
+  list-style-type: disc;
+  margin-left: 36px;
 }

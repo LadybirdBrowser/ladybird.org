@@ -1,0 +1,12 @@
+---
+const { fullName, image, title } = Astro.props;
+---
+
+<div class="headshot">
+  <img
+    src={image}
+    alt={(image.split("/").pop() ?? "no alt found").split(".")[0]}
+  />
+  <h4>{fullName}</h4>
+  {title !== undefined ? <p>{title}</p> : null}
+</div>

@@ -122,9 +122,9 @@ foo();
 
 ### JS optimization: faster iteration over built-in types
 
-We've added new bytecode instruction that avoid creating temporary `{ done, value }` result objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+We've added new bytecode instruction that avoids creating temporary `{ done, value }` result objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
 
-We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well by avoid temporary objects allocation.
+We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well, by avoiding temporary object allocations.
 
 Array element assignment now has a fast path. If objects in the array’s prototype chain haven’t been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array’s storage.
 

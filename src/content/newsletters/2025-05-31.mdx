@@ -51,6 +51,8 @@ We've added new bytecode instruction that avoid creating temporary `{ done, valu
 
 We've applied a similar optimization to async functions, which internally rely on generators, and made them faster as well by avoid temporary objects allocation.
 
+Array element assignment now has a fast path. If objects in the array’s prototype chain haven’t been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array’s storage.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

@@ -124,6 +124,16 @@ We've also applied a similar optimization to `async` functions, which internally
 
 Array element assignment now has a fast path. If objects in the array’s prototype chain haven’t been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array’s storage.
 
+### Initial support for SharedWorkers
+
+SharedWorkers are a type of web worker that can be shared between multiple browsing contexts (like tabs or iframes) from the same origin.
+SharedWorkers receive a `MessagePort` from each new browsing context attaching to them by listening to the `onconnect` event.
+
+This month, we've implemented initial support for SharedWorkers. This initial support doesn't actually allow shared workers to be shared between multiple WebContent processes yet,
+but it does allow them to be created and used in a single WebContent process.
+
+Future work will focus on enabling true sharing between processes, which will also lay the groundwork for true ServiceWorker support.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

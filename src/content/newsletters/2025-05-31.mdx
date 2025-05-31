@@ -142,6 +142,23 @@ Future work will focus on enabling true sharing between processes, which will al
 
 We've replaced UnsignedBigInteger and SignedBigInteger implementations in LibCrypto with LibTomMath. This is both correctness and performance improvement, i.e BigInt operations were very heavy in performance profiles of Google Maps before this change.
 
+### `var()` and `attr()` in CSS shorthands
+
+When a CSS shorthand property (for example, `margin`) is encountered, we expand it out and assign values to its
+longhands (`margin-top`, `margin-right`, etc). However, when it includes something like `var()` or `attr()`, we don't
+know what those longhand values should be until that function's value is resolved, but we still need to give them
+_some_ value temporarily. For example, `margin-bottom` might be set as well, and we need to know which one will apply.
+
+This month we implemented the CSS concepts of the "pending-substituion value" for this, as well as the
+"guaranteed-invalid value" which is used when the `var()` does not resolve to anything and the declaration is
+invalid at computed-value time.
+
+### Start of `@page`
+
+Continuing from the work on descriptors last month, we now partially implement `@page`, which allows websites to
+control the page styling when they are printed. We don't yet yet support printing, but once we do, the groundwork
+for applying this styling will already be there.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

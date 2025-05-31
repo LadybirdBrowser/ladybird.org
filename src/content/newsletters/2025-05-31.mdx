@@ -5,7 +5,7 @@ date: 2025-05-31
 draft: true
 ---
 
-May is done! It's been a pleasantly productive month for the Ladybird project. We’ve merged ?? PRs from ?? contributors and made strong progress on multiple fronts.
+May is done! It's been a pleasantly productive month for the Ladybird project. We've merged 261 PRs from 53 contributors and made strong progress on multiple fronts.
 
 ### Welcoming new sponsors
 
@@ -19,33 +19,31 @@ Ladybird is entirely funded by the generous support of companies and individuals
 - [Philip Lonsing](https://www.linkedin.com/in/philiplonsing/) with $1,000
 - [Sjors Witteveen](https://kabutops.com/) with $1,000
 
-We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
 ### Our nonprofit is now officially tax-exempt
 
 The IRS has officially recognized the Ladybird Browser Initiative as a public charity, granting us tax-exempt status.
 
-This is retroactive to March of 2024, which means any donations made since then could be eligible for tax exemption (depending on the origin country of the donation, etc.)
+This is retroactive to March 2024, so donations made since then may be eligible for tax exemption (depending on country-specific rules).
 
 You can find all the relevant information on our new [Organization](https://ladybird.org/organization/) page.
 
 ### Web Platform Tests (WPT)
 
-As usual, we've been making solid progress on WPT. This month, we've squeezed out a new **?** passing tests for a total of **?**.
+We've been making solid progress on WPT as usual. This month, we squeezed out 15,961 new passing tests for a total of 1,815,223.
 
-For context, here are the top 6 engines at the end of April vs end of May:
+For context, here are the top 6 engines at the start vs end of May:
 
-FIXME: Graph
+![](/assets/img/newsletter-may-2025-wpt-graph.gif)
 
-We've also significantly improved the speed of our WPT runs this month by splitting the test list into multiple chunks and distributing them across multiple runner processes.
-
-This has allowed us to reduce our run time to under 1 hour — a 5x improvement compared to the start of the month!
+We've also significantly improved the speed of our WPT runs by splitting the test list into multiple chunks and distributing them across multiple runner processes. This has cut our WPT runtime from over 5 hours to under 1 hour!
 
 ### New JavaScript date parser
 
 The JavaScript specification only requires that you support one date format (ISO8601). Anything else is implementation defined, and in practice all major engines support a wide range of weird date formats.
 
-This has long been a source of web compatibility issues for us, and we've had many cases where weird bugs were painstakingly traced back to not being able to parse a date format we'd never seen before.
+This has long been a source of web compatibility issues for us. We've had many cases where weird bugs were painstakingly traced back to not being able to parse a date format we'd never seen before.
 
 In the past, we implemented date parsing by trying a list of specific known formats that we'd seen on the web. This list was frequently appended to.
 
@@ -53,27 +51,21 @@ We now have a new, more tolerant parser that allows all kinds of arbitrary seque
 
 ### Clipboard APIs
 
-There are a handful of [clipboard APIs](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) available for
-web developers to interact with the user's clipboard. For example, code blocks on GitHub repositories have a handy
-button to copy the code to the clipboard. We had previously implemented just one of these APIs, and this month we've
-implemented the rest! These are `clipboard.read`, `clipboard.readText`, `clipboard.write`, and `clipboard.writeText`.
-And not to worry! These APIs have security built into them to protect users from malicious actors.
+There are a handful of [clipboard APIs](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) available for web developers to interact with the user's clipboard. For example, code blocks on GitHub repositories have a handy button to copy the code to the clipboard. We had previously implemented just one of these APIs, and this month we've implemented the rest! These are `clipboard.read()`, `clipboard.readText()`, `clipboard.write()`, and `clipboard.writeText()`.
+
+These APIs include security checks to protect users from malicious scripts.
 
 ### Transferable Streams
 
-Last month, we refined our [streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) implementation to be
-much better aligned with the spec. The last remaining feature that we hadn't implemented was
-[stream transfer](https://github.com/whatwg/streams/blob/main/transferable-streams-explainer.md). This allows web
-developers to transfer streams via `postMessage()` to, for example, a web worker. We've now implemented this feature,
-and as a result, we now have a complete streams implementation!
+Last month, we refined our [streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) implementation to be much better aligned with the spec. The last remaining feature was [stream transfer](https://github.com/whatwg/streams/blob/main/transferable-streams-explainer.md). This allows web developers to transfer streams via `postMessage()` to, for example, a web worker. We've now implemented this feature, and as a result, we now have a complete streams implementation!
 
 ### JS optimization: polymorphic inline caches
 
 Until now, all our inline caches have been monomorphic. While this doesn't matter very much for the classic JavaScript benchmarks, real-world web content tends to do a lot of polymorphic access.
 
-To better support this, inline caches have been expanded to support up to 4 distinct shapes per property access. This greatly improved cache hit rates on Speedometer (from 88% to 97%!)
+To better support this, inline caches have been expanded to support up to 4 distinct shapes per property access. This greatly improved cache hit rates on Speedometer (from 88% to 97%).
 
-Here's a contrived example to illustrate how a polymorphic cache helps us:
+Here's a simple example to illustrate how a polymorphic cache helps us:
 
 ```js
 function readFoo(o) {
@@ -95,7 +87,7 @@ for (let i = 0; i < 1000; ++i) {
 
 A bound function is a bundled function call with a pre-populated set of arguments.
 
-Before this month, we implemented them as generic function calls, which meant that two stack frames were created. By streamlining the implementation, we've cut that down to a single stack frame.
+Before, we had implemented them using a trampoline function. This meant that two stack frames were created. By avoiding the need for a trampoline, we've cut it down to a single stack frame.
 
 ```js
 function bar(a) {
@@ -111,7 +103,7 @@ foo();
 // Stack before:
 // [global context]
 // foo
-// [bound function call helper]
+// [bound function trampoline]
 // bar
 
 // Stack after:
@@ -122,42 +114,33 @@ foo();
 
 ### JS optimization: faster iteration over built-in types
 
-We've added new bytecode instruction that avoids creating temporary `{ done, value }` result objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+We've added new bytecode instructions that avoid creating temporary `{ done, value }` "result" objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
 
-We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well, by avoiding temporary object allocations.
+We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well by avoiding temporary object allocations.
 
-Array element assignment now has a fast path. If objects in the array’s prototype chain haven’t been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array’s storage.
+Array element assignment now has a fast path. If objects in the array's prototype chain haven't been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array's storage.
 
-### Initial support for SharedWorkers
+### Initial support for shared workers
 
-SharedWorkers are a type of web worker that can be shared between multiple browsing contexts (like tabs or iframes) from the same origin.
-SharedWorkers receive a `MessagePort` from each new browsing context attaching to them by listening to the `onconnect` event.
+[Shared workers](https://html.spec.whatwg.org/multipage/workers.html#shared-workers-and-the-sharedworker-interface) are a type of web worker that can be shared between multiple browsing contexts (like tabs or iframes) from the same origin. Each `SharedWorker` receives a `MessagePort` from every browsing context attaching to it by listening to the `onconnect` event.
 
-This month, we've implemented initial support for SharedWorkers. This initial support doesn't actually allow shared workers to be shared between multiple WebContent processes yet,
-but it does allow them to be created and used in a single WebContent process.
+This month, we've implemented initial support for `SharedWorker`. It doesn't yet allow sharing between multiple WebContent processes, but it does allow them to be created and used in a single WebContent process.
 
 Future work will focus on enabling true sharing between processes, which will also lay the groundwork for true ServiceWorker support.
 
 ### Replace in-house BigInt implementation with LibTomMath
 
-We've replaced UnsignedBigInteger and SignedBigInteger implementations in LibCrypto with LibTomMath. This is both correctness and performance improvement, i.e BigInt operations were very heavy in performance profiles of Google Maps before this change.
+We've replaced our UnsignedBigInteger and SignedBigInteger implementations in LibCrypto with [LibTomMath](https://www.libtom.net/LibTomMath/). This is both a correctness and performance improvement, as BigInt operations were prominent in performance profiles of Google Maps before this change.
 
 ### `var()` and `attr()` in CSS shorthands
 
-When a CSS shorthand property (for example, `margin`) is encountered, we expand it out and assign values to its
-longhands (`margin-top`, `margin-right`, etc). However, when it includes something like `var()` or `attr()`, we don't
-know what those longhand values should be until that function's value is resolved, but we still need to give them
-_some_ value temporarily. For example, `margin-bottom` might be set as well, and we need to know which one will apply.
+When a CSS shorthand property (for example, `margin`) is encountered, we expand it and assign values to its longhands (`margin-top`, `margin-right`, etc). However, when it includes something like `var()` or `attr()`, the engine can't resolve those longhand values immediately, but we still need to assign a provisional value to proceed with cascade resolution. For example, `margin-bottom` might be set as well, and we need to know which one will apply.
 
-This month we implemented the CSS concepts of the "pending-substituion value" for this, as well as the
-"guaranteed-invalid value" which is used when the `var()` does not resolve to anything and the declaration is
-invalid at computed-value time.
+This month we implemented the CSS concepts of the "pending-substitution value" for this, as well as the "guaranteed-invalid value" which is used when the `var()` does not resolve to anything and the declaration is invalid at computed-value time.
 
-### Start of `@page`
+### Early work on `@page` for printed media styling
 
-Continuing from the work on descriptors last month, we now partially implement `@page`, which allows websites to
-control the page styling when they are printed. We don't yet yet support printing, but once we do, the groundwork
-for applying this styling will already be there.
+Continuing from the work on descriptors last month, we now partially implement `@page` rules, which allows websites to control the page styling when they are printed. We don't actually support printing yet, but once we do, some of the groundwork for applying style will already be there.
 
 ### Credits
 

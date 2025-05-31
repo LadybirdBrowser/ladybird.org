@@ -835,3 +835,8 @@ th {
   list-style-type: disc;
   margin-left: 36px;
 }
+
+.astro-code {
+  padding: 1em;
+  margin-bottom: 1em;
+}

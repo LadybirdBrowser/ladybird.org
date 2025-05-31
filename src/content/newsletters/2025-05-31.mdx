@@ -138,6 +138,10 @@ but it does allow them to be created and used in a single WebContent process.
 
 Future work will focus on enabling true sharing between processes, which will also lay the groundwork for true ServiceWorker support.
 
+### Replace in-house BigInt implementation with LibTomMath
+
+We've replaced UnsignedBigInteger and SignedBigInteger implementations in LibCrypto with LibTomMath. This is both correctness and performance improvement, i.e BigInt operations were very heavy in performance profiles of Google Maps before this change.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

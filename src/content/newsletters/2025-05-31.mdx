@@ -45,6 +45,12 @@ much better aligned with the spec. The last remaining feature that we hadn't imp
 developers to transfer streams via `postMessage()` to, for example, a web worker. We've now implemented this feature,
 and as a result, we now have a complete streams implementation!
 
+### JavaScript engine optimizations
+
+We've added new bytecode instruction that avoid creating temporary `{ done, value }` result objects when iterating over built-in types like Array, Map, Set and String. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+
+We've applied a similar optimization to async functions, which internally rely on generators, and made them faster as well by avoid temporary objects allocation.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

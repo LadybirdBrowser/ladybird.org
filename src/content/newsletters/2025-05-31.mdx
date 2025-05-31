@@ -37,6 +37,10 @@ For context, here are the top 6 engines at the end of April vs end of May:
 
 FIXME: Graph
 
+We've also significantly improved the speed of our WPT runs this month by splitting the test list into multiple chunks and distributing them across multiple runner processes.
+
+This has allowed us to reduce our run time to under 1 hour — a 5x improvement compared to the start of the month!
+
 ### New JavaScript date parser
 
 The JavaScript specification only requires that you support one date format (ISO8601). Anything else is implementation defined, and in practice all major engines support a wide range of weird date formats.

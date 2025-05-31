@@ -21,6 +21,14 @@ Ladybird is entirely funded by the generous support of companies and individuals
 
 We are incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
+### Our nonprofit is now officially tax-exempt
+
+The IRS has officially recognized the Ladybird Browser Initiative as a public charity, granting us tax-exempt status.
+
+This is retroactive to March of 2024, which means any donations made since then could be eligible for tax exemption (depending on the origin country of the donation, etc.)
+
+You can find all the relevant information on our new [Organization](https://ladybird.org/organization/) page.
+
 ### Web Platform Tests (WPT)
 
 As usual, we've been making solid progress on WPT. This month, we've squeezed out a new **?** passing tests for a total of **?**.
@@ -28,6 +36,16 @@ As usual, we've been making solid progress on WPT. This month, we've squeezed ou
 For context, here are the top 6 engines at the end of April vs end of May:
 
 FIXME: Graph
+
+### New JavaScript date parser
+
+The JavaScript specification only requires that you support one date format (ISO8601). Anything else is implementation defined, and in practice all major engines support a wide range of weird date formats.
+
+This has long been a source of web compatibility issues for us, and we've had many cases where weird bugs were painstakingly traced back to not being able to parse a date format we'd never seen before.
+
+In the past, we implemented date parsing by trying a list of specific known formats that we'd seen on the web. This list was frequently appended to.
+
+We now have a new, more tolerant parser that allows all kinds of arbitrary sequences without relying on a strict list. This is more similar to what other engines do, and makes us far more likely to handle a date format we've never seen before.
 
 ### Clipboard APIs
 
@@ -45,11 +63,64 @@ much better aligned with the spec. The last remaining feature that we hadn't imp
 developers to transfer streams via `postMessage()` to, for example, a web worker. We've now implemented this feature,
 and as a result, we now have a complete streams implementation!
 
-### JavaScript engine optimizations
+### JS optimization: polymorphic inline caches
 
-We've added new bytecode instruction that avoid creating temporary `{ done, value }` result objects when iterating over built-in types like Array, Map, Set and String. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+Until now, all our inline caches have been monomorphic. While this doesn't matter very much for the classic JavaScript benchmarks, real-world web content tends to do a lot of polymorphic access.
 
-We've applied a similar optimization to async functions, which internally rely on generators, and made them faster as well by avoid temporary objects allocation.
+To better support this, inline caches have been expanded to support up to 4 distinct shapes per property access. This greatly improved cache hit rates on Speedometer (from 88% to 97%!)
+
+Here's a contrived example to illustrate how a polymorphic cache helps us:
+
+```js
+function readFoo(o) {
+  // The o.foo property access here would be a cache miss in the monomorphic case.
+  // That happens because o.foo is property #0 for `o1` below, but property #1 for `o2`.
+  // With polymorphic caching, we now remember the shapes for both `o1` and `o2` and always hit!
+  return o.foo;
+}
+
+const o1 = { foo: 123 };
+const o2 = { bar: 123, foo: 456 };
+for (let i = 0; i < 1000; ++i) {
+  readFoo(o1);
+  readFoo(o2);
+}
+```
+
+### JS optimization: faster bound function calls
+
+A bound function is a bundled function call with a pre-populated set of arguments.
+
+Before this month, we implemented them as generic function calls, which meant that two stack frames were created. By streamlining the implementation, we've cut that down to a single stack frame.
+
+```js
+function bar(a) {
+  console.log(a);
+}
+
+function foo() {
+  let boundBar = bar.bind(null, 123);
+  boundBar();
+}
+foo();
+
+// Stack before:
+// [global context]
+// foo
+// [bound function call helper]
+// bar
+
+// Stack after:
+// [global context]
+// foo
+// bar
+```
+
+### JS optimization: faster iteration over built-in types
+
+We've added new bytecode instruction that avoid creating temporary `{ done, value }` result objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+
+We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well by avoid temporary objects allocation.
 
 Array element assignment now has a fast path. If objects in the array’s prototype chain haven’t been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array’s storage.
 

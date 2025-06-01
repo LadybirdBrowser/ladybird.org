@@ -31,7 +31,7 @@ You can find all the relevant information on our new [Organization](https://lady
 
 ### Web Platform Tests (WPT)
 
-We've been making solid progress on WPT as usual. This month, we squeezed out 15,961 new passing tests for a total of 1,815,223.
+We've been making solid progress on [WPT](https://web-platform-tests.org) as usual. This month, we added 15,961 new passing tests for a total of 1,815,223.
 
 For context, here are the top 6 engines at the start vs end of May:
 
@@ -51,74 +51,13 @@ We now have a new, more tolerant parser that allows all kinds of arbitrary seque
 
 ### Clipboard APIs
 
-There are a handful of [clipboard APIs](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) available for web developers to interact with the user's clipboard. For example, code blocks on GitHub repositories have a handy button to copy the code to the clipboard. We had previously implemented just one of these APIs, and this month we've implemented the rest! These are `clipboard.read()`, `clipboard.readText()`, `clipboard.write()`, and `clipboard.writeText()`.
+There are a handful of [clipboard APIs](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API) available for web developers to interact with the user's clipboard. For example, code blocks on GitHub repositories have a handy button to copy the code to the clipboard. We had previously implemented just one of these APIs, and this month we've implemented the rest: `clipboard.read()`, `clipboard.readText()`, `clipboard.write()`, and `clipboard.writeText()`.
 
 These APIs include security checks to protect users from malicious scripts.
 
 ### Transferable Streams
 
 Last month, we refined our [streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) implementation to be much better aligned with the spec. The last remaining feature was [stream transfer](https://github.com/whatwg/streams/blob/main/transferable-streams-explainer.md). This allows web developers to transfer streams via `postMessage()` to, for example, a web worker. We've now implemented this feature, and as a result, we now have a complete streams implementation!
-
-### JS optimization: polymorphic inline caches
-
-Until now, all our inline caches have been monomorphic. While this doesn't matter very much for the classic JavaScript benchmarks, real-world web content tends to do a lot of polymorphic access.
-
-To better support this, inline caches have been expanded to support up to 4 distinct shapes per property access. This greatly improved cache hit rates on Speedometer (from 88% to 97%).
-
-Here's a simple example to illustrate how a polymorphic cache helps us:
-
-```js
-function readFoo(o) {
-  // The o.foo property access here would be a cache miss in the monomorphic case.
-  // That happens because o.foo is property #0 for `o1` below, but property #1 for `o2`.
-  // With polymorphic caching, we now remember the shapes for both `o1` and `o2` and always hit!
-  return o.foo;
-}
-
-const o1 = { foo: 123 };
-const o2 = { bar: 123, foo: 456 };
-for (let i = 0; i < 1000; ++i) {
-  readFoo(o1);
-  readFoo(o2);
-}
-```
-
-### JS optimization: faster bound function calls
-
-A bound function is a bundled function call with a pre-populated set of arguments.
-
-Before, we had implemented them using a trampoline function. This meant that two stack frames were created. By avoiding the need for a trampoline, we've cut it down to a single stack frame.
-
-```js
-function bar(a) {
-  console.log(a);
-}
-
-function foo() {
-  let boundBar = bar.bind(null, 123);
-  boundBar();
-}
-foo();
-
-// Stack before:
-// [global context]
-// foo
-// [bound function trampoline]
-// bar
-
-// Stack after:
-// [global context]
-// foo
-// bar
-```
-
-### JS optimization: faster iteration over built-in types
-
-We've added new bytecode instructions that avoid creating temporary `{ done, value }` "result" objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
-
-We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well by avoiding temporary object allocations.
-
-Array element assignment now has a fast path. If objects in the array's prototype chain haven't been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array's storage.
 
 ### Initial support for shared workers
 
@@ -140,10 +79,105 @@ This month we implemented the CSS concepts of the "pending-substitution value" f
 
 ### Early work on `@page` for printed media styling
 
-Continuing from the work on descriptors last month, we now partially implement `@page` rules, which allows websites to control the page styling when they are printed. We don't actually support printing yet, but once we do, some of the groundwork for applying style will already be there.
+Continuing from the work on descriptors last month, we now partially implement `@page` rules, which allows websites to control the page styling when they are printed. Printing isn’t supported yet, but once it is, the groundwork for applying styles will already be in place.
+
+### Performance work
+
+We've also done a fair bit of performance work this month, targeting Speedometer and various websites that are slower than we'd like.
+
+The following sections give more detail on some of the optimizations, which in total led to a 10% speed-up on [Speedometer 2.1](https://browserbench.org/Speedometer2.1/).
+
+### JS optimization: polymorphic inline caches
+
+Until now, all our inline caches (IC) have been monomorphic. While this doesn't matter very much for the classic JavaScript benchmarks, real-world web content tends to do a lot of polymorphic access.
+
+To better support this, inline caches have been expanded to remember up to 4 different object shapes per property access. This greatly improved cache hit rates on Speedometer (from 88% to 97%).
+
+Here's a simple example to illustrate how a polymorphic IC helps us.
+
+The `o.foo` property access here would keep missing in a monomorphic IC.
+
+The miss happens because o.foo is stored in property slot #0 for `o1` below, but property slot #1 for `o2`, so we keep flip-flopping between the two shapes.
+
+With polymorphic IC, we can remember both shapes and always hit the cache!
+
+```js
+function readFoo(o) {
+  return o.foo;
+}
+
+const o1 = { foo: 123 };
+const o2 = { bar: 123, foo: 456 };
+for (let i = 0; i < 1000; ++i) {
+  readFoo(o1);
+  readFoo(o2);
+}
+```
+
+### JS optimization: faster bound function calls
+
+A bound function is a bundled function call with a pre-populated set of arguments.
+
+Previously, we used a trampoline function to dispatch these calls. This meant that two stack frames were created. By avoiding the need for a trampoline, we've cut it down to a single stack frame.
+
+### JS optimization: faster iteration over built-in types
+
+We've added new bytecode instructions that avoid creating temporary `{ done, value }` "result" objects when iterating over built-in types like `Array`, `Map`, `Set` and `String`. This means `for..of`, `for..in` and the spread operator now run with significantly less overhead.
+
+We've also applied a similar optimization to `async` functions, which internally rely on generators, and made them faster as well by avoiding temporary object allocations.
+
+Array element assignment now has a fast path. If objects in the array's prototype chain haven't been modified and the array is not a proxy, we skip the prototype lookup required for potential setters and instead write the value directly into the array's storage.
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_list of contributors_
+_Ahmed Elawad,
+Ali Mohammad Pur,
+Aliaksandr Kalenik,
+Andreas Kling,
+Andrew Kaster,
+aplefull,
+Ashton,
+ayeteadoe,
+Aziz Berkay Yesilyurt,
+Bastiaan van der Plaat,
+Ben Eidson,
+blukai,
+Callum Law,
+Chris Mulder,
+Colin Reeder,
+Dan Berglund,
+Daniel Bertalan,
+devgianlu,
+enkvadrat,
+Francesco Gazzetta,
+Gingeh,
+Glenn Skrzypczak,
+Golho,
+InvalidUsernameException,
+Jelle Raaijmakers,
+Jess,
+Kenneth Myhra,
+Khaled Lakehal,
+Lion Kortlepel,
+Lucien Fiorini,
+Luke Wilde,
+Lyra,
+Manuel Zahariev,
+Mark Langen,
+mikiubo,
+Mikkel Krautz,
+Noah,
+Psychpsyo,
+R-Goc,
+rmg-x,
+Rocco Corsi,
+Ruben,
+Sam Atkins,
+Shannon Booth,
+sideshowbarker,
+stelar7,
+Tim Ledbetter,
+Timothy Flynn,
+Veeti Paananen_

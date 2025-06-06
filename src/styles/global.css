@@ -5,8 +5,6 @@
 @theme {
   --color-black: #0e0e0e;
   --color-white: #d8e7e7;
-  --color-eagle: #a4b3b3;
-  --color-pop-blue: #2541ea;
 
   --font-family-sans:
     Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
@@ -14,18 +12,6 @@
   --font-family-display:
     ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
-
-  --animate-marquee: marquee 15s linear infinite;
-  --animate-marquee2: marquee2 25s linear infinite;
-  --animate-scroller3: scroller3 25s linear infinite;
-  --animate-spin-slow: spin 4s linear infinite;
-  --animate-spin-slower: spin 6s linear infinite;
-  --animate-spin-reverse: spin-reverse 1s linear infinite;
-  --animate-spin-reverse-slow: spin-reverse 4s linear infinite;
-  --animate-spin-reverse-slower: spin-reverse 6s linear infinite;
-  --animate-scroller: scroller 15s linear infinite;
-  --animate-scroller2: scroller2 20s linear infinite;
-  --animate-fade-in: fade-in 0.5s linear forwards;
 }
 
 @keyframes marquee {

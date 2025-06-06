@@ -46,6 +46,6 @@ describe("RSS Feeds", () => {
           "category",
         ])
       );
-    };
+    }
   });
 });

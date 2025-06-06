@@ -18,7 +18,7 @@ describe("URL Compliance", () => {
       const base = content.match(/assets\//g);
       const proper = content.match(/\/assets\//g);
       expect(base?.length ?? 0).toBe(proper?.length ?? 0);
-    };
+    }
   });
 
   test("Only allow secure outside URLs, properly declared locals, and mailto:", () => {
@@ -35,10 +35,10 @@ describe("URL Compliance", () => {
       for (const href of hrefs) {
         expect(
           href.startsWith('href="https://') ||
-          href.startsWith('href="/') ||
-          href.startsWith('href="mailto:')
+            href.startsWith('href="/') ||
+            href.startsWith('href="mailto:')
         ).toBe(true);
       }
-    };
+    }
   });
 });

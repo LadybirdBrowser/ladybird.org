@@ -21,7 +21,7 @@ describe("Markdown Rendering", () => {
       const htmlFile = file.replace(".mdx", "/index.html");
       const htmlFilePath = path.join(distDir, htmlFile);
       expect(fs.existsSync(htmlFilePath)).toBe(true);
-    };
+    }
   });
 
   test("Layouts Applied", () => {
@@ -37,6 +37,6 @@ describe("Markdown Rendering", () => {
       const h1Tag = `>${frontMatterTitle}</h1>`;
 
       expect(htmlContent.includes(h1Tag)).toBe(true);
-    };
+    }
   });
 });

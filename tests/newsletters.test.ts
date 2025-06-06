@@ -24,6 +24,6 @@ describe("Newsletters", () => {
       } else {
         expect(fs.existsSync(htmlFilePath)).toBe(true);
       }
-    };
+    }
   });
 });

@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: "Ladybird Browser Posts",
     description: "Ladybird is a brand-new browser &amp; web engine",
-    site: context.site!,
+    site: context.site ?? "https://ladybird.org",
     items: posts
       .filter((post) => post.data.type !== "Hidden")
       .map((post) => ({

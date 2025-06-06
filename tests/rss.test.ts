@@ -1,7 +1,7 @@
 import { test, expect, describe } from "bun:test";
 import { XMLParser } from "fast-xml-parser";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const rootDir: string = path.join(__dirname, "../");
 
@@ -34,7 +34,7 @@ describe("RSS Feeds", () => {
       return !fileContent.includes("type: Hidden");
     });
     expect(parsedXML.rss.channel.item).toBeArrayOfSize(nonHiddenMdFiles.length);
-    parsedXML.rss.channel.item.forEach((item: any) => {
+    for (const item of parsedXML.rss.channel.item) {
       const itemAttributes = Object.keys(item);
       expect(itemAttributes).toEqual(
         expect.arrayContaining([
@@ -46,6 +46,6 @@ describe("RSS Feeds", () => {
           "category",
         ])
       );
-    });
+    };
   });
 });

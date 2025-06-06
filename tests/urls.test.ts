@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { test, expect, describe } from "bun:test";
 
 const srcDir: string = path.join(__dirname, "../src");
@@ -13,12 +13,12 @@ describe("URL Compliance", () => {
       (file) =>
         file.endsWith(".mdx") || file.endsWith(".ts") || file.endsWith(".astro")
     );
-    files.forEach((file) => {
+    for (const file of files) {
       const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
       const base = content.match(/assets\//g);
       const proper = content.match(/\/assets\//g);
       expect(base?.length ?? 0).toBe(proper?.length ?? 0);
-    });
+    };
   });
 
   test("Only allow secure outside URLs, properly declared locals, and mailto:", () => {
@@ -28,17 +28,17 @@ describe("URL Compliance", () => {
       (file) =>
         file.endsWith(".mdx") || file.endsWith(".ts") || file.endsWith(".astro")
     );
-    files.forEach((file) => {
+    for (const file of files) {
       const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
       const hrefs = content.match(/href="([^"]*)"/g) || [];
       // Only allow secure outside URLs, properly declared locals, and mailto:
-      hrefs.forEach((href) => {
+      for (const href of hrefs) {
         expect(
           href.startsWith('href="https://') ||
-            href.startsWith('href="/') ||
-            href.startsWith('href="mailto:')
+          href.startsWith('href="/') ||
+          href.startsWith('href="mailto:')
         ).toBe(true);
-      });
-    });
+      }
+    };
   });
 });

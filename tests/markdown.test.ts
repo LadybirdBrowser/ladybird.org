@@ -1,6 +1,6 @@
 import { expect, test, describe } from "bun:test";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const rootDir: string = path.join(__dirname, "../");
 
@@ -17,15 +17,15 @@ describe("Markdown Rendering", () => {
   });
 
   test("Pages Rendered", () => {
-    mdFiles.forEach((file) => {
+    for (const file of mdFiles) {
       const htmlFile = file.replace(".mdx", "/index.html");
       const htmlFilePath = path.join(distDir, htmlFile);
       expect(fs.existsSync(htmlFilePath)).toBe(true);
-    });
+    };
   });
 
   test("Layouts Applied", () => {
-    mdFiles.forEach((file) => {
+    for (const file of mdFiles) {
       const htmlFile = file.replace(".mdx", "/index.html");
       const htmlFilePath = path.join(distDir, htmlFile);
       const htmlContent = fs.readFileSync(htmlFilePath, "utf-8");
@@ -37,6 +37,6 @@ describe("Markdown Rendering", () => {
       const h1Tag = `>${frontMatterTitle}</h1>`;
 
       expect(htmlContent.includes(h1Tag)).toBe(true);
-    });
+    };
   });
 });

@@ -1,7 +1,7 @@
 import { test, expect, describe } from "bun:test";
 import { XMLParser } from "fast-xml-parser";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const rootDir: string = path.join(__dirname, "../");
 

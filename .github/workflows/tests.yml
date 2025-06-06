@@ -17,6 +17,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install & Build
         uses: withastro/action@v2
+        with:
+          package-manager: bun@latest
+
       - name: Test
         run: bun test
       - name: Format Check

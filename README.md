@@ -73,6 +73,8 @@ The newsletters while not currently being displayed render out to `/newsletter/Y
 
 ```mdx
 ---
+title: We've Launched
+draft: false
 description: Ladybird browser initiative launched
 date: 2024-07-09
 ---

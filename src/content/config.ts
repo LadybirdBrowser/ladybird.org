@@ -12,9 +12,10 @@ const posts = defineCollection({
   }),
 });
 
-const newsletter = defineCollection({
+const newsletters = defineCollection({
   type: "content",
   schema: z.object({
+    title: z.string().max(50),
     description: z.string().max(280),
     date: z.date(),
     draft: z.boolean().optional(),
@@ -23,5 +24,5 @@ const newsletter = defineCollection({
 
 export const collections = {
   posts,
-  newsletter,
+  newsletters,
 };

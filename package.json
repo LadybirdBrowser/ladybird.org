@@ -1,6 +1,7 @@
 {
   "name": "ladybird.org",
   "type": "module",
+  "packageManager": "bun@1.2.15",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

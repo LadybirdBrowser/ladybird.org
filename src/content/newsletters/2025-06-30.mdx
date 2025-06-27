@@ -1,0 +1,57 @@
+---
+title: This Month in Ladybird - June 2025
+description: ?
+date: 2025-06-30
+draft: true
+---
+
+June is over, newsletter time. 🗞
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- SPONSOR with MONEY
+
+If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Web Platform Tests (WPT)
+
+Some WPT things have probably occurred.
+
+### Logical aliases
+
+Some CSS properties are "logical aliases" for others, for example `margin-inline-start`. This means that the side or
+direction they apply to depends on the text direction: for top-down text the "inline start side" is the top; for
+left-to-right it's the left; and for right-to-left it's the right. Ladybird has long understood these properties, but
+hard-coded them to left-to-right text. This month we replaced that with proper checks for the `writing-mode` and
+`direction` properties. ([PR #5138](https://github.com/LadybirdBrowser/ladybird/pull/5138))
+
+### Counters on pseudo-elements
+
+CSS counters let authors create automatic numberings similar to those in HTML numbered lists. This month we improved our
+counters support by making the counter properties also work when applied to pseudo-elements.
+([PR #5132](https://github.com/LadybirdBrowser/ladybird/pull/5132))
+
+For example, this is used by [terminal.shop](https://www.terminal.shop/) to display line numbers:
+
+#### Before
+
+![](/assets/img/newsletter-june-2025-counters-before.png)
+
+#### After
+
+![](/assets/img/newsletter-june-2025-counters-after.png)
+
+### `tech()` in `@font-face` sources
+
+We implemented the `tech()` function in the `@font-face` `src` descriptor. Similar to `format()`, this lets authors
+declare that the linked font file uses a particular font feature, and that browsers should ignore it if they do not
+support that. This saves time and bandwidth by avoiding downloading files that we cannot make use of, such as variable
+fonts or those using incremental transfer. ([PR #4983](https://github.com/LadybirdBrowser/ladybird/pull/4983))
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_People_

@@ -50,6 +50,12 @@ declare that the linked font file uses a particular font feature, and that brows
 support that. This saves time and bandwidth by avoiding downloading files that we cannot make use of, such as variable
 fonts or those using incremental transfer. ([PR #4983](https://github.com/LadybirdBrowser/ladybird/pull/4983))
 
+### Local Storage Persistence
+
+[Local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) is now persisted to disk within a sqlite database. Previously, data stored in local storage would be lost
+when the WebContent process exited, making it work similarly to [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage). This is particularly useful for websites
+that store access tokens in local storage, such as Discord.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

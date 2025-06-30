@@ -64,12 +64,32 @@ will hook this up to the system's location services together with the necessary 
 
 ![](/assets/img/newsletter-june-2025-geolocation.png)
 
+### Windows Progress
+
+One of the most-asked questions we get is "When will Ladybird support Windows?" To be clear, the planned alpha and beta
+releases will only be available for Linux and macOS. With that being said, community contributors are making steady
+progress on the Windows port. This month, Windows support has progressed to the point that LibJS tests are passing on
+Windows 10 and 11, albeit without ASAN and UBSAN enabled. We can also build the core of the browser engine, LibWeb,
+though work remains to be done to be able to actually run the headless browser and WebContent processes.
+
 ### CI: macOS and Windows
 
 In May, we've started using [Blacksmith's](https://blacksmith.sh/) action runners which already significantly reduces
 the time it takes to run CI, providing us with quicker iterations on pull requests. In June, we started using our
 self-hosted macOS runner removing one of the last performance bottlenecks that we had for PRs. Additionally, we now
 support running CI for Windows on PRs which helps when reviewing them!
+
+### Security Advisory update
+
+We have received a few security reports via GitHub's private vulnerability reporting feature that we are in the process
+of triaging. The first to be fixed was reported by [@intrigus](https://github.com/intrigus-lgtm), and was included in
+a CTF at [GPN CTF 2025](https://gpn23.ctf.kitctf.de/). They have provided a writeup [here](https://github.com/s41nt0l3xus/CTF-writeups/tree/master/gpnctf-2025/WebGL-bird).
+
+As we have yet to release an alpha or beta version of Ladybird, we are not yet publishing security advisories. However,
+the experience with the currently reported vulnerabilities has shown that we have a lot of work to do to be
+prepared to handle the types of security issues we expect from a full release. As we receive more reports and get closer
+to a public release, we hope to share more details about our security process and how we plan to handle vulnerabilities
+in accordance with our [Security Policy](https://github.com/LadybirdBrowser/ladybird/blob/b3d9e39bad4f4a394cf518f54af1937967fbea29/SECURITY.md).
 
 ### Credits
 

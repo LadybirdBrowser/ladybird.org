@@ -56,6 +56,14 @@ fonts or those using incremental transfer. ([PR #4983](https://github.com/Ladybi
 when the WebContent process exited, making it work similarly to [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage). This is particularly useful for websites
 that store access tokens in local storage, such as Discord.
 
+### Geolocation
+
+The Geolocation API allows websites to request and monitor the user's physical location, speed and heading. We have
+added preliminary support for this API in Ladybird, only returning a single emulated position for now. In the future we
+will hook this up to the system's location services together with the necessary permissions and privacy settings.
+
+![](/assets/img/newsletter-june-2025-geolocation.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

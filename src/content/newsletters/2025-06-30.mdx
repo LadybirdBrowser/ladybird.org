@@ -91,6 +91,12 @@ prepared to handle the types of security issues we expect from a full release. A
 to a public release, we hope to share more details about our security process and how we plan to handle vulnerabilities
 in accordance with our [Security Policy](https://github.com/LadybirdBrowser/ladybird/blob/b3d9e39bad4f4a394cf518f54af1937967fbea29/SECURITY.md).
 
+### Offscreen Canvas
+
+We've added an initial implementation of OffscreenCanvas this month. This allows authors to perform potentially complex
+rendering tasks off the main thread, which can greatly improve the performance and responsiveness of websites that make
+heavy use of canvas rendering. ([PR #3788](https://github.com/LadybirdBrowser/ladybird/pull/3788))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

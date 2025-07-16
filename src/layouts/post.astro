@@ -13,13 +13,13 @@ const { frontmatter, title, description, author, image } = Astro.props;
     <section class="hero hero_single">
       <div class="container custom-row">
         <div class="hero__tf">
-          <p class="text-[#fff]">
+          <p class="text-white">
             <span
-              class="bg-clip-text text-transparent bg-gradient-to-r from-[#6d98cc] to-[#8a64e5]"
+              class="bg-clip-text text-transparent bg-linear-to-r from-[#6d98cc] to-[#8a64e5]"
               >{frontmatter.author || "Announcement"}</span
             > | {frontmatter.date.toUTCString().slice(0, 16)}
           </p>
-          <h1 class="text-[#fff]">{frontmatter.title}</h1>
+          <h1 class="text-white">{frontmatter.title}</h1>
         </div>
       </div>
     </section>

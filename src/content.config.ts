@@ -1,7 +1,8 @@
 import { z, defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
 
 const posts = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/posts" }),
   schema: z.object({
     title: z.string().max(50),
     description: z.string().max(280),
@@ -12,16 +13,23 @@ const posts = defineCollection({
   }),
 });
 
-const newsletter = defineCollection({
-  type: "content",
-  schema: z.object({
+const newsletterSchema = z
+  .object({
     description: z.string().max(280),
     date: z.date(),
     draft: z.boolean().optional(),
-  }),
+    title: z.string().optional(),
+  })
+  .strict();
+
+const newsletter = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/newsletters" }),
+  schema: newsletterSchema,
 });
 
 export const collections = {
   posts,
   newsletter,
 };
+
+export type Newsletter = z.infer<typeof newsletterSchema>;

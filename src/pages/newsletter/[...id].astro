@@ -1,0 +1,20 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@/layouts/newsletter.astro";
+import { markdown } from "@/components/md";
+export async function getStaticPaths() {
+  const newsletters = await getCollection("newsletter", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true
+  );
+  return newsletters.map((newsletter) => ({
+    params: { id: newsletter.data.date.toISOString().split("T")[0] },
+    props: { newsletter },
+  }));
+}
+const { newsletter } = Astro.props;
+const { Content } = await render(newsletter);
+---
+
+<Layout frontmatter={newsletter.data}>
+  <Content components={markdown} />
+</Layout>

@@ -198,18 +198,18 @@ const sponsors = [
         return (
           <div class="mb-[64px] relative">
             <div class="flex items-center mb-6">
-              <span class="block w-full h-[1px] bg-[#d3d2d6]" />
+              <span class="block w-full h-px bg-[#d3d2d6]" />
               <span class="text-2xl shrink-0 font-semibold px-5">
                 {tier.name}
               </span>
-              <span class="block w-full h-[1px] bg-[#d3d2d6]" />
+              <span class="block w-full h-px bg-[#d3d2d6]" />
             </div>
             <div class="flex flex-wrap items-center justify-center gap-4">
               {tier.sponsors.map((sponsor) => {
                 return (
-                  <div class="relative flex items-center justify-center min-h-[102px] border-[6px] border-[#fff] rounded-[30px] shadow-[0_0_8px_0_rgba(202,205,226,0.38)] p-4">
+                  <div class="relative flex items-center justify-center min-h-[102px] border-[6px] border-white rounded-[30px] shadow-[0_0_8px_0_rgba(202,205,226,0.38)] p-4">
                     <a class="text-black" href={sponsor.href} rel="nofollow">
-                      {sponsor.logo ? (
+                      {"logo" in sponsor ? (
                         <img src={sponsor.logo} alt={sponsor.name} />
                       ) : (
                         <span>{sponsor.name}</span>

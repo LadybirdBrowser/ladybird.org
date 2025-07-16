@@ -1,18 +1,15 @@
 import fs from "fs";
 import path from "path";
 import { test, expect, describe } from "bun:test";
+import { Glob } from "bun";
 
-const srcDir: string = path.join(__dirname, "../src");
+const srcDir: string = path.join(import.meta.dirname, "../src");
 
 describe("URL Compliance", () => {
   // Handled over raw asset instead of href= or src= due to tailwind bg image embedding
+  const files = Array.from(new Glob("**/*.{md,ts,astro}").scanSync(srcDir));
+
   test('All instances of "assets/" have a proceeding "/"', () => {
-    const files = (
-      fs.readdirSync(srcDir, { recursive: true }) as string[]
-    ).filter(
-      (file) =>
-        file.endsWith(".mdx") || file.endsWith(".ts") || file.endsWith(".astro")
-    );
     files.forEach((file) => {
       const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
       const base = content.match(/assets\//g);
@@ -22,12 +19,6 @@ describe("URL Compliance", () => {
   });
 
   test("Only allow secure outside URLs, properly declared locals, and mailto:", () => {
-    const files = (
-      fs.readdirSync(srcDir, { recursive: true }) as string[]
-    ).filter(
-      (file) =>
-        file.endsWith(".mdx") || file.endsWith(".ts") || file.endsWith(".astro")
-    );
     files.forEach((file) => {
       const content = fs.readFileSync(path.join(srcDir, file), "utf-8");
       const hrefs = content.match(/href="([^"]*)"/g) || [];

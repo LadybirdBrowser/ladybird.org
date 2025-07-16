@@ -2,16 +2,15 @@ import { test, expect, describe } from "bun:test";
 import { XMLParser } from "fast-xml-parser";
 import fs from "fs";
 import path from "path";
+import { Glob } from "bun";
 
-const rootDir: string = path.join(__dirname, "../");
+const rootDir: string = path.join(import.meta.dirname, "../");
 
 describe("RSS Feeds", () => {
   const srcDir = path.join(rootDir, "/src/content/posts");
   const distDir = path.join(rootDir, "/dist/");
 
-  const mdFiles = fs
-    .readdirSync(srcDir)
-    .filter((file) => file.endsWith(".mdx"));
+  const mdFiles = Array.from(new Glob("**/*.md").scanSync(srcDir));
   const xmlFile = fs.readFileSync(path.join(distDir, "posts.rss"));
 
   const parser = new XMLParser();

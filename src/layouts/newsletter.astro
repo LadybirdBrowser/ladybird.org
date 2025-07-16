@@ -1,7 +1,9 @@
 ---
-import type { Newsletter } from "@/content.config";
+import type { CollectionEntry } from 'astro:content';
 import BaseLayout from "@/layouts/base.astro";
-const { frontmatter } = Astro.props as { frontmatter: Newsletter };
+const { frontmatter } = Astro.props;
+
+type Props = { frontmatter: CollectionEntry<'newsletter'>['data'] };
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>

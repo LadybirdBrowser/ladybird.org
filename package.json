@@ -9,8 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\"",
-    "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
+    "format": "prettier --write \"**/*.{astro,ts,tsx,md,js,cjs,mjs,jsx}\"",
+    "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,js,cjs,mjs,jsx}\""
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
@@ -25,7 +25,6 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/mdx": "^4.3.0",
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.4.0",
     "@tailwindcss/vite": "^4.1.11",

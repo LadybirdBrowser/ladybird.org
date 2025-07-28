@@ -1,0 +1,52 @@
+---
+title: This Month in Ladybird - July 2025
+description: ?
+date: 2025-07-31
+draft: true
+---
+
+Hello friends! July is done!
+
+### Web Platform Tests (WPT)
+
+_insert WPT stats here_
+
+### `:state(foo)` and `:unchecked` pseudo-classes
+
+We gained a couple of new pseudo-classes this month:
+
+- `:state(foo)` matches a custom element that has `foo` in its states set. This lets custom elements be styled
+  differently depending on their state, just like a regular element can be `:empty` or `:checked`, for example.
+- Speaking of which, we also added `:unchecked`. This matches elements that can be checked, but currently are not.
+
+### Logical property groups
+
+Continuing work that was started [https://ladybird.org/newsletter/2025-06-30/#css-logical-aliases](last month),
+we now generate the code that maps logical properties to physical ones, decreasing the amount of boilerplate to add
+a new logical property. Logical and physical properties form "groups", for example all the `margin` properties, and
+we now account for these when serializing them, and when modifying them through JavaScript.
+
+### Arbitrary substitution functions
+
+This mouthful of a name refers to CSS functions like `var()` which get substituted with an arbitrary chunk of CSS.
+Recent versions of the CSS specs formally define how these work, and this month we rewrote our implementations of
+`var()` and `attr()` to match this new definition. Besides being easier to maintain, this prepares us to more easily
+add other arbitrary substitution functions in the future, such as `if()` and `env()`.
+
+### `<syntax>` parsing
+
+Some modern CSS features allow authors to specify their own CSS syntax which is then used to parse something else.
+We've implemented the `<syntax>` type which corresponds to this, and it can now be used in `attr()`, to specify how
+to interpret the attribute. For example, `attr(data-color type(<color>))` would parse the `data-color` attribute as
+if it was a CSS color value.
+
+### `@property` progress
+
+We've had a stub implementation of `@property` for a while, and this month we started making some progress on it.
+We now make use of a registered custom property's initial value, and we also gained initial support for `CSS.registerProperty()`.
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_names_

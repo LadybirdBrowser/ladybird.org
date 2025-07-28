@@ -56,6 +56,16 @@ use it for servers that advertise support for it in the [Alt-Svc header.](https:
 
 We found an issue relating to how libcurl parses `Alt-Svc: clear`, which was [fixed in curl 8.15.0.](https://curl.se/ch/8.15.0.html)
 
+### High refresh rate support
+
+We now take into account the refresh rate of the current screen to determine how often we should update the rendering of web content.
+Previously, it was hardcoded to update at 60 frames per second.
+
+For example, applications using [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)
+will now render up to 120 times per second on a 120Hz screen. This also affects scrolling, animations, transitions and more.
+
+![](/assets/img/newsletter-july-2025-high-refresh-rate.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

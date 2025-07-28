@@ -66,6 +66,21 @@ will now render up to 120 times per second on a 120Hz screen. This also affects 
 
 ![](/assets/img/newsletter-july-2025-high-refresh-rate.png)
 
+### Google reCAPTCHA passing
+
+There was a long standing issue with our [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) implementation
+where if the serialized type was not used in the destination realm before, we would fail to reconstruct it because it did not think it was
+available in that realm.
+
+This was fixed this month, allowing Google reCAPTCHA to work and pass!
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-july-2025-google-recaptcha.mp4"></source>
+</video>
+
+Unfortunately, it does not work on origins that are not https://www.google.com/ due to a separate same-origin policy issue that has not been
+resolved.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

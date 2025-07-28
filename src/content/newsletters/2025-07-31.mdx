@@ -45,6 +45,17 @@ if it was a CSS color value.
 We've had a stub implementation of `@property` for a while, and this month we started making some progress on it.
 We now make use of a registered custom property's initial value, and we also gained initial support for `CSS.registerProperty()`.
 
+### HTTP/3 support
+
+Support for [HTTP/3](https://en.wikipedia.org/wiki/HTTP/3) with OpenSSL and [ngtcp2](https://github.com/ngtcp2/ngtcp2) was [recently added with curl 8.14.0.](https://curl.se/ch/8.14.0.html)
+
+Since we depend on the OpenSSL backend for libcurl, this has allowed us to enable HTTP/3 support, which allows us to
+use it for servers that advertise support for it in the [Alt-Svc header.](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Alt-Svc)
+
+![](/assets/img/newsletter-july-2025-http-3.png)
+
+We found an issue relating to how libcurl parses `Alt-Svc: clear`, which was [fixed in curl 8.15.0.](https://curl.se/ch/8.15.0.html)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

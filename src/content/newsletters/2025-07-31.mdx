@@ -81,6 +81,15 @@ This was fixed this month, allowing Google reCAPTCHA to work and pass!
 Unfortunately, it does not work on origins that are not https://www.google.com/ due to a separate same-origin policy issue that has not been
 resolved.
 
+### The Web is UTF-16
+
+Strings in JavaScript and the Web are [UTF-16 by definition](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#utf-16_characters_unicode_code_points_and_grapheme_clusters).
+Until now, we have been using a UTF-8 string type internally to represent JS strings, and we would transcode to UTF-16
+on-the-fly to satisfy specification requirements as needed. Over time, this has resulted in an ever-growing number of
+locations that need to perform extra work to behave correctly. This month, we've decided to introduce a UTF-16 string
+to begin using wholesale within LibJS and LibWeb. This not only make the code simpler to write and reason about, but
+has also fixed some Unicode-related edge cases that we previously missed.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

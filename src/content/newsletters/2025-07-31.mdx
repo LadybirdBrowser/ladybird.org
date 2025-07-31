@@ -90,6 +90,15 @@ locations that need to perform extra work to behave correctly. This month, we've
 to begin using wholesale within LibJS and LibWeb. This not only make the code simpler to write and reason about, but
 has also fixed some Unicode-related edge cases that we previously missed.
 
+### Trusted types
+
+Trusted Types is a web security feature that helps prevent cross-site scripting (XSS) attacks by restricting what data
+can be used to manipulate the DOM, inject scripts, or forge URLs. It allows web developers to define policy rules that
+specify how to create a type-safe sanitized version of a strings that can be used to manipulate injection sinks such as
+`Element.innerHTML`, `HTMLScriptElement.text`, and `HTMLScriptElement.src`. This month, a contributor added initial
+support for Trusted Types. Future work to flesh out the support for this security-conscious feature is already under way
+and will be continued in the coming months.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

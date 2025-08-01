@@ -2,105 +2,117 @@
 title: This Month in Ladybird - July 2025
 description: ?
 date: 2025-07-31
-draft: true
+draft: false
 ---
 
-Hello friends! July is done!
+Hello friends! July is done. We merged 319 pull requests from 47 contributors.
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- [Scraping Fish](https://scrapingfish.com) with $5,000
+- [Blacksmith](https://t.co/McauGhPdxH) with high-performance CI infrastructure
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
 ### Web Platform Tests (WPT)
 
-_insert WPT stats here_
-
-### `:state(foo)` and `:unchecked` pseudo-classes
-
-We gained a couple of new pseudo-classes this month:
-
-- `:state(foo)` matches a custom element that has `foo` in its states set. This lets custom elements be styled
-  differently depending on their state, just like a regular element can be `:empty` or `:checked`, for example.
-- Speaking of which, we also added `:unchecked`. This matches elements that can be checked, but currently are not.
-
-### Logical property groups
-
-Continuing work that was started [https://ladybird.org/newsletter/2025-06-30/#css-logical-aliases](last month),
-we now generate the code that maps logical properties to physical ones, decreasing the amount of boilerplate to add
-a new logical property. Logical and physical properties form "groups", for example all the `margin` properties, and
-we now account for these when serializing them, and when modifying them through JavaScript.
-
-### Arbitrary substitution functions
-
-This mouthful of a name refers to CSS functions like `var()` which get substituted with an arbitrary chunk of CSS.
-Recent versions of the CSS specs formally define how these work, and this month we rewrote our implementations of
-`var()` and `attr()` to match this new definition. Besides being easier to maintain, this prepares us to more easily
-add other arbitrary substitution functions in the future, such as `if()` and `env()`.
-
-### `<syntax>` parsing
-
-Some modern CSS features allow authors to specify their own CSS syntax which is then used to parse something else.
-We've implemented the `<syntax>` type which corresponds to this, and it can now be used in `attr()`, to specify how
-to interpret the attribute. For example, `attr(data-color type(<color>))` would parse the `data-color` attribute as
-if it was a CSS color value.
-
-### `@property` progress
-
-We've had a stub implementation of `@property` for a while, and this month we started making some progress on it.
-We now make use of a registered custom property's initial value, and we also gained initial support for `CSS.registerProperty()`.
-
-### HTTP/3 support
-
-Support for [HTTP/3](https://en.wikipedia.org/wiki/HTTP/3) with OpenSSL and [ngtcp2](https://github.com/ngtcp2/ngtcp2) was [recently added with curl 8.14.0.](https://curl.se/ch/8.14.0.html)
-
-Since we depend on the OpenSSL backend for libcurl, this has allowed us to enable HTTP/3 support, which allows us to
-use it for servers that advertise support for it in the [Alt-Svc header.](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Alt-Svc)
-
-![](/assets/img/newsletter-july-2025-http-3.png)
-
-We found an issue relating to how libcurl parses `Alt-Svc: clear`, which was [fixed in curl 8.15.0.](https://curl.se/ch/8.15.0.html)
-
-### High refresh rate support
-
-We now take into account the refresh rate of the current screen to determine how often we should update the rendering of web content.
-Previously, it was hardcoded to update at 60 frames per second.
-
-For example, applications using [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)
-will now render up to 120 times per second on a 120Hz screen. This also affects scrolling, animations, transitions and more.
-
-![](/assets/img/newsletter-july-2025-high-refresh-rate.png)
+As usual, we've made some progress on the Web Platform Tests. We've added 13,090 passing tests for a new total of 1,831,856.
 
 ### Google reCAPTCHA passing
 
-There was a long standing issue with our [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) implementation
-where if the serialized type was not used in the destination realm before, we would fail to reconstruct it because it did not think it was
-available in that realm.
+There was a long-standing issue with our [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) implementation: if the serialized type had not previously been used in the destination realm, we would fail to reconstruct it. The realm didn’t recognize the type and rejected the message.
 
-This was fixed this month, allowing Google reCAPTCHA to work and pass!
+This is now fixed, allowing Google reCAPTCHA to pass!
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-july-2025-google-recaptcha.mp4"></source>
 </video>
 
-Unfortunately, it does not work on origins that are not https://www.google.com/ due to a separate same-origin policy issue that has not been
-resolved.
+Unfortunately, this only works on `https://www.google.com/` for now, due to a separate unresolved same-origin policy issue.
+
+### High refresh rate support
+
+We now detect the refresh rate of the active screen to determine how often web content should be rendered. Previously, rendering was fixed at 60 frames per second.
+
+Websites using [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame) now render at up to 120Hz on supported hardware. This change also improves the smoothness of scrolling, animations, transitions, and more.
+
+![](/assets/img/newsletter-july-2025-high-refresh-rate.png)
+
+### HTTP/3 support
+
+[HTTP/3](https://en.wikipedia.org/wiki/HTTP/3) support was recently added in curl 8.14.0 for users of OpenSSL and [ngtcp2](https://github.com/ngtcp2/ngtcp2). Since Ladybird uses the OpenSSL backend with libcurl, this enabled us to support HTTP/3 as well.
+
+We now negotiate HTTP/3 for servers that advertise it via the [Alt-Svc header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Alt-Svc).
+
+![](/assets/img/newsletter-july-2025-http-3.png)
+
+We also found and reported an issue in curl where `Alt-Svc: clear` was parsed incorrectly. This has since been [fixed in curl 8.15.0.](https://curl.se/ch/8.15.0.html)
+
+### Trusted Types
+
+Trusted Types is a security feature that helps prevent cross-site scripting (XSS) by locking down injection sinks like `Element.innerHTML`, `HTMLScriptElement.text`, and `HTMLScriptElement.src`. It allows web developers to define policies that control how sanitized content can be created and consumed.
+
+This month, we added initial support for Trusted Types. This includes recognizing policies and enforcing type-safe DOM writes. Further work is ongoing to support more of the spec and improve compliance.
+
+### SVG `foreignObject` improvements
+
+The relationship between HTML and SVG is complex. While SVG content can appear in HTML, SVG can also embed arbitrary HTML using the `foreignObject` element.
+
+This month, we made major improvements to how Ladybird handles `foreignObject`. Layout, style resolution, and rendering inside embedded HTML are now much closer to spec behavior, with better integration between the two worlds.
+
+### CSS `content: url(...)`
+
+We added support for using `content: url(...)` in CSS pseudo-elements such as `::before` and `::after`. This allows authors to insert images via CSS content, matching behavior seen on modern websites.
+
+### `:state(foo)` and `:unchecked` pseudo-classes
+
+We gained two new pseudo-classes:
+
+- `:state(foo)` matches a custom element whose states set includes `"foo"`. This allows custom elements to be styled based on internal state, similar to how `:checked` and `:empty` work.
+- `:unchecked` matches elements that are checkable but currently not checked.
+
+These additions improve our compatibility with web components and modern form styling.
+
+### Logical property groups
+
+Building on work from [last month](https://ladybird.org/newsletter/2025-06-30/#css-logical-aliases), we now generate the mappings from logical to physical properties at compile time.
+
+Logical and physical properties form groups—for example, the various `margin` properties—and we now take these into account when serializing styles and when modifying them from JavaScript. This improves both CSS fidelity and performance.
+
+### Arbitrary substitution functions
+
+This month we rewrote our implementations of `var()` and `attr()` to align with the formal definition of _arbitrary substitution functions_ in recent CSS specs. These are functions that return a value to be substituted into the rule before parsing continues.
+
+Our new implementation is more robust, more spec-compliant, and sets us up to support other substitution functions like `if()` and `env()` in the future.
+
+### `<syntax>` parsing
+
+CSS now allows authors to define the expected syntax for attribute values using the `<syntax>` type. This is used within `attr()` to guide how the value should be parsed.
+
+For example:
+
+```css
+color: attr(data-color type(<color>));
+```
+
+This instructs the parser to interpret the `data-color` attribute as a CSS color. Ladybird now supports `<syntax>` parsing and uses it to improve behavior in CSS Houdini and custom properties.
+
+### `@property` progress
+
+We’ve had a stub implementation of `@property` for a while. This month, we started fleshing it out.
+
+We now respect the initial value defined in a `@property` declaration and added initial support for `CSS.registerProperty()`. This brings us closer to full Houdini support.
 
 ### The Web is UTF-16
 
-Strings in JavaScript and the Web are [UTF-16 by definition](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#utf-16_characters_unicode_code_points_and_grapheme_clusters).
-Until now, we have been using a UTF-8 string type internally to represent JS strings, and we would transcode to UTF-16
-on-the-fly to satisfy specification requirements as needed. Over time, this has resulted in an ever-growing number of
-locations that need to perform extra work to behave correctly. This month, we've decided to introduce a UTF-16 string
-to begin using wholesale within LibJS and LibWeb. This not only make the code simpler to write and reason about, but
-has also fixed some Unicode-related edge cases that we previously missed.
+By definition, strings in JavaScript and the web are [UTF-16 encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#utf-16_characters_unicode_code_points_and_grapheme_clusters). Until now, LibJS used UTF-8 internally and transcoded to UTF-16 on the fly.
 
-### Trusted types
-
-Trusted Types is a web security feature that helps prevent cross-site scripting (XSS) attacks by restricting what data
-can be used to manipulate the DOM, inject scripts, or forge URLs. It allows web developers to define policy rules that
-specify how to create a type-safe sanitized version of a strings that can be used to manipulate injection sinks such as
-`Element.innerHTML`, `HTMLScriptElement.text`, and `HTMLScriptElement.src`. This month, a contributor added initial
-support for Trusted Types. Future work to flesh out the support for this security-conscious feature is already under way
-and will be continued in the coming months.
+This month, we introduced a native UTF-16 string type and began transitioning LibJS and LibWeb to use it internally. This simplifies the implementation and avoids subtle encoding-related bugs, especially with Unicode edge cases.
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_names_
+_Abhinav, Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, aplefull, Arran Ireland, ayeteadoe, Ben Eidson, Callum Law, Chase Knowlden, dmaivel, edvwib, Gingeh, Glenn Skrzypczak, Grant Knowlton, InvalidUsernameException, Jan Koudijs, Jelle Raaijmakers, Kemal Zebari, Kenneth Myhra, Lucien Fiorini, Luke Wilde, Manuel Zahariev, Michael Manganiello, mikiubo, norbiros, Olekoop, Philipp Dreher, Psychpsyo, rmgx, Rocco Corsi, Ryan Liptak, Sam Atkins, Shannon Booth, Tete17, Tim Ledbetter, Timothy Flynn, Trey Shaffer, Undefine, Veeti Paananen, zac_

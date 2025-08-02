@@ -16,7 +16,7 @@ export async function GET(context: APIContext) {
         author: post.data.author,
         pubDate: post.data.date,
         categories: [post.data.type],
-        link: `/posts/${post.slug}`,
+        link: `/posts/${post.id}`,
       })),
     trailingSlash: false,
   });

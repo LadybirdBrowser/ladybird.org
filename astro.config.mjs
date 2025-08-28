@@ -1,13 +1,15 @@
 import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
-
 import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://ladybird.org",
-  integrations: [tailwind(), sitemap(), mdx()],
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  integrations: [sitemap(), mdx()],
   // Special case the initial posts from before the astro transition.
   // These are the super-SEO'd links that were shared around.
   redirects: {
@@ -21,6 +23,7 @@ export default defineConfig({
     "/why-ladybird": "/posts/why-ladybird",
     "/why-ladybird.html": "/posts/why-ladybird",
     "/wire.pdf": "/organization#bank-details",
-    "/posts.xml": "/posts.rss",
+    "/posts.xml": "/feed.rss",
+    "/posts.rss": "/feed.rss",
   },
 });

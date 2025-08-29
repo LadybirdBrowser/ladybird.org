@@ -1,0 +1,56 @@
+---
+title: This Month in Ladybird - August 2025
+description: ?
+date: 2025-08-31
+draft: true
+---
+
+We just finished August and some things have happened.
+
+### Welcoming new sponsors
+
+...
+
+### Web Platform Tests (WPT)
+
+...
+
+### CSS `env()` function
+
+The CSS `env()` function lets authors style the page based on "environment variables": properties of the user's device,
+for example the safe area of the screen on a non-rectangular display, or the user's preferred text scale. This month we
+implemented support for it. Most of these environment variables apply more to mobile devices, but we have the groundwork
+for any future variables that might be added, as well as upcoming CSS features that allow author-defined variables.
+
+### CSS Typed OM API
+
+Since JavaScript was first able to interact with the style of page elements, the only way to do so has been using
+strings - reading a width as `"120px"` or the color as `"rgb(240, 246, 252)"`. This works, and it's intuitive to set the
+background-color to `"yellow"`, but it makes it very awkward to work with any values that are read. As CSS syntax gets
+more complex with features like `calc()` and `var()`, scripts would have to parse these values themselves into something
+meaningful. The Typed OM API, part of Houdini, provides an alternative where style properties have structured values
+that are easier to manipulate. A width would instead be a `CSSUnitValue` whose `value` is `120` and its `unit` is `"px"`.
+A color provides its different color channels as numbers. Calculations form a tree of functions, etc.
+
+This month we began the long process of implementing this API. So far, a few different types of value are readable, but
+we don't yet support setting values in this way, and many different JavaScript methods are unimplemented. But it's an
+encouraging start to a very exciting web feature.
+
+### CSS Pseudo-classes
+
+We gained another new pseudo-class this month: `:heading`, also in its `:heading()` form. As `:heading`, it applies to
+all of the `<h1>` ... `<h6>` elements, but the `:heading()` form lets authors specify which heading levels to target,
+for example `:heading(1, 3, 5)`.
+
+### CSS Clamping and Interpolation Improvements
+
+The result of a CSS calculation, or an interpolated value (using animations, transitions, or any other method), is
+required to be clamped and normalized to be valid where it appears. For example, `font-size` can't be negative, so
+`font-size: calc(1000px * -1)` would result in `0` not `-1000px`. Infinite and NaN values should also get replaced by
+finite numbers. We previously didn't apply these constraints, but this month we've started doing so more correctly.
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_NAMES_

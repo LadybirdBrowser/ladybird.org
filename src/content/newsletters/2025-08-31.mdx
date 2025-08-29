@@ -49,6 +49,18 @@ required to be clamped and normalized to be valid where it appears. For example,
 `font-size: calc(1000px * -1)` would result in `0` not `-1000px`. Infinite and NaN values should also get replaced by
 finite numbers. We previously didn't apply these constraints, but this month we've started doing so more correctly.
 
+### Gamepad API
+
+We implemented the [Gamepad API](https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API), which allows you to
+connect a gamepad and use it in Ladybird.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-aug-2025-gamepad.mp4"></source>
+</video>
+
+This was implemented with the [SDL3](https://www.libsdl.org) Gamepad API, making this work cross-platform and with all
+methods of connection out of the box, for example with Bluetooth.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

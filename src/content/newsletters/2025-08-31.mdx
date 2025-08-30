@@ -61,6 +61,11 @@ connect a gamepad and use it in Ladybird.
 This was implemented with the [SDL3](https://www.libsdl.org) Gamepad API, making this work cross-platform and with all
 methods of connection out of the box, for example with Bluetooth.
 
+### WebGL support on Linux
+
+Linux now has WebGL parity with macOS. The tricky part was cross-API GPU memory sharing between ANGLE and Skia.
+Erik Kurzinger [landed the DMA-BUF plumbing](https://github.com/LadybirdBrowser/ladybird/pull/5864) that unlocks it.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

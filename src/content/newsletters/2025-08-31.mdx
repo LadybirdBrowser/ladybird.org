@@ -92,7 +92,7 @@ Linux now has WebGL parity with macOS. The tricky part was cross-API GPU memory 
 We improved the layout logic for `<button>` elements inside flex layouts, allowing them to be sized correctly when
 needed. Additionally, we improved how coordinates were transformed from our layout tree to our painting tree, which is
 used to render everything to screen. This results in subtly improved visual rendering of tight-fitting grid and flex
-layouts.
+layouts. ([PR #5894](https://github.com/LadybirdBrowser/ladybird/pull/5894))
 
 ![](/assets/img/newsletter-aug-2025-duotrigordle.png)
 
@@ -101,7 +101,7 @@ layouts.
 Ladybird's layout logic needs to take all kinds of nested boxes and inline content into account when determining where
 everything needs to go. We were still lacking support for certain nested inline content; for example, a nested `<span>`
 could have padding, borders, or margins applied that should increase the size of its parent inline element. This was very
-noticeable in the top menu of the 'monobook' Wikipedia theme, which now looks great!
+noticeable in the top menu of the 'monobook' Wikipedia theme, which now looks great! ([PR #6000](https://github.com/LadybirdBrowser/ladybird/pull/6000))
 
 ![](/assets/img/newsletter-aug-2025-wikipedia-menu.png)
 

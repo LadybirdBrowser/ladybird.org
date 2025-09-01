@@ -84,6 +84,19 @@ noticeable in the top menu of the 'monobook' Wikipedia theme, which now looks gr
 
 ![](/assets/img/newsletter-aug-2025-wikipedia-menu.png)
 
+### Grapheme clusters
+
+A grapheme cluster is a sequence of one or more Unicode code points that are perceived as a single character by the user.
+For example, consider the "face with spiral eyes" emoji, 😵‍💫. This emoji consists of the code points U+1F635 (😵 dizzy face),
+U+200D (zero-width joiner), and U+1F4AB (💫 dizzy symbol). Special care must be taken by text processing systems to treat
+these code points as a single character during user interaction.
+
+This month, we improved our handling of grapheme clusters for both text editing and cursor placement. For example, we now
+take care to delete an entire grapheme cluster when the user presses the backspace key, rather than deleting a single
+code unit ([PR #5859](https://github.com/LadybirdBrowser/ladybird/pull/5859)). We also now place the cursor in the correct
+location when the user moves the cursor with the arrow keys ([PR #5868](https://github.com/LadybirdBrowser/ladybird/pull/5868))
+or clicks on / selects text ([PR #5930](https://github.com/LadybirdBrowser/ladybird/pull/5930)).
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

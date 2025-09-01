@@ -68,18 +68,19 @@ Erik Kurzinger [landed the DMA-BUF plumbing](https://github.com/LadybirdBrowser/
 
 ### Buttons inside flex layout
 
-We improved the layout logic for `<button>` elements inside flex layouts, allowing it to be sized correctly when needed.
-Additionally, we improved how coordinates were transformed from our layout tree to our painting tree, which is used to
-render everything to screen. This results in subtly improved visual rendering of tight-fitting grid and flex layouts.
+We improved the layout logic for `<button>` elements inside flex layouts, allowing them to be sized correctly when
+needed. Additionally, we improved how coordinates were transformed from our layout tree to our painting tree, which is
+used to render everything to screen. This results in subtly improved visual rendering of tight-fitting grid and flex
+layouts.
 
 ![](/assets/img/newsletter-aug-2025-duotrigordle.png)
 
 ### Nested inline margin boxes
 
 Ladybird's layout logic needs to take all kinds of nested boxes and inline contents into account when determining where
-everything needs to go. We were still lacking support for nested inline contents, where e.g. a `<span>` could have
-padding, borders or margins applied that would increase the size of its parent inline element. This was very noticeable
-in the top menu of the 'monobook' Wikipedia theme, which now looks great!
+everything needs to go. We were still lacking support for certain nested inline contents; for example, a nested `<span>`
+could have padding, borders or margins applied that should increase the size of its parent inline element. This was very
+noticeable in the top menu of the 'monobook' Wikipedia theme, which now looks great!
 
 ![](/assets/img/newsletter-aug-2025-wikipedia-menu.png)
 

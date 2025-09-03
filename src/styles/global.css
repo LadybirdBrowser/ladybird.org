@@ -22,6 +22,12 @@ html {
 body {
   margin: 0;
   font-family: "General Sans", sans-serif;
+  overflow-x: hidden;
+}
+
+section, header, footer {
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 img {

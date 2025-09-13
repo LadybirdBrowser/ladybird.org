@@ -48,9 +48,9 @@ All content is parsed through a zod type validator during the build step to ensu
 
 The six most recent posts will be displayed on the site at `/#news`
 
-A new content post can be added by going to `src/content/posts/[route].mdx` and configuring an mdx file like so:
+A new content post can be added by going to `src/content/posts/[route].md` and configuring an md file like so:
 
-```mdx
+```md
 ---
 title: Ladybird Forks from SerenityOS!
 author: Andreas Kling
@@ -69,9 +69,9 @@ Regular MD content here, but note you can embed HTML if you want to with tailwin
 
 ### Newsletter
 
-The newsletters while not currently being displayed render out to `/newsletter/YYYY-MM-DD` and can be added by creating a new one in `src/content/newsletter/[date].mdx`.
+The newsletters while not currently being displayed render out to `/newsletter/YYYY-MM-DD` and can be added by creating a new one in `src/content/newsletter/[date].md`.
 
-```mdx
+```md
 ---
 description: Ladybird browser initiative launched
 date: 2024-07-09

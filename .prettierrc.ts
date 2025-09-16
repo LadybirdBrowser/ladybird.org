@@ -14,4 +14,4 @@ export default {
       },
     },
   ],
-} satisfies import("prettier").Config
+} satisfies import("prettier").Config;

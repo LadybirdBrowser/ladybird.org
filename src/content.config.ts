@@ -17,10 +17,10 @@ const newsletter = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/newsletters" }),
   schema: z
     .object({
-      description: z.string().max(280),
+      description: z.string().max(280).optional(),
       date: z.date(),
       draft: z.boolean().optional(),
-      title: z.string().optional(),
+      title: z.string(),
     })
     .strict(),
 });

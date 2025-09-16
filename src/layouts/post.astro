@@ -1,9 +1,9 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 import BaseLayout from "@/layouts/base.astro";
 const { frontmatter } = Astro.props;
 
-type Props = { frontmatter: CollectionEntry<'posts'>['data'] };
+type Props = { frontmatter: CollectionEntry<"posts">["data"] };
 ---
 
 <BaseLayout
@@ -20,7 +20,7 @@ type Props = { frontmatter: CollectionEntry<'posts'>['data'] };
             <span
               class="bg-clip-text text-transparent bg-linear-to-r from-[#6d98cc] to-[#8a64e5]"
               >{frontmatter.author || "Announcement"}</span
-              >| {new Date(frontmatter.date).toUTCString().slice(0, 16)}
+            > | {new Date(frontmatter.date).toUTCString().slice(0, 16)}
           </p>
           <h1 class="text-white">{frontmatter.title}</h1>
         </div>

@@ -1,15 +1,15 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 import BaseLayout from "@/layouts/base.astro";
 const { frontmatter } = Astro.props;
 
-type Props = { frontmatter: CollectionEntry<'newsletter'>['data'] };
+type Props = { frontmatter: CollectionEntry<"newsletter">["data"] };
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
   <div class="min-h-screen">
     <section class="hero hero_single">
-      <div class="container custom-row">
+      <div class="container custom-row" style="flex-wrap: wrap; place-content: center;">
         <h1 class="mx-auto text-center text-white">
           This Month in <span>Ladybird</span><br />
           {frontmatter.date.toLocaleString("default", { month: "long" })}

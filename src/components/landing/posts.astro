@@ -1,10 +1,14 @@
 ---
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("posts");
-posts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
+const posts = (await getCollection("posts"))
+  .filter((post) => post.data.type !== "Hidden")
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .splice(0, 6);
+const newsletter = (await getCollection("newsletter"))
+  .filter((post) => post.data.draft !== true)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .splice(0, 3);
 ---
 
 <section class="news" id="news">
@@ -13,11 +17,29 @@ posts.sort(
     <div class="news__top">
       <h2>News &amp; Announcements</h2>
     </div>
+    <div class="news__grid" style="margin-bottom: 2rem;">
+      {
+        newsletter
+          .map((post) => {
+            return (
+              <a href={`/newsletter/${post.id}`}>
+                <div class="news__box">
+                  <div class="news__box-image">
+                    <div class="news__box-category">
+                      <span>Newsletter</span>
+                    </div>
+                    <img src={null} />
+                  </div>
+                  <h4>{post.data.title}</h4>
+                </div>
+              </a>
+            );
+          })
+      }
+    </div>
     <div class="news__grid">
       {
         posts
-          .filter((post) => post.data.type !== "Hidden")
-          .splice(0, 6)
           .map((post) => {
             return (
               <a href={`/posts/${post.id}`}>

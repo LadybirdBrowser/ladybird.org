@@ -181,7 +181,7 @@ header a, footer a {
   top: -200px;
   left: 0;
   z-index: 0;
-  background-image: url("../../../assets/img/why-eclipse.svg");
+  background-image: url("/assets/img/why-eclipse.svg");
   background-repeat: no-repeat;
   pointer-events: none;
   background-size: cover;
@@ -321,7 +321,7 @@ header a, footer a {
   top: 0;
   left: -30px;
   z-index: 0;
-  background-image: url("../../../assets/img/news-bg.webp");
+  background-image: url("/assets/img/news-bg.webp");
   background-repeat: no-repeat;
   background-size: cover;
   max-width: 688px;
@@ -423,7 +423,7 @@ header a, footer a {
   position: absolute;
   top: 0;
   right: 0;
-  background-image: url("../../../assets/img/get-involved.webp");
+  background-image: url("/assets/img/get-involved.webp");
   background-repeat: no-repeat;
   background-size: cover;
   width: 100%;
@@ -447,7 +447,7 @@ header a, footer a {
   top: -200px;
   right: 0;
   z-index: 0;
-  background-image: url("../../../assets/img/sponsors-big-eclipse.svg");
+  background-image: url("/assets/img/sponsors-big-eclipse.svg");
   background-repeat: no-repeat;
   background-size: cover;
   width: 829px;
@@ -460,7 +460,7 @@ header a, footer a {
   top: 250px;
   left: 0;
   z-index: 0;
-  background-image: url("../../../assets/img/sponsors-medium-eclipse.svg");
+  background-image: url("/assets/img/sponsors-medium-eclipse.svg");
   background-repeat: no-repeat;
   background-size: cover;
   max-width: 829px;
@@ -485,7 +485,7 @@ header a, footer a {
   top: -200px;
   right: 0;
   z-index: 0;
-  background-image: url("../../../assets/img/faq-eclipse-top.svg");
+  background-image: url("/assets/img/faq-eclipse-top.svg");
   background-repeat: no-repeat;
   background-size: cover;
   width: 500px;
@@ -498,7 +498,7 @@ header a, footer a {
   bottom: 0;
   left: 0;
   z-index: 0;
-  background-image: url("../../../assets/img/faq-eclipse-bottom.svg");
+  background-image: url("/assets/img/faq-eclipse-bottom.svg");
   background-repeat: no-repeat;
   background-size: cover;
   width: 500px;

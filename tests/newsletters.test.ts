@@ -1,6 +1,6 @@
 import { expect, test, describe } from "bun:test";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const rootDir: string = path.join(__dirname, "../");
 
@@ -13,7 +13,7 @@ describe("Newsletters", () => {
     .filter((file) => file.endsWith(".mdx"));
 
   test("Draft pages should be excluded in build", async () => {
-    mdFiles.forEach((file) => {
+    for (const file of mdFiles) {
       const filePath = path.join(srcDir, file);
       const htmlFile = file.replace(".mdx", "/index.html");
       const htmlFilePath = path.join(distDir, htmlFile);
@@ -24,6 +24,6 @@ describe("Newsletters", () => {
       } else {
         expect(fs.existsSync(htmlFilePath)).toBe(true);
       }
-    });
+    }
   });
 });

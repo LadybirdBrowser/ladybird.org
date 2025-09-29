@@ -15,8 +15,10 @@ const { title, description, author, image } = Astro.props;
     />
   </head>
   <body>
-    <Navigation />
-    <slot />
-    <Footer />
+    <main>
+      <Navigation />
+      <slot />
+      <Footer />
+    </main>
   </body>
 </html>

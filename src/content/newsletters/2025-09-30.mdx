@@ -52,6 +52,19 @@ been nice to finally see some results!
 This month, a lot of the underlying machinery for this has been implemented ([PR #5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)).
 It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
 
+### Trusted Types
+
+Carrying on the initial work from last month, we now support the following features of Trusted Types:
+
+- [TrustedTypePolicyFactory#emptyHTML](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyHTML): Provides a guaranteed empty TrustedHTML object.
+- [TrustedTypePolicyFactory#emptyScript](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyScript): Provides a guaranteed empty TrustedScript object.
+- [required-trusted-types-for](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for): Allows you to only allow Trusted Type objects to go into the stated injection sinks, which is currently only 'script'.
+- HTMLScriptElement now accomodates Trusted Types
+
+There is still ongoing work to accomodate Trusted Types in other areas, such as the DOM APIs.
+
+(PRs [#5828](https://github.com/LadybirdBrowser/ladybird/pull/5828), [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6058](https://github.com/LadybirdBrowser/ladybird/pull/6058))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

@@ -73,7 +73,21 @@ permitted to sell or share information about your activity on that website. It a
 of its goals due to a lack of legal enforcement. GPC, on the other hand, has legislation in progress to actually require
 websites to respect the feature.
 
-This month, we've replaced our DNT implementation with GPC, and it can be enabled on our settings page!
+This month, we've replaced our DNT implementation with GPC ([PR #6175](https://github.com/LadybirdBrowser/ladybird/pull/6175)),
+and it can be enabled on our settings page!
+
+### Generating application menus
+
+Ladybird currently has two UI frontends. On macOS, we use [AppKit](https://developer.apple.com/documentation/appkit?language=objc)
+for a native-appearing application; all other systems currently fall back to a [Qt6](https://www.qt.io/product/qt6) UI.
+We've made many strides over the years to de-duplicate large batches of code between the frontends, via our LibWebView
+library. This library is UI-agnostic, and is responsible for managing the ability to render web sites.
+
+The largest remaining area of code duplication was around creating application & context menus. Each UI had to create
+these menus and their invocation actions individually. This month, we've introduced the ability to define these menus
+and actions in LibWebView, from which our UIs now generate their frontend menus ([PRs #6062](https://github.com/LadybirdBrowser/ladybird/pull/6062),
+[#6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This not only makes maintaining our UIs simpler, but
+now developers can define a menu item in a single location and each UI will automatically pick it up.
 
 ### Credits
 

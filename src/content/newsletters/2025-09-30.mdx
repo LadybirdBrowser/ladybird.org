@@ -65,6 +65,16 @@ There is still ongoing work to accomodate Trusted Types in other areas, such as 
 
 (PRs [#5828](https://github.com/LadybirdBrowser/ladybird/pull/5828), [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6058](https://github.com/LadybirdBrowser/ladybird/pull/6058))
 
+### Global Privacy Control
+
+[Global Privacy Control](https://globalprivacycontrol.org/) (GPC) is a feature to notify websites that they are not
+permitted to sell or share information about your activity on that website. It aims to be a replacement for the
+[Do Not Track](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack) (DNT) feature, which fell short
+of its goals due to a lack of legal enforcement. GPC, on the other hand, has legislation in progress to actually require
+websites to respect the feature.
+
+This month, we've replaced our DNT implementation with GPC, and it can be enabled on our settings page!
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

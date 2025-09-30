@@ -24,6 +24,34 @@ Progress on [WPT](https://web-platform-tests.org) continues. This month we squee
 For context, here are the current top 6 browser engines and their WPT scores today vs one month ago.
 FIXME: Image.
 
+### Custom property handling
+
+Ladybird has supported CSS custom properties (also known as "variables") for a long time now, but there are many little
+nuances that we didn't get quite right, especially when examining them from JavaScript.
+This month, we made the `!important` keyword work for them ([PR #6329](https://github.com/LadybirdBrowser/ladybird/pull/6329)),
+exposed them in `CSSStyleProperties` ([PR #5989](https://github.com/LadybirdBrowser/ladybird/pull/5989)),
+made sure they appear in the correct order ([PR #6226](https://github.com/LadybirdBrowser/ladybird/pull/6226)),
+and added them to the properties list in the dev tools ([PR #6311](https://github.com/LadybirdBrowser/ladybird/pull/6311)).
+
+### DevTools improvements
+
+Speaking of dev tools, we also fixed some issues where layout information would not be displayed ([PR #6312](https://github.com/LadybirdBrowser/ladybird/pull/6312)),
+and where the style sheets list would not appear in some circumstances ([PR #6315](https://github.com/LadybirdBrowser/ladybird/pull/6315)).
+
+### CSS Typed OM API
+
+Carrying on from last month, we now implement the various CSSStyleValue classes for transform functions, which is
+finally enough for most of the WPT tests to run instead of crashing immediately. There's still a lot to do, but it's
+been nice to finally see some results!
+(PRs [#6162](https://github.com/LadybirdBrowser/ladybird/pull/6162), [#6176](https://github.com/LadybirdBrowser/ladybird/pull/6176), and [#6227](https://github.com/LadybirdBrowser/ladybird/pull/6227).)
+
+### View transitions
+
+[View transitions](https://drafts.csswg.org/css-view-transitions-1/) are a way of animating between page states
+(for example, from a product list to the details for one product), or even between different pages.
+This month, a lot of the underlying machinery for this has been implemented ([PR #5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)).
+It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

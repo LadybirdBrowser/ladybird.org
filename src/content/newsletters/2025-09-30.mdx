@@ -89,6 +89,13 @@ and actions in LibWebView, from which our UIs now generate their frontend menus 
 [#6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This not only makes maintaining our UIs simpler, but
 now developers can define a menu item in a single location and each UI will automatically pick it up.
 
+### Improved selection handling
+
+We had a lot of noticeable issues when trying to copy selected text - more often than not, a different part of the text
+would get copied. Turns out, the way we dealt with whitespace collapsing caused the text offsets to be shifted. This
+also caused our [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) offsets to be wrong. We now take care to
+better map the original text offsets to the text you can select on screen. (PR [#6169](https://github.com/LadybirdBrowser/ladybird/pull/6169))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

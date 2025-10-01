@@ -2,7 +2,7 @@
 title: This Month in Ladybird - September 2025
 description: ?
 date: 2025-09-30
-draft: true
+draft: false
 ---
 
 September wrapped up with 207 merged PRs from 40 contributors. Let’s take a look at some highlights:
@@ -11,7 +11,7 @@ September wrapped up with 207 merged PRs from 40 contributors. Let’s take a lo
 
 Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
-- [Cloudflare](https://cloudflare.com) with $100,000
+- [Cloudflare](https://cloudflare.com) with $100,000 ([their announcement](https://blog.cloudflare.com/supporting-the-future-of-the-open-web/))
 - [K15t](https://www.k15t.com) with $5,000
 - [Unkey](https://www.unkey.com) with $5,000
 
@@ -26,15 +26,15 @@ For context, here are the current top 6 browser engines and their WPT scores tod
 
 ### HTTP caching enabled by default
 
-An HTTP cache has been in the works for a while, but until now it was hidden behind a flag. This month we enabled it by default, making repeated navigations much faster. ([PR #6119](https://github.com/LadybirdBrowser/ladybird/pull/6119))
+An HTTP cache has been in the works for a while, but until now it was hidden behind a flag. This month we enabled it by default, making repeated navigations much faster. (PR [#6119](https://github.com/LadybirdBrowser/ladybird/pull/6119))
 
 ### CSS custom property handling
 
-Ladybird has supported CSS custom properties (also known as "variables") for a while, but there were lots of little gaps. This month we fixed `!important` handling ([PR #6329](https://github.com/LadybirdBrowser/ladybird/pull/6329)), exposed them in `CSSStyleProperties` ([PR #5989](https://github.com/LadybirdBrowser/ladybird/pull/5989)), ensured the correct order is preserved ([PR #6226](https://github.com/LadybirdBrowser/ladybird/pull/6226)), and added them to the properties list in dev tools ([PR #6311](https://github.com/LadybirdBrowser/ladybird/pull/6311)).
+Ladybird has supported CSS custom properties (also known as "variables") for a while, but there were lots of little gaps. This month we fixed `!important` handling (PR [#6329](https://github.com/LadybirdBrowser/ladybird/pull/6329)), exposed them in `CSSStyleProperties` (PR [#5989](https://github.com/LadybirdBrowser/ladybird/pull/5989)), ensured the correct order is preserved (PR [#6226](https://github.com/LadybirdBrowser/ladybird/pull/6226)), and added them to the properties list in dev tools (PR [#6311](https://github.com/LadybirdBrowser/ladybird/pull/6311)).
 
 ### DevTools improvements
 
-We also fixed some issues where layout information would not be displayed ([PR #6312](https://github.com/LadybirdBrowser/ladybird/pull/6312)), and where the style sheets list would sometimes not appear ([PR #6315](https://github.com/LadybirdBrowser/ladybird/pull/6315)).
+We also fixed some issues where layout information would not be displayed (PR [#6312](https://github.com/LadybirdBrowser/ladybird/pull/6312)), and where the style sheets list would sometimes not appear (PR [#6315](https://github.com/LadybirdBrowser/ladybird/pull/6315)).
 
 ### CSS Typed OM API
 
@@ -43,7 +43,7 @@ Carrying on from last month, we now implement the various [CSSStyleValue](https:
 
 ### View transitions
 
-[View transitions](https://drafts.csswg.org/css-view-transitions-1/) are a way of animating between page states (for example, from a product list to the details for one product), or even between different pages. This month, a lot of the underlying machinery for this has been implemented ([PR #5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)). It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
+[View transitions](https://drafts.csswg.org/css-view-transitions-1/) are a way of animating between page states (for example, from a product list to the details for one product), or even between different pages. This month, a lot of the underlying machinery for this has been implemented (PR [#5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)). It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
 
 ### Trusted Types
 
@@ -59,15 +59,15 @@ There is still ongoing work to accommodate Trusted Types in other areas, such as
 
 ### Global Privacy Control
 
-[Global Privacy Control](https://globalprivacycontrol.org/) (GPC) notifies websites that they are not permitted to sell or share information about your activity. Unlike the old [Do Not Track](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack) header, GPC is backed by legislation requiring websites to respect it. This month, we've replaced our DNT implementation with GPC ([PR #6175](https://github.com/LadybirdBrowser/ladybird/pull/6175)), and it can be enabled in the settings page.
+[Global Privacy Control](https://globalprivacycontrol.org/) (GPC) notifies websites that they are not permitted to sell or share information about your activity. Unlike the old [Do Not Track](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack) header, GPC is backed by legislation requiring websites to respect it. This month, we've replaced our DNT implementation with GPC (PR [#6175](https://github.com/LadybirdBrowser/ladybird/pull/6175)), and it can be enabled in the settings page.
 
 ### Generating application menus
 
-Ladybird currently has two UI frontends: [AppKit](https://developer.apple.com/documentation/appkit?language=objc) on macOS, and [Qt6](https://www.qt.io/product/qt6) on other systems. The biggest remaining duplication between them was around menus. This month we introduced shared menu definitions in LibWebView, from which each frontend now generates its menus ([PR #6062](https://github.com/LadybirdBrowser/ladybird/pull/6062), [PR #6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This makes maintaining our UIs simpler, and developers can now define a menu item once and have it appear in both.
+Ladybird currently has two UI frontends: [AppKit](https://developer.apple.com/documentation/appkit?language=objc) on macOS, and [Qt6](https://www.qt.io/product/qt6) on other systems. The biggest remaining duplication between them was around menus. This month we introduced shared menu definitions in LibWebView, from which each frontend now generates its menus (PR [#6062](https://github.com/LadybirdBrowser/ladybird/pull/6062), PR [#6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This makes maintaining our UIs simpler, and developers can now define a menu item once and have it appear in both.
 
 ### Improved selection handling
 
-Copying selected text often gave the wrong result, due to how whitespace collapsing shifted offsets. This also caused our [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) offsets to be wrong. We now better map the original text offsets to what you see on screen. ([PR #6169](https://github.com/LadybirdBrowser/ladybird/pull/6169))
+Copying selected text often gave the wrong result, due to how whitespace collapsing shifted offsets. This also caused our [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) offsets to be wrong. We now better map the original text offsets to what you see on screen. (PR [#6169](https://github.com/LadybirdBrowser/ladybird/pull/6169))
 
 ### ::slotted() pseudo-element support
 
@@ -77,15 +77,15 @@ We added support for the `::slotted()` pseudo-element, which allows styling of e
 
 ### Animation compositing
 
-This month we added support for animation compositing via the [`animation-composition`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-composition) property ([PR #6233](https://github.com/LadybirdBrowser/ladybird/pull/6233)) and the [`KeyframeEffect.composite`](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite) API ([PR #6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These features let authors control how animations are combined when multiple animations affect the same property.
+This month we added support for animation compositing via the [`animation-composition`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-composition) property (PR [#6233](https://github.com/LadybirdBrowser/ladybird/pull/6233)) and the [`KeyframeEffect.composite`](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite) API (PR [#6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These features let authors control how animations are combined when multiple animations affect the same property.
 
 ### Stable setTimeout() firing order
 
-When many `setTimeout(..., 1)` calls arrive in quick succession, several timers can share the same deadline. Previously, those ties were resolved arbitrarily. We now assign each timer a sequence ID and break ties by (deadline, sequence_id), ensuring equal-deadline timers fire in the order they were registered. ([PR #6260](https://github.com/LadybirdBrowser/ladybird/pull/6260))
+When many `setTimeout(..., 1)` calls arrive in quick succession, several timers can share the same deadline. Previously, those ties were resolved arbitrarily. We now assign each timer a sequence ID and break ties by (deadline, sequence_id), ensuring equal-deadline timers fire in the order they were registered. (PR [#6260](https://github.com/LadybirdBrowser/ladybird/pull/6260))
 
 ### HarfBuzz text shaping cache
 
-One of the most common tasks in any browser engine is measuring text. We delegate this work to [HarfBuzz](https://harfbuzz.github.io), but shaping text is complex and can be slow. We now cache shaping results to avoid recalculating them, which drastically improves performance on text-heavy pages like Wikipedia and news sites.
+One of the most common tasks in any browser engine is measuring text. We delegate this work to [HarfBuzz](https://harfbuzz.github.io), but shaping text is complex and can be slow. We now cache shaping results to avoid recalculating them, which drastically improves performance on text-heavy pages like Wikipedia and news sites. (PR [#6254](https://github.com/LadybirdBrowser/ladybird/pull/6254))
 
 ### Credits
 

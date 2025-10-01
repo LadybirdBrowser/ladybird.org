@@ -280,15 +280,6 @@ header a, footer a {
   background-color: #2a1373;
 }
 
-.why__slide h4 {
-  margin-bottom: 14px;
-  color: #fff;
-}
-
-.why__slide p {
-  color: #fff;
-}
-
 .news {
   position: relative;
   margin: 30px 20px 100px 20px;
@@ -384,13 +375,6 @@ header a, footer a {
   text-transform: uppercase;
   color: #fff;
   padding: 5px 13px;
-}
-
-.news__box h4 {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 150%;
-  margin-bottom: 10px;
 }
 
 .news__box p {

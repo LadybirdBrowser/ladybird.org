@@ -5,7 +5,7 @@ date: 2025-09-30
 draft: true
 ---
 
-September has ended, and we wrapped up the month with XX merged PRs from XX contributors.
+September wrapped up with 207 merged PRs from 40 contributors. Let’s take a look at some highlights:
 
 ### Welcoming new sponsors
 
@@ -19,105 +19,76 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 ### Web Platform Tests (WPT)
 
-Progress on [WPT](https://web-platform-tests.org) continues. This month we squeezed out XX new passes for a total of XX.
+Progress on [WPT](https://web-platform-tests.org) continues. This month we squeezed out 13,405 new passes for a total of 1,853,367.
 
 For context, here are the current top 6 browser engines and their WPT scores today vs one month ago.
-FIXME: Image.
+![](/assets/img/newsletter-sep-2025-wpt.gif)
 
-### Custom property handling
+### HTTP caching enabled by default
 
-Ladybird has supported CSS custom properties (also known as "variables") for a long time now, but there are many little
-nuances that we didn't get quite right, especially when examining them from JavaScript.
-This month, we made the `!important` keyword work for them ([PR #6329](https://github.com/LadybirdBrowser/ladybird/pull/6329)),
-exposed them in `CSSStyleProperties` ([PR #5989](https://github.com/LadybirdBrowser/ladybird/pull/5989)),
-made sure they appear in the correct order ([PR #6226](https://github.com/LadybirdBrowser/ladybird/pull/6226)),
-and added them to the properties list in the dev tools ([PR #6311](https://github.com/LadybirdBrowser/ladybird/pull/6311)).
+An HTTP cache has been in the works for a while, but until now it was hidden behind a flag. This month we enabled it by default, making repeated navigations much faster. ([PR #6119](https://github.com/LadybirdBrowser/ladybird/pull/6119))
+
+### CSS custom property handling
+
+Ladybird has supported CSS custom properties (also known as "variables") for a while, but there were lots of little gaps. This month we fixed `!important` handling ([PR #6329](https://github.com/LadybirdBrowser/ladybird/pull/6329)), exposed them in `CSSStyleProperties` ([PR #5989](https://github.com/LadybirdBrowser/ladybird/pull/5989)), ensured the correct order is preserved ([PR #6226](https://github.com/LadybirdBrowser/ladybird/pull/6226)), and added them to the properties list in dev tools ([PR #6311](https://github.com/LadybirdBrowser/ladybird/pull/6311)).
 
 ### DevTools improvements
 
-Speaking of dev tools, we also fixed some issues where layout information would not be displayed ([PR #6312](https://github.com/LadybirdBrowser/ladybird/pull/6312)),
-and where the style sheets list would not appear in some circumstances ([PR #6315](https://github.com/LadybirdBrowser/ladybird/pull/6315)).
+We also fixed some issues where layout information would not be displayed ([PR #6312](https://github.com/LadybirdBrowser/ladybird/pull/6312)), and where the style sheets list would sometimes not appear ([PR #6315](https://github.com/LadybirdBrowser/ladybird/pull/6315)).
 
 ### CSS Typed OM API
 
-Carrying on from last month, we now implement the various CSSStyleValue classes for transform functions, which is
-finally enough for most of the WPT tests to run instead of crashing immediately. There's still a lot to do, but it's
-been nice to finally see some results!
-(PRs [#6162](https://github.com/LadybirdBrowser/ladybird/pull/6162), [#6176](https://github.com/LadybirdBrowser/ladybird/pull/6176), and [#6227](https://github.com/LadybirdBrowser/ladybird/pull/6227).)
+Carrying on from last month, we now implement the various [CSSStyleValue](https://drafts.css-houdini.org/css-typed-om/#stylevalue-objects) classes for transform functions, which is finally enough for most of the WPT tests to run instead of crashing immediately. There's still a lot to do, but it's been nice to finally see some results!
+(PRs [#6162](https://github.com/LadybirdBrowser/ladybird/pull/6162), [#6176](https://github.com/LadybirdBrowser/ladybird/pull/6176), and [#6227](https://github.com/LadybirdBrowser/ladybird/pull/6227))
 
 ### View transitions
 
-[View transitions](https://drafts.csswg.org/css-view-transitions-1/) are a way of animating between page states
-(for example, from a product list to the details for one product), or even between different pages.
-This month, a lot of the underlying machinery for this has been implemented ([PR #5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)).
-It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
+[View transitions](https://drafts.csswg.org/css-view-transitions-1/) are a way of animating between page states (for example, from a product list to the details for one product), or even between different pages. This month, a lot of the underlying machinery for this has been implemented ([PR #5155](https://github.com/LadybirdBrowser/ladybird/pull/5155)). It's going to take a bit longer before it's usable, but it's a good start to an exciting new web feature.
 
 ### Trusted Types
 
 Carrying on the initial work from last month, we now support the following features of Trusted Types:
 
-- [TrustedTypePolicyFactory#emptyHTML](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyHTML): Provides a guaranteed empty TrustedHTML object.
-- [TrustedTypePolicyFactory#emptyScript](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyScript): Provides a guaranteed empty TrustedScript object.
-- [required-trusted-types-for](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for): Allows you to only allow Trusted Type objects to go into the stated injection sinks, which is currently only 'script'.
-- HTMLScriptElement now accommodates Trusted Types
+- [TrustedTypePolicyFactory#emptyHTML](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyHTML)
+- [TrustedTypePolicyFactory#emptyScript](https://developer.mozilla.org/en-US/docs/Web/API/TrustedTypePolicyFactory/emptyScript)
+- [required-trusted-types-for](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/require-trusted-types-for)
+- Trusted Types support in `HTMLScriptElement`
 
 There is still ongoing work to accommodate Trusted Types in other areas, such as the DOM APIs.
-
-(PRs [#5828](https://github.com/LadybirdBrowser/ladybird/pull/5828), [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6058](https://github.com/LadybirdBrowser/ladybird/pull/6058))
+(PRs [#5828](https://github.com/LadybirdBrowser/ladybird/pull/5828), [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057), [#6058](https://github.com/LadybirdBrowser/ladybird/pull/6058))
 
 ### Global Privacy Control
 
-[Global Privacy Control](https://globalprivacycontrol.org/) (GPC) is a feature to notify websites that they are not
-permitted to sell or share information about your activity on that website. It aims to be a replacement for the
-[Do Not Track](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack) (DNT) feature, which fell short
-of its goals due to a lack of legal enforcement. GPC, on the other hand, has legislation in progress to actually require
-websites to respect the feature.
-
-This month, we've replaced our DNT implementation with GPC ([PR #6175](https://github.com/LadybirdBrowser/ladybird/pull/6175)),
-and it can be enabled on our settings page!
+[Global Privacy Control](https://globalprivacycontrol.org/) (GPC) notifies websites that they are not permitted to sell or share information about your activity. Unlike the old [Do Not Track](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack) header, GPC is backed by legislation requiring websites to respect it. This month, we've replaced our DNT implementation with GPC ([PR #6175](https://github.com/LadybirdBrowser/ladybird/pull/6175)), and it can be enabled in the settings page.
 
 ### Generating application menus
 
-Ladybird currently has two UI frontends. On macOS, we use [AppKit](https://developer.apple.com/documentation/appkit?language=objc)
-for a native-appearing application; all other systems currently fall back to a [Qt6](https://www.qt.io/product/qt6) UI.
-We've made many strides over the years to de-duplicate large batches of code between the frontends, via our LibWebView
-library. This library is UI-agnostic, and is responsible for managing the ability to render websites.
-
-The largest remaining area of code duplication was around creating application & context menus. Each UI had to create
-these menus and their invocation actions individually. This month, we've introduced the ability to define these menus
-and actions in LibWebView, from which our UIs now generate their frontend menus ([PRs #6062](https://github.com/LadybirdBrowser/ladybird/pull/6062),
-[#6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This not only makes maintaining our UIs simpler, but
-now developers can define a menu item in a single location and each UI will automatically pick it up.
+Ladybird currently has two UI frontends: [AppKit](https://developer.apple.com/documentation/appkit?language=objc) on macOS, and [Qt6](https://www.qt.io/product/qt6) on other systems. The biggest remaining duplication between them was around menus. This month we introduced shared menu definitions in LibWebView, from which each frontend now generates its menus ([PR #6062](https://github.com/LadybirdBrowser/ladybird/pull/6062), [PR #6221](https://github.com/LadybirdBrowser/ladybird/pull/6221)). This makes maintaining our UIs simpler, and developers can now define a menu item once and have it appear in both.
 
 ### Improved selection handling
 
-We had a lot of noticeable issues when trying to copy selected text - more often than not, a different part of the text
-would get copied. Turns out, the way we dealt with whitespace collapsing caused the text offsets to be shifted. This
-also caused our [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) offsets to be wrong. We now take care to
-better map the original text offsets to the text you can select on screen. (PR [#6169](https://github.com/LadybirdBrowser/ladybird/pull/6169))
+Copying selected text often gave the wrong result, due to how whitespace collapsing shifted offsets. This also caused our [Range](https://developer.mozilla.org/en-US/docs/Web/API/Range) offsets to be wrong. We now better map the original text offsets to what you see on screen. ([PR #6169](https://github.com/LadybirdBrowser/ladybird/pull/6169))
 
 ### ::slotted() pseudo-element support
 
-The pseudo-element allows styling of elements that are passed into a shadow DOM slot from outside the shadow tree.
+We added support for the `::slotted()` pseudo-element, which allows styling of elements passed into shadow DOM slots.
 
 ![](/assets/img/newsletter-sep-2025-rt-slotted-selector-progress.png)
 
 ### Animation compositing
 
-This month we added support for animation compositing via the [`animation-composition`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-composition)
-property (PR [#6233](https://github.com/LadybirdBrowser/ladybird/pull/6233)) and the,[`KeyframeEffect.composite`](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite)
-API (PR [#6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These features allow the user to control how
-animations are combined when more than one apply to the same property, allowing for more complex layering of
-animations.
+This month we added support for animation compositing via the [`animation-composition`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-composition) property ([PR #6233](https://github.com/LadybirdBrowser/ladybird/pull/6233)) and the [`KeyframeEffect.composite`](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite) API ([PR #6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These features let authors control how animations are combined when multiple animations affect the same property.
 
 ### Stable setTimeout() firing order
 
-When many `setTimeout(..., 1)` calls arrive in quick succession, several timers can share the same deadline. Previously, those ties were resolved arbitrarily.
-We now assign each timer a monotonically increasing sequence id and break ties by (deadline, sequence_id), guaranteeing that equal-deadline timers fire in the
-order they were registered. (PR [#6260](https://github.com/LadybirdBrowser/ladybird/pull/6260))
+When many `setTimeout(..., 1)` calls arrive in quick succession, several timers can share the same deadline. Previously, those ties were resolved arbitrarily. We now assign each timer a sequence ID and break ties by (deadline, sequence_id), ensuring equal-deadline timers fire in the order they were registered. ([PR #6260](https://github.com/LadybirdBrowser/ladybird/pull/6260))
+
+### HarfBuzz text shaping cache
+
+One of the most common tasks in any browser engine is measuring text. We delegate this work to [HarfBuzz](https://harfbuzz.github.io), but shaping text is complex and can be slow. We now cache shaping results to avoid recalculating them, which drastically improves performance on text-heavy pages like Wikipedia and news sites.
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_list of names_
+_Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, ayeteadoe, Callum Law, euro20179, Feng Yu, InvalidUsernameException, Jan Koudijs, Jelle Raaijmakers, Julian Dominguez-Schatz, Kemal Zebari, Kenneth Myhra, Lorenz A, Louis Dalibard, luizgfc, Luke Wilde, Marcos Del Sol Vives, me-it-is, MFMF-EGY, mikiubo, Niccolo Antonelli Dziri, Nico Weber, Pascal Pomper, Pavel Shliak, Pratyush Nair, Psychpsyo, R-Goc, Rocco Corsi, Sam Atkins, Shannon Booth, Shivendra Kumar, Tete17, Tim Ledbetter, Timothy Flynn, Veeti Paananen, zac, Zaggy1024_

@@ -102,6 +102,14 @@ The pseudo-element allows styling of elements that are passed into a shadow DOM 
 
 ![](/assets/img/newsletter-sep-2025-rt-slotted-selector-progress.png)
 
+### Animation compositing
+
+This month we added support for animation compositing via the [`animation-composition`](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-composition)
+property (PR [#6233](https://github.com/LadybirdBrowser/ladybird/pull/6233)) and the,[`KeyframeEffect.composite`](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite)
+API (PR [#6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These features allow the user to control how
+animations are combined when more than one apply to the same property, allowing for more complex layering of
+animations.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

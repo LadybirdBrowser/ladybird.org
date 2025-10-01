@@ -110,6 +110,12 @@ API (PR [#6213](https://github.com/LadybirdBrowser/ladybird/pull/6213)). These f
 animations are combined when more than one apply to the same property, allowing for more complex layering of
 animations.
 
+### Stable setTimeout() firing order
+
+When many `setTimeout(..., 1)` calls arrive in quick succession, several timers can share the same deadline. Previously, those ties were resolved arbitrarily.
+We now assign each timer a monotonically increasing sequence id and break ties by (deadline, sequence_id), guaranteeing that equal-deadline timers fire in the
+order they were registered. (PR [#6260](https://github.com/LadybirdBrowser/ladybird/pull/6260))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

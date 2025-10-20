@@ -1,5 +1,16 @@
 ---
-const sponsors = [
+type Sponsor = {
+  name: string;
+  href?: string;
+  logo?: string;
+};
+
+type SponsorTier = {
+  name: string;
+  sponsors: Sponsor[];
+};
+
+const sponsors: SponsorTier[] = [
   {
     name: "Platinum",
     sponsors: [

@@ -8,26 +8,30 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "format": "prettier --write \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\"",
-    "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
+    "check": "astro check",
+    "format": "prettier --write \"**/*.{astro,ts,tsx,md,js,cjs,mjs,jsx}\"",
+    "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,js,cjs,mjs,jsx}\""
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "@types/bun": "latest",
-    "fast-xml-parser": "^4.5.3",
+    "fast-xml-parser": "^5.2.3",
     "kleur": "^4.1.5",
-    "prettier": "^3.5.3",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier": "^3.6.2",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@astrojs/mdx": "3.1.3",
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.4.0",
-    "@astrojs/tailwind": "^5.1.5",
-    "@astrojs/ts-plugin": "^1.10.4",
-    "astro": "^4.16.18",
-    "tailwindcss": "^3.4.17"
-  }
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/rss": "^4.0.12",
+    "@astrojs/sitemap": "^3.5.1",
+    "@tailwindcss/vite": "^4.1.13",
+    "astro": "^5.13.7",
+    "tailwindcss": "^4.1.13"
+  },
+  "trustedDependencies": [
+    "@tailwindcss/oxide"
+  ]
 }

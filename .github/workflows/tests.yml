@@ -14,10 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout your repository using git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
       - name: Install & Build
-        uses: withastro/action@v2
+        uses: withastro/action@v4
+        with:
+          package-manager: bun
+
       - name: Test
         run: bun test
+
       - name: Format Check
         run: bun format:check

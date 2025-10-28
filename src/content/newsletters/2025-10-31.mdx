@@ -1,0 +1,44 @@
+---
+title: This Month in Ladybird - October 2025
+description: INSERT THINGS HERE
+date: 2025-10-31
+draft: true
+---
+
+(INTRO HERE)
+
+### Welcoming new sponsors
+
+(SPONSORS STUFF HERE)
+
+### Web Platform Tests (WPT)
+
+(WPT STUFF HERE)
+
+### `sibling-count()` and `sibling-index()`
+
+These are relatively new CSS functions that enable authors to style or animate elements differently depending on how
+many siblings they have and where they appear in that list.
+This month we implemented support for these. (PRs [#6426](https://github.com/LadybirdBrowser/ladybird/pull/6426) and
+[#6526](https://github.com/LadybirdBrowser/ladybird/pull/6526))
+
+### Accessibility DevTools
+
+![](/assets/img/newsletter-oct-2025-a11y-devtools.png)
+
+Since switching away from our own inspector to using Firefox's developer tools, we've been missing a few features we
+previously had. This month we reimplemented inspection of the accessibility tree - a structure parallel to the usual
+element tree that represents how tools like screen readers see the page. We don't yet support such tools, but being able
+to examine what's going on inside Ladybird will make that easier. (PR [#6462](https://github.com/LadybirdBrowser/ladybird/pull/6462))
+
+### CSS Typed OM progress
+
+Continuing from last month, we're still working on the CSS Typed OM API, which allows authors to get and set style
+properties using objects instead of strings. Ladybird now supports setting style with most types of CSSStyleValue.
+(PRs [#6370](https://github.com/LadybirdBrowser/ladybird/pull/6370), [#6378](https://github.com/LadybirdBrowser/ladybird/pull/6378), [#6440](https://github.com/LadybirdBrowser/ladybird/pull/6440), and [#6466](https://github.com/LadybirdBrowser/ladybird/pull/6466))
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+(HUMANS HERE)

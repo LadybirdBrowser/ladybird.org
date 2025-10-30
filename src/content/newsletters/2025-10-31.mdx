@@ -15,6 +15,16 @@ draft: true
 
 (WPT STUFF HERE)
 
+### HTTP Disk Cache
+
+Last month, we enabled our in-memory HTTP cache. This cache lives in a single WebContent process, and does not persist
+across browser restarts.
+
+We've now begun work an a persistent disk cache! (PRs [#6435](https://github.com/LadybirdBrowser/ladybird/pull/6435),
+[#6487](https://github.com/LadybirdBrowser/ladybird/pull/6487), [#6579](https://github.com/LadybirdBrowser/ladybird/pull/6579),
+and [#6645](https://github.com/LadybirdBrowser/ladybird/pull/6645)). This provides a second layer of caching, which will
+make visits to the same websites much faster.
+
 ### `sibling-count()` and `sibling-index()`
 
 These are relatively new CSS functions that enable authors to style or animate elements differently depending on how

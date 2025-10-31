@@ -63,6 +63,16 @@ Continuing from last month, we're still working on the CSS Typed OM API, which a
 properties using objects instead of strings. Ladybird now supports setting style with most types of CSSStyleValue.
 (PRs [#6370](https://github.com/LadybirdBrowser/ladybird/pull/6370), [#6378](https://github.com/LadybirdBrowser/ladybird/pull/6378), [#6440](https://github.com/LadybirdBrowser/ladybird/pull/6440), and [#6466](https://github.com/LadybirdBrowser/ladybird/pull/6466))
 
+### Improved WebGL2 buffer support
+
+We've improved support for the WebGL2 `.readPixels()` method and implemented the `.getBufferSubData()` method, which
+are used to transfer pixel data between arbitrary buffers by libraries such as [SparkJS](https://sparkjs.dev/). (PR
+[#6637](https://github.com/LadybirdBrowser/ladybird/pull/6637))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-oct-2025-sparkjs.mp4"></source>
+</video>
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

@@ -25,6 +25,22 @@ We've now begun work an a persistent disk cache! (PRs [#6435](https://github.com
 and [#6645](https://github.com/LadybirdBrowser/ladybird/pull/6645)). This provides a second layer of caching, which will
 make visits to the same websites much faster.
 
+### Audio/Video Synchronization, Multi-Track Support
+
+Previously, our media playback implementation relied on separate, unrelated audio and video playback systems to play media files where both are present. This meant that it was possible for audio and video to desynchronize very easily, especially when their seeking behavior was inconsistent.
+
+This month, that implementation has been replaced with a singular new system which controls both the audio and the video, ensuring that they remain perfectly in sync at all times. (PR [#6410](https://github.com/LadybirdBrowser/ladybird/pull/6410))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-oct-2025-av-playback.mp4"></source>
+</video>
+
+As part of this reimplementation, several aspects of playback have improved:
+
+- Seeking is done asynchronously, and can therefore complete much faster. Scrubbing the timeline now previews the new playback position instantly, instead of waiting for the mouse button to be released.
+- Media elements now support the [audioTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/audioTracks) and [videoTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/videoTracks) properties, which allows scripts to interact with multiple audio or video tracks in a file, toggling them at will. The playback system mixes any enabled audio tracks into one output.
+- The [fastSeek()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/fastSeek) function now follows spec with regard to seeking forward when the target is later than the current position.
+
 ### `sibling-count()` and `sibling-index()`
 
 These are relatively new CSS functions that enable authors to style or animate elements differently depending on how

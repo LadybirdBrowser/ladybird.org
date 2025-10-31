@@ -91,6 +91,22 @@ An issue with offscreen framebuffers being cleared after frame presentation caus
   <source src="/assets/img/newsletter-oct-2025-pixijs-home.mp4"></source>
 </video>
 
+### WebGL progress on Google Maps
+
+There were some targetted WebGL fixes for Google Maps Globe View this month, including:
+
+- Respecting [UNPACK_FLIP_Y_WEBGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei)
+- Returning null for missing uniforms instead of -1
+- Calculating the correct pitch for 16-bit textures
+
+This made Globe View have much less visual issues, with the sky not rendering being the biggest remaining issue.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-oct-2025-google-maps-globe-view.mp4"></source>
+</video>
+
+(PR [#6558](https://github.com/LadybirdBrowser/ladybird/pull/6558))
+
 ### CSS and SVG gradients
 
 This month we've improved support for both CSS repeating linear gradients and SVG gradients with coordinates expressed

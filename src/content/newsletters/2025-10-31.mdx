@@ -90,6 +90,16 @@ in `objectBoundingBox` units. This results in many such gradients looking a lot 
 [6533](https://github.com/LadybirdBrowser/ladybird/pull/6533),
 [6592](https://github.com/LadybirdBrowser/ladybird/pull/6592))
 
+### CanvasPattern
+
+We had preliminary support in place for CanvasPattern, a way to create an image pattern based on an arbitrary image
+source such as a canvas, an `<img>` or even a video frame. We did not actually use this pattern in drawing commands
+though, causing some significant graphical artifacts. We do now, which causes the background on
+[slither.io](https://slither.io) to finally render correctly!
+(PR [6548](https://github.com/LadybirdBrowser/ladybird/pull/6548))
+
+![](/assets/img/newsletter-oct-2025-slither-io.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

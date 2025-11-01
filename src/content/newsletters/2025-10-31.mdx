@@ -173,6 +173,19 @@ Credit to ayeteadoe for the following images.
 
 (PR [#5981](https://github.com/LadybirdBrowser/ladybird/pull/5981))
 
+### Initial support for XPath evaluations
+
+Initial support for XPathEvaluator, XPathExpression, XPathResult, XPathNSResolver and Document.evaluate was added this month.
+It uses libxml2 under the hood to run XPath evaluations on an XML tree compatible with the library that is created from our parsed XML tree.
+This is a short-term solution to bring initial support to these classes, because there are differences between the DOM and XML implementations of XPath
+which are not possible to workaround with libxml2.
+
+This allows the htmx library to work in Ladybird, which is used by their website:
+
+![](/assets/img/newsletter-oct-2025-xpath-htmx.png)
+
+(PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

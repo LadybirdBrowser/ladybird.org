@@ -27,7 +27,7 @@ mainly due to the Wasm core tests being updated to Wasm 3.0.
 This bump has seen us pass over 90% of all WPT subtests for the first time! An important milestone, as this is one of
 the criteria Apple uses to determine eligibility for [alternative browser engines on iOS](https://developer.apple.com/support/alternative-browser-engines/).
 
-For context, here are the current top 6 browser engines and their WPT scores today vs one month ago.
+For context, here are the current top 6 browser engines and their WPT scores today vs. one month ago.
 (INSERT GRAPH HERE)
 
 ### HTTP disk cache
@@ -40,11 +40,50 @@ We've now begun work on a persistent disk cache! (PRs [#6435](https://github.com
 and [#6645](https://github.com/LadybirdBrowser/ladybird/pull/6645)). This provides a second layer of caching, which will
 make visits to the same websites much faster.
 
+### Performance work
+
+We've made a number of performance improvements this month. Some examples:
+
+- JS string performance optimizations (PRs [#6396](https://github.com/LadybirdBrowser/ladybird/pull/6396), [#6400](https://github.com/LadybirdBrowser/ladybird/pull/6400), [#6401](https://github.com/LadybirdBrowser/ladybird/pull/6401))
+- JS object property assignment optimization (PR [#6413](https://github.com/LadybirdBrowser/ladybird/pull/6413))
+- Inline caching for JS object property access in C++ (PR [#6474](https://github.com/LadybirdBrowser/ladybird/pull/6474))
+- Faster add/subtract/multiply of two Int32 values when result overflows (PR [#6414](https://github.com/LadybirdBrowser/ladybird/pull/6414))
+- Ignore repaints inside iframes with `visibility: hidden` (PR [#6555](https://github.com/LadybirdBrowser/ladybird/pull/6555))
+- Discard heavy UTF-32 buffers after parsing HTML (PR [#6561](https://github.com/LadybirdBrowser/ladybird/pull/6561))
+
+### Trusted Types in the DOM
+
+Continuing work from previous months, Trusted Types support was added to several DOM APIs:
+
+- HTMLIFrameElement: srcdoc
+- Element: setAttribute, setAttributeNS, setHTMLUnsafe, innerHTML, outerHTML, and insertAdjacentHTML
+- Document: write, writeln, and parseHTMLUnsafe
+- ShadowRoot: setHTMLUnsafe and innerHTML
+- DOMParser: parseFromString
+- Range: createContextualFragment
+- Worker, SharedWorker, and ServiceWorker constructors
+
+(PRs [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6424](https://github.com/LadybirdBrowser/ladybird/pull/6424))
+
+### Initial support for XPath evaluations
+
+Some basic support for XPathEvaluator, XPathExpression, XPathResult, XPathNSResolver, and Document.evaluate was added this month.
+
+It uses [libxml2](https://gitlab.gnome.org/GNOME/libxml2) under the hood to run XPath evaluations on an XML tree compatible with the library that is created from our parsed XML tree.
+
+This is a short-term solution to bring initial support to these classes, because there are differences between the DOM and XML implementations of XPath that are not possible to workaround with libxml2.
+
+This enables the htmx library to work in Ladybird:
+
+![](/assets/img/newsletter-oct-2025-xpath-htmx.png)
+
+(PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
+
 ### Audio/Video synchronization, multi-track support
 
 Previously, our media playback implementation relied on separate, unrelated audio and video playback systems to play media files where both are present. This meant that it was possible for audio and video to desynchronize very easily, especially when their seeking behavior was inconsistent.
 
-This month, that implementation has been replaced with a singular new system which controls both audio and video playback together, ensuring that they remain perfectly in sync at all times. (PR [#6410](https://github.com/LadybirdBrowser/ladybird/pull/6410))
+That implementation has now been replaced with a single new system that controls audio and video playback together, ensuring they remain in sync at all times. (PR [#6410](https://github.com/LadybirdBrowser/ladybird/pull/6410))
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-oct-2025-av-playback.mp4"></source>
@@ -53,15 +92,16 @@ This month, that implementation has been replaced with a singular new system whi
 As part of this reimplementation, several aspects of playback have improved:
 
 - Seeking is done asynchronously, and can therefore complete much faster. Scrubbing the timeline now previews the new playback position instantly, instead of waiting for the mouse button to be released.
-- Media elements now support the [audioTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/audioTracks) and [videoTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/videoTracks) properties, which allows scripts to interact with multiple audio or video tracks in a file, toggling them at will. The playback system mixes any enabled audio tracks into one output.
+- Media elements now support the [audioTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/audioTracks) and [videoTracks](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/videoTracks) properties, which allow scripts to interact with multiple audio or video tracks in a file, toggling them at will. The playback system mixes any enabled audio tracks into one output.
 - The [fastSeek()](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/fastSeek) function now follows spec with regard to seeking forward when the target is later than the current position.
 
-### `sibling-count()` and `sibling-index()`
+### Pinch-to-zoom support
 
-These are relatively new CSS functions that enable authors to style or animate elements differently depending on how
-many siblings they have and where they appear in that list.
-This month we implemented support for these. (PRs [#6426](https://github.com/LadybirdBrowser/ladybird/pull/6426) and
-[#6526](https://github.com/LadybirdBrowser/ladybird/pull/6526))
+Ladybird now supports pinch-to-zoom on macOS (AppKit UI). The `VisualViewport` API exposes the zoom transform.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-oct-2025-pinch-to-zoom.mp4"></source>
+</video>
 
 ### Accessibility DevTools
 
@@ -76,6 +116,30 @@ to examine what's going on inside Ladybird will make that easier. (PR [#6462](ht
 Continuing from last month, we're still working on the CSS Typed OM API, which allows authors to get and set style
 properties using objects instead of strings. Ladybird now supports setting style with most types of CSSStyleValue.
 (PRs [#6370](https://github.com/LadybirdBrowser/ladybird/pull/6370), [#6378](https://github.com/LadybirdBrowser/ladybird/pull/6378), [#6440](https://github.com/LadybirdBrowser/ladybird/pull/6440), and [#6466](https://github.com/LadybirdBrowser/ladybird/pull/6466))
+
+### `sibling-count()` and `sibling-index()`
+
+These are relatively new CSS functions that enable authors to style or animate elements differently depending on how
+many siblings they have and where they appear in that list.
+This month we implemented support for these. (PRs [#6426](https://github.com/LadybirdBrowser/ladybird/pull/6426) and
+[#6526](https://github.com/LadybirdBrowser/ladybird/pull/6526))
+
+### CSS and SVG gradients
+
+This month we've improved support for both CSS repeating linear gradients and SVG gradients with coordinates expressed
+in `objectBoundingBox` units. This results in many such gradients looking crisper and more correct! (PRs
+[6533](https://github.com/LadybirdBrowser/ladybird/pull/6533),
+[6592](https://github.com/LadybirdBrowser/ladybird/pull/6592))
+
+### CanvasPattern
+
+We had preliminary support in place for `CanvasPattern`, a way to create an image pattern based on an arbitrary image
+source such as a canvas, an `<img>` or even a video frame. We did not actually use this pattern in drawing commands
+though, causing some significant graphical artifacts. We do now, which causes the background on
+[slither.io](https://slither.io) to finally render correctly!
+(PR [#6548](https://github.com/LadybirdBrowser/ladybird/pull/6548))
+
+![](/assets/img/newsletter-oct-2025-slither-io.png)
 
 ### Improved WebGL2 buffer support
 
@@ -97,13 +161,13 @@ An issue with offscreen framebuffers being cleared after frame presentation caus
 
 ### WebGL progress on Google Maps
 
-There were some targeted WebGL fixes for Google Maps Globe View this month, including:
+There were some targeted WebGL fixes for Google Maps Globe View, including:
 
 - Respecting [UNPACK_FLIP_Y_WEBGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei)
 - Returning null for missing uniforms instead of -1
 - Calculating the correct pitch for 16-bit textures
 
-This made Globe View have much less visual issues, with the sky not rendering being the biggest remaining issue.
+This resulted in far fewer visual issues in Globe View; the sky still does not render and remains the biggest outstanding issue.
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-oct-2025-google-maps-globe-view.mp4"></source>
@@ -111,93 +175,22 @@ This made Globe View have much less visual issues, with the sky not rendering be
 
 (PR [#6558](https://github.com/LadybirdBrowser/ladybird/pull/6558))
 
-### CSS and SVG gradients
 
-This month we've improved support for both CSS repeating linear gradients and SVG gradients with coordinates expressed
-in `objectBoundingBox` units. This results in many such gradients looking a lot crispier and frankly, more correct! (PRs
-[6533](https://github.com/LadybirdBrowser/ladybird/pull/6533),
-[6592](https://github.com/LadybirdBrowser/ladybird/pull/6592))
+### Progress on Windows support
 
-### CanvasPattern
+While Windows support is not the focus for the alpha release in 2026, the community has continued to improve it.
 
-We had preliminary support in place for CanvasPattern, a way to create an image pattern based on an arbitrary image
-source such as a canvas, an `<img>` or even a video frame. We did not actually use this pattern in drawing commands
-though, causing some significant graphical artifacts. We do now, which causes the background on
-[slither.io](https://slither.io) to finally render correctly!
-(PR [#6548](https://github.com/LadybirdBrowser/ladybird/pull/6548))
-
-![](/assets/img/newsletter-oct-2025-slither-io.png)
-
-### Pinch-to-zoom support
-
-Ladybird now supports pinch-to-zoom on macOS (AppKit UI). VisualViewport API exposes the zoom transform.
-
-<video controls style="margin-bottom: 2em">
-  <source src="/assets/img/newsletter-oct-2025-pinch-to-zoom.mp4"></source>
-</video>
-
-### Trusted Types in the DOM
-
-Carrying on from the past couple months, Trusted Types support has been added to several DOM APIs:
-
-- HTMLIFrameElement: srcdoc
-- Element: setAttribute, setAttributeNS, setHTMLUnsafe, innerHTML, outerHTML and insertAdjacentHTML
-- Document: write, writeln and parseHTMLUnsafe
-- ShadowRoot: setHTMLUnsafe and innerHTML
-- DOMParser: parseFromString
-- Range: createContextualFragment
-- Worker, SharedWorker and ServiceWorker constructors
-
-(PRs [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6424](https://github.com/LadybirdBrowser/ladybird/pull/6424))
-
-### Ability to launch on Windows
-
-Whilst Windows support is not the focus for the alpha release in 2026, the community has continued to improve
-our Windows support. This month, Ladybird has successfully run on Windows for the first time!
-
-#### Loading a page from a file
-
-![](/assets/img/newsletter-oct-2025-windows-file-request.png)
-
-#### Loading a page from an HTTP request
-
-![](/assets/img/newsletter-oct-2025-windows-http-request.png)
-
-#### Loading a page from an HTTPS request
+This month, Ladybird ran on Windows for the first time:
 
 ![](/assets/img/newsletter-oct-2025-windows-https-request.png)
 
-#### Gamepad support
+Here's the Gamepad API working on Windows as well:
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-oct-2025-windows-gamepad-support.mp4"></source>
 </video>
 
 (PR [#5981](https://github.com/LadybirdBrowser/ladybird/pull/5981))
-
-### Initial support for XPath evaluations
-
-Initial support for XPathEvaluator, XPathExpression, XPathResult, XPathNSResolver and Document.evaluate was added this month.
-It uses libxml2 under the hood to run XPath evaluations on an XML tree compatible with the library that is created from our parsed XML tree.
-This is a short-term solution to bring initial support to these classes, because there are differences between the DOM and XML implementations of XPath
-which are not possible to workaround with libxml2.
-
-This allows the htmx library to work in Ladybird, which is used by their website:
-
-![](/assets/img/newsletter-oct-2025-xpath-htmx.png)
-
-(PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
-
-### Performance work
-
-We've made a number of performance improvements this month. Some examples:
-
-- JS string performance optimizations (PRs [#6396](https://github.com/LadybirdBrowser/ladybird/pull/6396), [#6400](https://github.com/LadybirdBrowser/ladybird/pull/6400), [#6401](https://github.com/LadybirdBrowser/ladybird/pull/6401))
-- JS object property assignment optimization (PR [#6413](https://github.com/LadybirdBrowser/ladybird/pull/6413))
-- Inline caching for JS object property access in C++ (PR [#6474](https://github.com/LadybirdBrowser/ladybird/pull/6474))
-- Faster add/subtract/multiply of two Int32 values when result overflows (PR [#6414](https://github.com/LadybirdBrowser/ladybird/pull/6414))
-- Ignore repaints inside iframe with `visibility: hidden` (PR [#6555](https://github.com/LadybirdBrowser/ladybird/pull/6555))
-- Discard heavy UTF-32 buffers after parsing HTML (PR [#6561](https://github.com/LadybirdBrowser/ladybird/pull/6561))
 
 ### Credits
 

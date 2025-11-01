@@ -1,6 +1,6 @@
 ---
 title: This Month in Ladybird - October 2025
-description: INSERT THINGS HERE
+description: Progress across caching, media, Trusted Types, XPath, CSS, WebGL, and even first runs on Windows.
 date: 2025-10-31
 draft: true
 ---
@@ -28,7 +28,8 @@ This bump has seen us pass over 90% of all WPT subtests for the first time! An i
 the criteria Apple uses to determine eligibility for [alternative browser engines on iOS](https://developer.apple.com/support/alternative-browser-engines/).
 
 For context, here are the current top 6 browser engines and their WPT scores today vs. one month ago.
-(INSERT GRAPH HERE)
+
+![](/assets/img/newsletter-oct-2025-wpt.gif)
 
 ### HTTP disk cache
 
@@ -55,29 +56,27 @@ We've made a number of performance improvements this month. Some examples:
 
 Continuing work from previous months, Trusted Types support was added to several DOM APIs:
 
-- HTMLIFrameElement: srcdoc
-- Element: setAttribute, setAttributeNS, setHTMLUnsafe, innerHTML, outerHTML, and insertAdjacentHTML
-- Document: write, writeln, and parseHTMLUnsafe
-- ShadowRoot: setHTMLUnsafe and innerHTML
-- DOMParser: parseFromString
-- Range: createContextualFragment
-- Worker, SharedWorker, and ServiceWorker constructors
+- `HTMLIFrameElement`: `srcdoc`
+- `Element`: `setAttribute`, `setAttributeNS`, `setHTMLUnsafe`, `innerHTML`, `outerHTML`, and `insertAdjacentHTML`
+- `Document`: `write`, `writeln`, and `parseHTMLUnsafe`
+- `ShadowRoot`: `setHTMLUnsafe` and `innerHTML`
+- `DOMParser`: `parseFromString`
+- `Range`: `createContextualFragment`
+- `Worker`, `SharedWorker`, and `ServiceWorker` constructors
 
 (PRs [#6057](https://github.com/LadybirdBrowser/ladybird/pull/6057) and [#6424](https://github.com/LadybirdBrowser/ladybird/pull/6424))
 
 ### Initial support for XPath evaluations
 
-Some basic support for XPathEvaluator, XPathExpression, XPathResult, XPathNSResolver, and Document.evaluate was added this month.
+Some basic support for `XPathEvaluator`, `XPathExpression`, `XPathResult`, `XPathNSResolver`, and `Document.evaluate` was added this month.
 
-It uses [libxml2](https://gitlab.gnome.org/GNOME/libxml2) under the hood to run XPath evaluations on an XML tree compatible with the library that is created from our parsed XML tree.
+It uses [libxml2](https://gitlab.gnome.org/GNOME/libxml2) under the hood to run XPath evaluations on an XML tree compatible with the library that is created from our parsed XML tree. (PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
 
-This is a short-term solution to bring initial support to these classes, because there are differences between the DOM and XML implementations of XPath that are not possible to workaround with libxml2.
+This is a short-term solution to bring initial support to these classes, because there are differences between the DOM and XML implementations of XPath that are not possible to work around with libxml2.
 
-This enables the htmx library to work in Ladybird:
+This enables the [htmx](https://htmx.org) library to work in Ladybird:
 
 ![](/assets/img/newsletter-oct-2025-xpath-htmx.png)
-
-(PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
 
 ### Audio/Video synchronization, multi-track support
 
@@ -114,7 +113,7 @@ to examine what's going on inside Ladybird will make that easier. (PR [#6462](ht
 ### CSS Typed OM progress
 
 Continuing from last month, we're still working on the CSS Typed OM API, which allows authors to get and set style
-properties using objects instead of strings. Ladybird now supports setting style with most types of CSSStyleValue.
+properties using objects instead of strings. Ladybird now supports setting style with most types of `CSSStyleValue`.
 (PRs [#6370](https://github.com/LadybirdBrowser/ladybird/pull/6370), [#6378](https://github.com/LadybirdBrowser/ladybird/pull/6378), [#6440](https://github.com/LadybirdBrowser/ladybird/pull/6440), and [#6466](https://github.com/LadybirdBrowser/ladybird/pull/6466))
 
 ### `sibling-count()` and `sibling-index()`
@@ -174,7 +173,6 @@ This resulted in far fewer visual issues in Globe View; the sky still does not r
 </video>
 
 (PR [#6558](https://github.com/LadybirdBrowser/ladybird/pull/6558))
-
 
 ### Progress on Windows support
 

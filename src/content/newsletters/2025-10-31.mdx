@@ -22,10 +22,10 @@ We've continued to make solid progress on [WPT](https://web-platform-tests.org) 
 increase in passing subtests, with **111,431** new passing subtests bringing our total to **1,964,649**.
 
 The majority of this increase comes from a large update to the test suite itself, with **100,751** subtests being added -
-mainly due the Wasm core tests being updated to Wasm 3.0.
+mainly due to the Wasm core tests being updated to Wasm 3.0.
 
 This bump has seen us pass over 90% of all WPT subtests for the first time! An important milestone, as this is one of
-the criteria used by Apple to determine eligibility for [alternative browser engines on iOS](https://developer.apple.com/support/alternative-browser-engines/).
+the criteria Apple uses to determine eligibility for [alternative browser engines on iOS](https://developer.apple.com/support/alternative-browser-engines/).
 
 For context, here are the current top 6 browser engines and their WPT scores today vs one month ago.
 (INSERT GRAPH HERE)
@@ -35,16 +35,16 @@ For context, here are the current top 6 browser engines and their WPT scores tod
 Last month, we enabled our in-memory HTTP cache. This cache lives in a single WebContent process, and does not persist
 across browser restarts.
 
-We've now begun work an a persistent disk cache! (PRs [#6435](https://github.com/LadybirdBrowser/ladybird/pull/6435),
+We've now begun work on a persistent disk cache! (PRs [#6435](https://github.com/LadybirdBrowser/ladybird/pull/6435),
 [#6487](https://github.com/LadybirdBrowser/ladybird/pull/6487), [#6579](https://github.com/LadybirdBrowser/ladybird/pull/6579),
 and [#6645](https://github.com/LadybirdBrowser/ladybird/pull/6645)). This provides a second layer of caching, which will
 make visits to the same websites much faster.
 
-### Audio/video synchronization, multi-track support
+### Audio/Video synchronization, multi-track support
 
 Previously, our media playback implementation relied on separate, unrelated audio and video playback systems to play media files where both are present. This meant that it was possible for audio and video to desynchronize very easily, especially when their seeking behavior was inconsistent.
 
-This month, that implementation has been replaced with a singular new system which controls both the audio and the video, ensuring that they remain perfectly in sync at all times. (PR [#6410](https://github.com/LadybirdBrowser/ladybird/pull/6410))
+This month, that implementation has been replaced with a singular new system which controls both audio and video playback together, ensuring that they remain perfectly in sync at all times. (PR [#6410](https://github.com/LadybirdBrowser/ladybird/pull/6410))
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-oct-2025-av-playback.mp4"></source>
@@ -67,8 +67,7 @@ This month we implemented support for these. (PRs [#6426](https://github.com/Lad
 
 ![](/assets/img/newsletter-oct-2025-a11y-devtools.png)
 
-Since switching away from our own inspector to using Firefox's developer tools, we've been missing a few features we
-previously had. This month we reimplemented inspection of the accessibility tree - a structure parallel to the usual
+Since switching away from our own inspector to using Firefox's developer tools, we've been missing a few features. This month we reimplemented inspection of the accessibility tree - a structure parallel to the usual
 element tree that represents how tools like screen readers see the page. We don't yet support such tools, but being able
 to examine what's going on inside Ladybird will make that easier. (PR [#6462](https://github.com/LadybirdBrowser/ladybird/pull/6462))
 
@@ -98,7 +97,7 @@ An issue with offscreen framebuffers being cleared after frame presentation caus
 
 ### WebGL progress on Google Maps
 
-There were some targetted WebGL fixes for Google Maps Globe View this month, including:
+There were some targeted WebGL fixes for Google Maps Globe View this month, including:
 
 - Respecting [UNPACK_FLIP_Y_WEBGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei)
 - Returning null for missing uniforms instead of -1
@@ -125,7 +124,7 @@ We had preliminary support in place for CanvasPattern, a way to create an image 
 source such as a canvas, an `<img>` or even a video frame. We did not actually use this pattern in drawing commands
 though, causing some significant graphical artifacts. We do now, which causes the background on
 [slither.io](https://slither.io) to finally render correctly!
-(PR [6548](https://github.com/LadybirdBrowser/ladybird/pull/6548))
+(PR [#6548](https://github.com/LadybirdBrowser/ladybird/pull/6548))
 
 ![](/assets/img/newsletter-oct-2025-slither-io.png)
 
@@ -191,7 +190,7 @@ This allows the htmx library to work in Ladybird, which is used by their website
 
 ### Performance work
 
-We've also done a bunch of performance work this month. Some examples:
+We've made a number of performance improvements this month. Some examples:
 
 - JS string performance optimizations (PRs [#6396](https://github.com/LadybirdBrowser/ladybird/pull/6396), [#6400](https://github.com/LadybirdBrowser/ladybird/pull/6400), [#6401](https://github.com/LadybirdBrowser/ladybird/pull/6401))
 - JS object property assignment optimization (PR [#6413](https://github.com/LadybirdBrowser/ladybird/pull/6413))

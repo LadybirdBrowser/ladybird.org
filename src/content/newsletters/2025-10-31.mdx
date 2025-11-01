@@ -154,9 +154,7 @@ Carrying on from the past couple months, Trusted Types support has been added to
 ### Ability to launch on Windows
 
 Whilst Windows support is not the focus for the alpha release in 2026, the community has continued to improve
-our Windows support. This month, Ladybird is now able to launch and be used on Windows!
-
-Credit to [ayeteadoe](https://github.com/ayeteadoe) for the following images.
+our Windows support. This month, Ladybird has successfully run on Windows for the first time!
 
 #### Loading a page from a file
 
@@ -190,6 +188,17 @@ This allows the htmx library to work in Ladybird, which is used by their website
 ![](/assets/img/newsletter-oct-2025-xpath-htmx.png)
 
 (PR [#6342](https://github.com/LadybirdBrowser/ladybird/pull/6342))
+
+### Performance work
+
+We've also done a bunch of performance work this month. Some examples:
+
+- JS string performance optimizations (PRs [#6396](https://github.com/LadybirdBrowser/ladybird/pull/6396), [#6400](https://github.com/LadybirdBrowser/ladybird/pull/6400), [#6401](https://github.com/LadybirdBrowser/ladybird/pull/6401))
+- JS object property assignment optimization (PR [#6413](https://github.com/LadybirdBrowser/ladybird/pull/6413))
+- Inline caching for JS object property access in C++ (PR [#6474](https://github.com/LadybirdBrowser/ladybird/pull/6474))
+- Faster add/subtract/multiply of two Int32 values when result overflows (PR [#6414](https://github.com/LadybirdBrowser/ladybird/pull/6414))
+- Ignore repaints inside iframe with `visibility: hidden` (PR [#6555](https://github.com/LadybirdBrowser/ladybird/pull/6555))
+- Discard heavy UTF-32 buffers after parsing HTML (PR [#6561](https://github.com/LadybirdBrowser/ladybird/pull/6561))
 
 ### Credits
 

@@ -53,6 +53,19 @@ This allows ChatGPT responses to incrementally appear instead of appearing after
 
 (PR [#6839](https://github.com/LadybirdBrowser/ladybird/pull/6839))
 
+### Respecting UNPACK_PREMULTIPLY_ALPHA_WEBGL
+
+This [WebGL pixel storage parameter](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei) determines if a texture should be uploaded with (un)premultipled alpha.
+Previously we always upload textures with premultipled alpha, which made content expecting unpremultipled alpha to be visually broken.
+
+Before:
+
+![](/assets/img/newsletter-nov-2025-unpack-premultiply-alpha-before.png)
+
+After:
+
+![](/assets/img/newsletter-nov-2025-unpack-premultiply-alpha-after.png)
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

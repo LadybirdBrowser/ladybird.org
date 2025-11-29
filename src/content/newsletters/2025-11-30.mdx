@@ -35,6 +35,24 @@ After:
 
 This month we implemented these two CSS properties. When an element has some kind of 3D transform on it, `perspective` determines how far the camera is from the subject. `perspective-origin` determines where the vanishing point is positioned. Together they give authors a lot more control over how 3D designs look. (PRs [#6776](https://github.com/LadybirdBrowser/ladybird/pull/6776) and [#6805](https://github.com/LadybirdBrowser/ladybird/pull/6805))
 
+### Unbuffered Fetch
+
+There was two methods that our Fetch implementation worked in: unbuffered and buffered.
+For unbuffered responses, data would become available immediately in the response upon being received from the network.
+For buffered responses, we buffered the data into a single buffer and then provided that in the response after the Fetch completed.
+
+This month, we removed the buffered mode, allowing all Fetch users to operate on partial data immediately.
+However, individual Fetch users can still choose to buffer data by itself.
+There is ongoing work to convert those users to use partial data, including HTML parsing and media decoding.
+
+This allows ChatGPT responses to incrementally appear instead of appearing after the full response is generated.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-nov-2025-incremental-chatgpt-response.mp4"></source>
+</video>
+
+(PR [#6839](https://github.com/LadybirdBrowser/ladybird/pull/6839))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

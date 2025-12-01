@@ -128,6 +128,14 @@ This month, Luke, one of our full-time engineers, was able to buy a Christmas pr
 
 ![](/assets/img/newsletter-nov-2025-shopify-checkout-complete.png)
 
+### Windows support
+
+While not one of our release targets, the community continues improving support for Windows.
+
+Loading the project's homepage would result in a few missing images caused by some unhandled errors in our non-blocking sockets. Handling those errors in our socket abstractions allows all the images to load successfully. Additionally, implementing file transfers over a socket has enabled us to use the HTTP disk cache. (PRs [#6863](https://github.com/LadybirdBrowser/ladybird/pull/6863) and [#6983](https://github.com/LadybirdBrowser/ladybird/pull/6983))
+
+Switching the Skia's font manager from fontconfig to DirectWrite means that we now display the correct fonts on our homepage! (PR [#6904](https://github.com/LadybirdBrowser/ladybird/pull/6904))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

@@ -103,6 +103,16 @@ Most of our rendering has been GPU accelerated for over a year already, but one 
 
 This month we've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
 
+### Native functions can now be written in JavaScript
+
+All of our native functions are written in C++, which does not allow us to use key JavaScript features such as try/catch/finally and function suspension, a core component of async and generator functions, since these are handled by the bytecode interpreter.
+
+This month, we can now write these functions in JavaScript itself, allowing the use of such features. In particular, our implementation of [Array.fromAsync](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync) is now written in JavaScript.
+
+This gained us four Array.fromAsync [test262](https://github.com/tc39/test262) passes related to using the correct suspension mechanism implemented by the interpreter.
+
+(PR [#6728](https://github.com/LadybirdBrowser/ladybird/pull/6728))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

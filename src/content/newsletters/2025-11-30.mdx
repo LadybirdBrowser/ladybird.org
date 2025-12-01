@@ -2,7 +2,7 @@
 title: This Month in Ladybird - November 2025
 description: WPT gains, rendering improvements, streaming fetch, media fixes, and more.
 date: 2025-11-30
-draft: true
+draft: false
 ---
 
 November is already over, and we got a lot done! We merged 215 PRs from 34 contributors. Let's look at some highlights!
@@ -92,7 +92,7 @@ that, we improved our interpretation of `<text>` and `<tspan>` attributes so tex
 
 ### Faster Base64 conversion
 
-The author of [simdutf](https://github.com/simdutf/simdutf) published a [blog post](https://lemire.me/blog/2025/11/29/how-fast-can-browsers-process-base64-data/) about Base64 performance in browsers, and we took this as an opportunity to go from terrible performance to decent.
+The author of [simdutf](https://github.com/simdutf/simdutf) published a [blog post](https://lemire.me/blog/2025/11/29/how-fast-can-browsers-process-base64-data/) about Base64 performance in browsers, and we took this as an opportunity to go from terrible performance to decent. (PR [#6975](https://github.com/LadybirdBrowser/ladybird/pull/6975))
 
 With a handful of optimizations in our runtime, we were able to improve the benchmark score in the blog post by:
 
@@ -105,7 +105,7 @@ At this point, the main bottleneck is `malloc()` and that's something we'll even
 
 We now wait until CSS `@import` rules have downloaded their referenced style sheets before rendering the page. This avoids an unpleasant FOUC (flash of unstyled content).
 
-It's particularly noticeable on pages that use a lot of `@import` rules.
+It's particularly noticeable on pages that use a lot of `@import` rules. (PR [#6834](https://github.com/LadybirdBrowser/ladybird/pull/6834))
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-nov-2025-hey.mp4"></source>
@@ -115,7 +115,7 @@ It's particularly noticeable on pages that use a lot of `@import` rules.
 
 Most of our rendering has been GPU accelerated for over a year already, but one thing remained: SVG content embedded in `<img>` tags!
 
-We've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
+We've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster. (PR [#6699](https://github.com/LadybirdBrowser/ladybird/pull/6699))
 
 ### More consistent `setInterval()` callback timing
 
@@ -133,9 +133,7 @@ All of our native functions are written in C++, which does not allow us to use k
 
 We can now write these functions in JavaScript itself, allowing the use of such features. In particular, our implementation of [Array.fromAsync](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync) is now written in JavaScript.
 
-This gained us four Array.fromAsync [test262](https://github.com/tc39/test262) passes related to using the correct suspension mechanism implemented by the interpreter.
-
-(PR [#6728](https://github.com/LadybirdBrowser/ladybird/pull/6728))
+This gained us four Array.fromAsync [test262](https://github.com/tc39/test262) passes related to using the correct suspension mechanism implemented by the interpreter. (PR [#6728](https://github.com/LadybirdBrowser/ladybird/pull/6728))
 
 ### DNS-over-HTTPS
 

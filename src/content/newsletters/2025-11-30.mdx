@@ -12,6 +12,8 @@ In November some things happened!
 Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [37signals](https://37signals.com) with $10,000 (renewed sponsorship!)
+- [Coursiv](https://coursiv.io) with $1,000
+- [Andrew Mead](https://mead.io) with $1,000
 
 We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
@@ -83,7 +85,7 @@ After:
 ![](/assets/img/newsletter-nov-2025-svg-tspan-after.png)
 
 (PRs [#6709](https://github.com/LadybirdBrowser/ladybird/pull/6709),
-[#6831](https://github.com/LadybirdBrowser/ladybird/pull/6831),
+[#6831](https://github.com/LadybirdBrowser/ladybird/pull/6831) and
 [#6878](https://github.com/LadybirdBrowser/ladybird/pull/6878))
 
 ### Faster Base64 conversion
@@ -106,6 +108,16 @@ We now wait until CSS @import rules have downloaded their referenced style sheet
 Most of our rendering has been GPU accelerated for over a year already, but one thing remained: SVG content embedded in `<img>` tags!
 
 This month we've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
+
+### More consistent `setInterval()` callback timing
+
+We had a sneaky bug where timers created by `setInterval()` would reschedule themselves after running their callback. This is fine if the callback returns instantly, but when the callback takes more time, the timer starts to drift.
+
+To improve the situation, we now reschedule these timers _before_ the callback runs. Together with some other optimizations, this made it possible to play [Diablo on the web](https://d07riv.github.io/diabloweb/) at full framerate (20 fps)! (PRs [#6985](https://github.com/LadybirdBrowser/ladybird/pull/6985) and [#6982](https://github.com/LadybirdBrowser/ladybird/pull/6982))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-nov-2025-diablo.mp4"></source>
+</video>
 
 ### Native functions can now be written in JavaScript
 

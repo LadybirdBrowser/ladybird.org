@@ -9,7 +9,9 @@ In November some things happened!
 
 ### Welcoming new sponsors
 
-THANK SPONSORS
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- [37signals](https://37signals.com) with $10,000 (renewed sponsorship!)
 
 We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
@@ -79,6 +81,27 @@ Before:
 After:
 
 ![](/assets/img/newsletter-nov-2025-svg-tspan-after.png)
+
+### Faster Base64 conversion
+
+The author of [simdutf](https://github.com/simdutf/simdutf) published a [blog post](https://lemire.me/blog/2025/11/29/how-fast-can-browsers-process-base64-data/) about Base64 performance in browsers, and we took this as an opportunity to go from terrible performance to decent.
+
+With a handful of optimizations in our runtime, we were able to improve the benchmark score in the blog post by:
+
+- 3.8x faster `fromBase64()`
+- 38.4x faster `toBase64()`
+
+At this point, the main bottleneck is `malloc()` and that's something we'll eventually have to address as well.
+
+### CSS @import rules now block first render
+
+We now wait until CSS @import rules have downloaded their referenced style sheets before rendering the page. This avoids an unpleasant FOUC (flash of unstyled content).
+
+### SVG images on the GPU
+
+Most of our rendering has been GPU accelerated for over a year already, but one thing remained: SVG content embedded in `<img>` tags!
+
+This month we've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
 
 ### Credits
 

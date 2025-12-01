@@ -128,6 +128,14 @@ This month, Luke, one of our full-time engineers, was able to buy a Christmas pr
 
 ![](/assets/img/newsletter-nov-2025-shopify-checkout-complete.png)
 
+### Media bug fixes and improvements
+
+This month, our WebM/Matroska demuxer has had several improvements. It now supports files that use Xiph lacing to store multiple frames in a block, and blocks that store metadata inside a BlockGroup element. In files that specify the `complex` type for a track, the type will now be selected based on the track's codec ID. (PRs [#6785](https://github.com/LadybirdBrowser/ladybird/pull/6785), [#6686](https://github.com/LadybirdBrowser/ladybird/pull/6686) and [#6881](https://github.com/LadybirdBrowser/ladybird/pull/6881))
+
+We now signal EOF to FFmpeg's decoders, which enables us to play the last few frames of videos encoded using H.264, where frames in the container are reordered based on inter-frame dependency. (PR [#6688](https://github.com/LadybirdBrowser/ladybird/pull/6688))
+
+A couple of issues that could cause stale audio to remain in the pipeline and break output after a backwards seek have been fixed. (PRs [#6786](https://github.com/LadybirdBrowser/ladybird/pull/6786) and [#6804](https://github.com/LadybirdBrowser/ladybird/pull/6804))
+
 ### Windows support
 
 While not one of our release targets, the community continues improving support for Windows.

@@ -1,11 +1,11 @@
 ---
 title: This Month in Ladybird - November 2025
-description: DESCRIPTION
+description: WPT gains, rendering improvements, streaming fetch, media fixes, and more.
 date: 2025-11-30
 draft: true
 ---
 
-In November some things happened!
+November is already over, and we got a lot done! We merged 215 PRs from 34 contributors. Let's look at some highlights!
 
 ### Welcoming new sponsors
 
@@ -21,35 +21,37 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 Progress on [WPT](https://web-platform-tests.org) continues. This month we've added 7,497 new test passes, bringing our total to 1,972,556.
 
+For context, here are the current top 6 browser engines and their WPT scores today vs. one month ago.
+
+![](/assets/img/newsletter-nov-2025-wpt.gif)
+
 ### Variable fonts
 
-In the past, a font file could contain multiple versions of a typeface such as bold and italic, but those would all be baked-in in advance. However, newer "variable fonts" are becoming increasingly popular on the web. These are configurable based on a few axes such as the weight, width, or slant, and generate the desired font on the fly. This saves on downloads, but also makes it possible to animate properties of the font.
+In the past, a font file could contain multiple versions of a typeface such as bold and italic, but those would all be baked in ahead of time. However, newer "variable fonts" are becoming increasingly popular on the web. These are configurable based on a few axes such as the weight, width, or slant, and generate the desired font on the fly. This saves on downloads, but also makes it possible to animate font properties.
 
 We've had small parts of this implemented in various places for a while, but this month the pieces finally started coming together, and we can render fonts with variable widths and weights, instead of them always looking thin. (PR [#6439](https://github.com/LadybirdBrowser/ladybird/pull/6439))
 
-Before:
+**Before:**
 
 ![](/assets/img/newsletter-nov-2025-variable-fonts-before.png)
 
-After:
+**After:**
 
 ![](/assets/img/newsletter-nov-2025-variable-fonts-after.png)
 
 ### Perspective and perspective-origin
 
-This month we implemented these two CSS properties. When an element has some kind of 3D transform on it, `perspective` determines how far the camera is from the subject. `perspective-origin` determines where the vanishing point is positioned. Together they give authors a lot more control over how 3D designs look. (PRs [#6776](https://github.com/LadybirdBrowser/ladybird/pull/6776) and [#6805](https://github.com/LadybirdBrowser/ladybird/pull/6805))
+We've implemented these two CSS properties. When an element has some kind of 3D transform on it, `perspective` determines how far the camera is from the subject. `perspective-origin` determines where the vanishing point is positioned. Together they give authors a lot more control over how 3D designs look. (PRs [#6776](https://github.com/LadybirdBrowser/ladybird/pull/6776) and [#6805](https://github.com/LadybirdBrowser/ladybird/pull/6805))
 
 ### Unbuffered Fetch
 
-There was two methods that our Fetch implementation worked in: unbuffered and buffered.
-For unbuffered responses, data would become available immediately in the response upon being received from the network.
-For buffered responses, we buffered the data into a single buffer and then provided that in the response after the Fetch completed.
+There were two modes in our Fetch implementation: unbuffered and buffered. Unbuffered responses exposed data immediately as it arrived from the network. Buffered responses accumulated everything in memory and only produced the full body at the end.
 
-This month, we removed the buffered mode, allowing all Fetch users to operate on partial data immediately.
-However, individual Fetch users can still choose to buffer data by itself.
-There is ongoing work to convert those users to use partial data, including HTML parsing and media decoding.
+We've now removed the buffered mode, so all Fetch users receive partial data as it comes in. Individual callers can still choose to buffer data on their own if needed.
 
-This allows ChatGPT responses to incrementally appear instead of appearing after the full response is generated.
+There's ongoing work to make better use of streaming data in areas like HTML parsing and media decoding.
+
+One visible improvement is that ChatGPT responses now stream in incrementally instead of appearing all at once.
 
 <video controls style="margin-bottom: 2em">
   <source src="/assets/img/newsletter-nov-2025-incremental-chatgpt-response.mp4"></source>
@@ -59,28 +61,28 @@ This allows ChatGPT responses to incrementally appear instead of appearing after
 
 ### Respecting UNPACK_PREMULTIPLY_ALPHA_WEBGL
 
-This [WebGL pixel storage parameter](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei) determines if a texture should be uploaded with (un)premultipled alpha.
-Previously we always uploaded textures with premultipled alpha, which made content expecting unpremultipled alpha to be visually broken.
+This [WebGL pixel storage parameter](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/pixelStorei) determines if a texture should be uploaded with (un)premultiplied alpha.
+Previously we always uploaded textures with premultiplied alpha, which made content expecting unpremultiplied alpha to be visually broken.
 
-Before:
+**Before:**
 
 ![](/assets/img/newsletter-nov-2025-unpack-premultiply-alpha-before.png)
 
-After:
+**After:**
 
 ![](/assets/img/newsletter-nov-2025-unpack-premultiply-alpha-after.png)
 
 ### SVG improvements
 
-This month we introduced support for `<feComponentTransfer>`, which allows you to define how color channels are
+We've introduced support for `<feComponentTransfer>`, which allows you to define how color channels are
 transferred, and `<feMorphology>`, which makes it possible to erode or dilate the shapes in the input image. On top of
-that, we improved our interpretation of `<text>` and `<tspan>` attributes so text shows up in the right place.
+that, we improved our interpretation of `<text>` and `<tspan>` attributes so text shows up where it should.
 
-Before:
+**Before:**
 
 ![](/assets/img/newsletter-nov-2025-svg-tspan-before.png)
 
-After:
+**After:**
 
 ![](/assets/img/newsletter-nov-2025-svg-tspan-after.png)
 
@@ -99,15 +101,21 @@ With a handful of optimizations in our runtime, we were able to improve the benc
 
 At this point, the main bottleneck is `malloc()` and that's something we'll eventually have to address as well.
 
-### CSS @import rules now block first render
+### CSS `@import` rules now block first render
 
-We now wait until CSS @import rules have downloaded their referenced style sheets before rendering the page. This avoids an unpleasant FOUC (flash of unstyled content).
+We now wait until CSS `@import` rules have downloaded their referenced style sheets before rendering the page. This avoids an unpleasant FOUC (flash of unstyled content).
+
+It's particularly noticeable on pages that use a lot of `@import` rules.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-nov-2025-hey.mp4"></source>
+</video>
 
 ### SVG images on the GPU
 
 Most of our rendering has been GPU accelerated for over a year already, but one thing remained: SVG content embedded in `<img>` tags!
 
-This month we've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
+We've finally refactored the rendering architecture for SVG embedded images, and they too now render with GPU acceleration. This is significantly faster.
 
 ### More consistent `setInterval()` callback timing
 
@@ -123,7 +131,7 @@ To improve the situation, we now reschedule these timers _before_ the callback r
 
 All of our native functions are written in C++, which does not allow us to use key JavaScript features such as try/catch/finally and function suspension, a core component of async and generator functions, since these are handled by the bytecode interpreter.
 
-This month, we can now write these functions in JavaScript itself, allowing the use of such features. In particular, our implementation of [Array.fromAsync](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync) is now written in JavaScript.
+We can now write these functions in JavaScript itself, allowing the use of such features. In particular, our implementation of [Array.fromAsync](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync) is now written in JavaScript.
 
 This gained us four Array.fromAsync [test262](https://github.com/tc39/test262) passes related to using the correct suspension mechanism implemented by the interpreter.
 
@@ -132,13 +140,14 @@ This gained us four Array.fromAsync [test262](https://github.com/tc39/test262) p
 ### DNS-over-HTTPS
 
 There is ongoing work to be able to perform DNS queries over HTTPS, in addition to the UDP and TLS modes.
-This is pending some final pieces such as completing the UI before code review, however we are able to perform DNS-over-HTTPS, shown in this preliminary screenshot:
+
+This is pending some final pieces (such as completing the UI) before code review. However, we are able to perform DNS-over-HTTPS, shown in this preliminary screenshot:
 
 ![](/assets/img/newsletter-nov-2025-dns-over-https.png)
 
 ### Checking out with Shopify
 
-This month, Luke, one of our full-time engineers, was able to buy a Christmas present from a Shopify store using Shop Pay!
+Luke, one of our full-time engineers, was able to buy a Christmas present from a Shopify store using Shop Pay!
 
 ![](/assets/img/newsletter-nov-2025-shopify-checkout.png)
 
@@ -150,7 +159,7 @@ This month, our WebM/Matroska demuxer has had several improvements. It now suppo
 
 We now signal EOF to FFmpeg's decoders, which enables us to play the last few frames of videos encoded using H.264, where frames in the container are reordered based on inter-frame dependency. (PR [#6688](https://github.com/LadybirdBrowser/ladybird/pull/6688))
 
-A couple of issues that could cause stale audio to remain in the pipeline and break output after a backwards seek have been fixed. (PRs [#6786](https://github.com/LadybirdBrowser/ladybird/pull/6786) and [#6804](https://github.com/LadybirdBrowser/ladybird/pull/6804))
+We fixed a couple of issues that could cause stale audio to remain in the pipeline and break output after a backward seek. (PRs [#6786](https://github.com/LadybirdBrowser/ladybird/pull/6786) and [#6804](https://github.com/LadybirdBrowser/ladybird/pull/6804))
 
 ### Windows support
 
@@ -158,10 +167,10 @@ While not one of our release targets, the community continues improving support 
 
 Loading the project's homepage would result in a few missing images caused by some unhandled errors in our non-blocking sockets. Handling those errors in our socket abstractions allows all the images to load successfully. Additionally, implementing file transfers over a socket has enabled us to use the HTTP disk cache. (PRs [#6863](https://github.com/LadybirdBrowser/ladybird/pull/6863) and [#6983](https://github.com/LadybirdBrowser/ladybird/pull/6983))
 
-Switching the Skia's font manager from fontconfig to DirectWrite means that we now display the correct fonts on our homepage! (PR [#6904](https://github.com/LadybirdBrowser/ladybird/pull/6904))
+Switching Skia's font manager from fontconfig to DirectWrite means we now display the correct fonts on our homepage! (PR [#6904](https://github.com/LadybirdBrowser/ladybird/pull/6904))
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_NAMES_
+_Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, aplefull, ayeteadoe, Callum Law, Daniel Price, Estefania, Gabe, Glenn Skrzypczak, Hendiadyoin1, InvalidUsernameException, Jelle Raaijmakers, Lorenz A, Luke Wilde, Marcos Del Sol Vives, mikiubo, norbiros, Pavel Shliak, Prajjwal, Psychpsyo, R-Goc, Rocco Corsi, Sam Atkins, stasoid, stelar7, SvDp, Tete17, Tim Ledbetter, Timothy Flynn, Undefine, Zaggy1024_

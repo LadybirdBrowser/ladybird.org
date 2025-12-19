@@ -1,0 +1,46 @@
+---
+title: This Month in Ladybird - December 2025
+description: PUT THINGS HERE
+date: 2025-12-31
+draft: true
+---
+
+INTRO HERE
+
+### Welcoming new sponsors
+
+SPONSORS HERE
+
+### Web Platform Tests (WPT)
+
+WPT HERE
+
+### The `::part()` pseudo-element
+
+In December we got basic support for the `::part()` pseudo-element, which lets custom elements expose parts of themselves for styling by the outside world. For example `widget::part(quantity)` will target any elements inside `widget`'s shadow-dom that have a `part="quantity"` attribute. (PRs [#7034](https://github.com/LadybirdBrowser/ladybird/pull/7034) and [#7077](https://github.com/LadybirdBrowser/ladybird/pull/7077))
+
+There's still work to be done, in particular to support the `exportparts` attribute, but this already improves the appearance of some websites, for example the login button on [MDN](https://developer.mozilla.org):
+
+![](/assets/img/newsletter-dec-2025-part-pseudo-element-mdn.png)
+
+_Before on the left, after on the right._
+
+### The `random()` CSS function
+
+Another new addition this month is the CSS `random()` function. As its name suggests, this enables authors to use random values in CSS properties, without having to resort to JavaScript. (PR [#6707](https://github.com/LadybirdBrowser/ladybird/pull/6707))
+
+{/* Would be nice to include an example, but I got a crash trying to make one: https://github.com/LadybirdBrowser/ladybird/issues/7192 */}
+
+### `:autofill`
+
+On a more minor note, we implemented the `:autofill` pseudo-class. Ladybird doesn't support automatically filling form data, so this selector never matches, but it does now parse correctly. (PR [#7177](https://github.com/LadybirdBrowser/ladybird/pull/7177))
+
+### `@import` improvements
+
+The CSS `@import` rule, used to include additional style sheets, has a few ways of controlling when and how the linked style sheet should be applied to the document. This month we implemented the `layer()` clause which places the style sheet inside a CSS layer. We also fixed some bugs that were causing Ladybird to fail to parse `supports()` clauses in `@import` correctly. (PRs [#6986](https://github.com/LadybirdBrowser/ladybird/pull/6986) and [#7021](https://github.com/LadybirdBrowser/ladybird/pull/7021))
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_NAMES HERE_

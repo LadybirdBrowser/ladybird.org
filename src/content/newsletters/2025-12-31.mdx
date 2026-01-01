@@ -65,6 +65,22 @@ Below is a demo of a file with both mismatched sample specifications, and a smal
   <source src="/assets/img/newsletter-dec-2025-audio-conversion.mp4"></source>
 </video>
 
+### JavaScript performance work
+
+- We've made efforts to shrink the generated code size of the JavaScript interpreter. This benefits Apple Silicon CPUs in particular, and hurts no one. (PRs [#7080](https://github.com/LadybirdBrowser/ladybird/pull/7080), [#7087](https://github.com/LadybirdBrowser/ladybird/pull/7087))
+
+- `arguments` objects no longer deoptimize property access in functions that have no named parameters. (PR [#7094](https://github.com/LadybirdBrowser/ladybird/pull/7094))
+
+- C++ code is now able to use inline caches when setting object properties. (We only had inline caches for getting properties in C++ until now.) (PR [#7111](https://github.com/LadybirdBrowser/ladybird/pull/7111))
+
+- We've done a number of smaller things to improve regular expression performance. (PRs [#7111](https://github.com/LadybirdBrowser/ladybird/pull/7111), [#7125](https://github.com/LadybirdBrowser/ladybird/pull/7125))
+
+- The `x | 0` pattern that's often used to coerce a value into a 32-bit integer now has a dedicated bytecode instruction. (PR [#7140](https://github.com/LadybirdBrowser/ladybird/pull/7140))
+
+- The `prototype` field on function objects is now lazily instantiated, since most code never uses it. (PR [#7167](https://github.com/LadybirdBrowser/ladybird/pull/7167))
+
+- We got rid of some code that made a redundant copy of all JavaScript source code(!) (PR [#7209](https://github.com/LadybirdBrowser/ladybird/pull/7209))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

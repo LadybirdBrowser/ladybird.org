@@ -39,6 +39,32 @@ On a more minor note, we implemented the `:autofill` pseudo-class. Ladybird does
 
 The CSS `@import` rule, used to include additional style sheets, has a few ways of controlling when and how the linked style sheet should be applied to the document. This month we implemented the `layer()` clause which places the style sheet inside a CSS layer. We also fixed some bugs that were causing Ladybird to fail to parse `supports()` clauses in `@import` correctly. (PRs [#6986](https://github.com/LadybirdBrowser/ladybird/pull/6986) and [#7021](https://github.com/LadybirdBrowser/ladybird/pull/7021))
 
+### Unbuffered media fetching
+
+Building on top of the move to using unbuffered fetch everywhere, our media playback pipeline is now able to play incompletely-buffered files, and wait for data over the network when it is not available yet. (PRs [#7049](https://github.com/LadybirdBrowser/ladybird/pull/7049), [#7081](https://github.com/LadybirdBrowser/ladybird/pull/7081), [#7084](https://github.com/LadybirdBrowser/ladybird/pull/7084) and [#7132](https://github.com/LadybirdBrowser/ladybird/pull/7132))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-dec-2025-unbuffered-video.mp4"></source>
+</video>
+
+### Support for media with no duration
+
+We can now fully play files with unspecified durations, or with a specified duration that is shorter than the actual media data's duration. In order to do so, as data is decoded, we extend the duration of the timeline according to the latest frame's end timestamp. (PR [#6945](https://github.com/LadybirdBrowser/ladybird/pull/6945))
+
+### Support for audio tracks with differing sample rates or channels
+
+Previously, we would increase the sample rate and channel count of our audio output stream to match the highest values found within a media file. However, since no audio conversion had been implemented, this meant that, for example, enabling a track with stereo audio would cause a mono track to become permanently inaudible.
+
+Now, we always output to the default output device's sample rate and channel map (including the channel count, which we refer to collectively as sample specification), converting to that format as we decode audio data. Thus, all audio timing can remain aligned between all tracks, and will be mixed regardless of whether there are mismatched sample specifications between tracks. (PR [#7095](https://github.com/LadybirdBrowser/ladybird/pull/7095))
+
+This functionality also allowed WAV playback to be implemented again in the new system with minimal effort, as WAV required passing through a sample specification from the container format to FFmpeg's PCM decoder. (PR [#7149](https://github.com/LadybirdBrowser/ladybird/pull/7149))
+
+Below is a demo of a file with both mismatched sample specifications, and a smaller duration than the duration of the contained tracks' media data:
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-dec-2025-audio-conversion.mp4"></source>
+</video>
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

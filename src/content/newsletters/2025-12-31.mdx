@@ -85,6 +85,10 @@ Below is a demo of a file with both mismatched sample specifications, and a smal
 
 - We got rid of some code that made a redundant copy of all JavaScript source code(!) (PR [#7209](https://github.com/LadybirdBrowser/ladybird/pull/7209))
 
+### HTTP caching improvements
+
+HTTP disk cache is now enabled by default ([#6991](https://github.com/LadybirdBrowser/ladybird/pull/6991)), reducing redundant network traffic on repeat visits. We've also implemented support for the `stale-while-revalidate` Cache-Control directive ([#7121](https://github.com/LadybirdBrowser/ladybird/pull/7121)). When a cached response falls within the stale-while-revalidate window, it serves the stale response immediately while spawning a background request to revalidate with the origin server.
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

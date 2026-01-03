@@ -89,6 +89,12 @@ Below is a demo of a file with both mismatched sample specifications, and a smal
 
 HTTP disk cache is now enabled by default ([#6991](https://github.com/LadybirdBrowser/ladybird/pull/6991)), reducing redundant network traffic on repeat visits. We've also implemented support for the `stale-while-revalidate` Cache-Control directive ([#7121](https://github.com/LadybirdBrowser/ladybird/pull/7121)). When a cached response falls within the stale-while-revalidate window, it serves the stale response immediately while spawning a background request to revalidate with the origin server.
 
+### Garbage collector leak fixes
+
+We spent time this month hunting down GC leaks. At the start, a full `test-web` run ended with ~240 leaked Window objects. Through a series of fixes, we brought that number down to ~25.
+
+The main problem was improper use of `GC::Root` by storing strong references in places where they keep objects alive forever. This happened in various places: 2D canvas fill/stroke styles, the rejected promises list, custom elements reaction stack, BroadcastChannel, and IndexedDB. In most cases, the fix was switching to `GC::Weak` references. We also introduced `GC::HeapVector`, a vector container that properly participates in GC. (PRs [#7223](https://github.com/LadybirdBrowser/ladybird/pull/7223), [#7230](https://github.com/LadybirdBrowser/ladybird/pull/7230), [#7235](https://github.com/LadybirdBrowser/ladybird/pull/7235), [#7246](https://github.com/LadybirdBrowser/ladybird/pull/7246))
+
 ### Credits
 
 We'd like to thank everyone who contributed code this month:

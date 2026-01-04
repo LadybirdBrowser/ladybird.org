@@ -8,6 +8,7 @@ type Props = {
   image?: string;
 };
 const { title, description, author, image } = Astro.props;
+const isNewsletter = Astro.url.pathname.startsWith("/newsletter/");
 const defaultTitle = "Ladybird";
 const defaultDescription =
   "Ladybird is a truly independent web browser, backed by a non-profit.";
@@ -46,6 +47,8 @@ const defaultDescription =
 <link
   rel="alternate"
   type="application/rss+xml"
-  title="Ladybird Browser Posts"
-  href={new URL("posts.rss", Astro.site)}
+  title={isNewsletter
+    ? "Ladybird Browser Newsletter"
+    : "Ladybird Browser Posts"}
+  href={new URL(isNewsletter ? "newsletter.rss" : "posts.rss", Astro.site)}
 />

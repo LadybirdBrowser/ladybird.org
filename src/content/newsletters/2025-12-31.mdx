@@ -1,6 +1,6 @@
 ---
 title: This Month in Ladybird - December 2025
-description: PUT THINGS HERE
+description: CSS features, media playback, JS performance, HTTP caching, GC leak fixes, and more.
 date: 2025-12-31
 draft: true
 ---
@@ -12,24 +12,28 @@ December has come and gone, and we ended up merging 197 PRs from 37 contributors
 Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
 
 - [FUTO](https://www.futo.org/) with $250,000 (renewal!) ([announcement + interview](https://www.youtube.com/watch?v=NCa92gA1ARc))
-- "Open Source Santa" with $5,000 (funds provided by [PlanetScale](https://planetscale.com), selected by polling the YouTube audience of [ThePrimeagen &amp; teej_dv](https://www.terminal.shop)
+- "Open Source Santa" with $5,000 (funds provided by [PlanetScale](https://planetscale.com), selected by polling the YouTube audience of [ThePrimeagen & teej_dv](https://www.terminal.shop))
 - [styfle](https://styfle.dev) with $1,000
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
 ### Web Platform Tests (WPT)
 
 Progress on [WPT](https://web-platform-tests.org) continues. This month we've added 4,833 new test passes, bringing our total to 1,977,371.
 
+For context, here are the current top 6 browser engines and their WPT scores today vs. one month ago.
+
+![](/assets/img/newsletter-dec-2025-wpt.gif)
+
 ### CSS features
 
 We added basic support for the `::part()` pseudo-element, which lets custom elements expose parts of their shadow DOM for external styling. For example, `widget::part(quantity)` targets elements inside `widget`'s shadow DOM that have `part="quantity"`. There's still work to be done (particularly the `exportparts` attribute), but this already improves sites like [MDN](https://developer.mozilla.org): (PRs [#7034](https://github.com/LadybirdBrowser/ladybird/pull/7034) and [#7077](https://github.com/LadybirdBrowser/ladybird/pull/7077))
 
+_Before on the left, after on the right:_
+
 ![](/assets/img/newsletter-dec-2025-part-pseudo-element-mdn.png)
 
-_Before on the left, after on the right._
-
 We also implemented the CSS `random()` function, which lets authors use random values in CSS properties without resorting to JavaScript. (PR [#6707](https://github.com/LadybirdBrowser/ladybird/pull/6707))
-
-{/* Would be nice to include an example, but I got a crash trying to make one: https://github.com/LadybirdBrowser/ladybird/issues/7192 */}
 
 For `@import` rules, we implemented the `layer()` clause for placing imported style sheets inside CSS layers, and fixed bugs that were causing `supports()` clauses to parse incorrectly. (PRs [#6986](https://github.com/LadybirdBrowser/ladybird/pull/6986) and [#7021](https://github.com/LadybirdBrowser/ladybird/pull/7021))
 
@@ -73,15 +77,11 @@ We spent time hunting down GC leaks this month. At the start, a full `test-web` 
 
 The main culprit was improper use of `GC::Root`, storing strong references in places where they kept objects alive forever. This happened in 2D canvas fill/stroke styles, the rejected promises list, custom elements reaction stack, BroadcastChannel, and IndexedDB. Most fixes involved switching to `GC::Weak` references. We also introduced `GC::HeapVector`, a vector container that properly participates in GC. (PRs [#7223](https://github.com/LadybirdBrowser/ladybird/pull/7223), [#7230](https://github.com/LadybirdBrowser/ladybird/pull/7230), [#7235](https://github.com/LadybirdBrowser/ladybird/pull/7235), [#7246](https://github.com/LadybirdBrowser/ladybird/pull/7246))
 
-### Modern cryptography algorithms
+### Post-quantum cryptography
 
-There has been ongoing work to implement [modern cryptography algorithms](https://github.com/WICG/webcrypto-modern-algos) for the [Web Cryptography API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API), with initial support for:
+We've begun implementing **post-quantum cryptography** in the [Web Cryptography API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) — algorithms designed to resist attacks from future quantum computers. This includes the recently NIST-standardized [ML-DSA](https://en.wikipedia.org/wiki/ML-DSA) (PR [#6935](https://github.com/LadybirdBrowser/ladybird/pull/6935)) and [ML-KEM](https://en.wikipedia.org/wiki/ML-KEM) (PR [#6970](https://github.com/LadybirdBrowser/ladybird/pull/6970)), along with [key encapsulation](https://en.wikipedia.org/wiki/Key_encapsulation_mechanism) operations (PRs [#6961](https://github.com/LadybirdBrowser/ladybird/pull/6961) and [#7042](https://github.com/LadybirdBrowser/ladybird/pull/7042)).
 
-- [SHA-3](https://en.wikipedia.org/wiki/SHA-3) (PR [#6942](https://github.com/LadybirdBrowser/ladybird/pull/6942))
-- [Argon2](https://en.wikipedia.org/wiki/Argon2) (PR [#6962](https://github.com/LadybirdBrowser/ladybird/pull/6962))
-- [decapsulateBits, decapsulateKey, encapsulateBits and encapsulateKey](https://en.wikipedia.org/wiki/Key_encapsulation_mechanism) (PRs [#6961](https://github.com/LadybirdBrowser/ladybird/pull/6961) and [#7042](https://github.com/LadybirdBrowser/ladybird/pull/7042))
-- [ML-DSA](https://en.wikipedia.org/wiki/Lattice-based_cryptography#CRYSTALS-Dilithium) (PR [#6935](https://github.com/LadybirdBrowser/ladybird/pull/6935))
-- [ML-KEM](https://en.wikipedia.org/wiki/Kyber) (PR [#6970](https://github.com/LadybirdBrowser/ladybird/pull/6970))
+We also added other [modern cryptography algorithms](https://github.com/WICG/webcrypto-modern-algos): [SHA-3](https://en.wikipedia.org/wiki/SHA-3) (PR [#6942](https://github.com/LadybirdBrowser/ladybird/pull/6942)) and [Argon2](https://en.wikipedia.org/wiki/Argon2) (PR [#6962](https://github.com/LadybirdBrowser/ladybird/pull/6962)).
 
 ### Credits
 

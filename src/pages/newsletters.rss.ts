@@ -5,7 +5,7 @@ import type { APIContext } from "astro";
 export async function GET(context: APIContext) {
   const newsletters = await getCollection("newsletters");
   return rss({
-    title: "Ladybird Browser Newsletter",
+    title: "Ladybird Browser Newsletters",
     description: "Ladybird is a brand-new browser &amp; web engine",
     site: context.site!,
     items: newsletters
@@ -14,7 +14,7 @@ export async function GET(context: APIContext) {
         title: newsletter.data.title,
         description: newsletter.data.description,
         pubDate: newsletter.data.date,
-        link: `/newsletter/${newsletter.slug}`,
+        link: `/newsletters/${newsletter.slug}`,
       })),
     trailingSlash: false,
   });

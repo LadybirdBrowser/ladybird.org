@@ -1,0 +1,130 @@
+---
+title: This Month in Ladybird - January 2026
+description: Shifting focus to real websites, GMail performance, site compatibility, painting architecture, IPC hardening, HTTP caching, media streaming, and more.
+date: 2026-01-31
+draft: true
+---
+
+With an alpha release on the horizon, we're shifting our primary focus from test scores to real websites. Test suites remain important, but the goal now is making Ladybird work for actual daily browsing. January's 313 merged PRs from 40 contributors reflect that shift, with much of the month spent profiling, fixing, and optimizing real-world sites.
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- TODO
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Playing the (dumb) User-Agent game
+
+An unfortunate reality of the modern web is that many websites check your `User-Agent` string and serve different content (or no content at all) based on what browser they think you are. With our previous UA string, we were getting degraded UIs, "your browser is not supported" pages, network throttling, and outright HTTP 403 errors from many prominent websites.
+
+We fixed this by adding "Chrome/140.0.0.0" ([#7493](https://github.com/LadybirdBrowser/ladybird/pull/7493)) and "AppleWebKit/537.36 Safari/537.36" ([#7626](https://github.com/LadybirdBrowser/ladybird/pull/7626)) to our UA string. "Ladybird" is still in there. We're not trying to hide, but we do need to play the game if we want websites to serve us their real content. This immediately unlocked modern versions of Google Search, GMail, Instagram, and many other sites.
+
+_Instagram before and after the UA string change:_
+
+| Before                                                          | After                                                         |
+| --------------------------------------------------------------- | ------------------------------------------------------------- |
+| ![Before](/assets/img/newsletter-jan-2026-instagram-before.png) | ![After](/assets/img/newsletter-jan-2026-instagram-after.png) |
+
+### GMail performance push
+
+GMail loaded before January, but Google was serving us a degraded UI due to the old `User-Agent` string, performance was poor, and much of the interface wasn't properly clickable. With the UA fix giving us the real GMail UI, we spent a good chunk of the month on performance and correctness.
+
+Through a series of profiling-driven PRs, we knocked roughly a second off the inbox load time:
+
+- Eliminated `HashMap` operations in function instantiation by caching parser data, saving ~400ms alone ([#7622](https://github.com/LadybirdBrowser/ladybird/pull/7622))
+- A mixed bag of layout and style optimizations for another ~500ms ([#7623](https://github.com/LadybirdBrowser/ladybird/pull/7623))
+- Optimized `getComputedStyle()` to avoid layout when possible, plus other style computation speedups ([#7633](https://github.com/LadybirdBrowser/ladybird/pull/7633))
+- Various JS engine optimizations found through GMail profiling, including scoping `eval()` deoptimization per-identifier ([#7638](https://github.com/LadybirdBrowser/ladybird/pull/7638))
+- Scoped pseudo-class invalidation to the common ancestor instead of walking the entire document tree, which was over 10% of runtime when hovering mailboxes ([#7639](https://github.com/LadybirdBrowser/ladybird/pull/7639))
+- Fixed percentage height resolution against `min-height`, which was causing layout issues ([#7618](https://github.com/LadybirdBrowser/ladybird/pull/7618))
+
+We also fixed three hit testing bugs that made the compose window fully mouse interactive ([#7613](https://github.com/LadybirdBrowser/ladybird/pull/7613)).
+
+### More sites working
+
+GMail wasn't the only site that got attention this month:
+
+- **[Instagram](https://www.instagram.com)** loads again after implementing `ServiceWorkerContainer.ready` ([#7403](https://github.com/LadybirdBrowser/ladybird/pull/7403))
+- **[Slack](https://slack.com)** hero layout fixed by resolving percentage max-width in intrinsic height calculations ([#7529](https://github.com/LadybirdBrowser/ladybird/pull/7529))
+- **[Photopea](https://www.photopea.com)** no longer crashes and has correctly centered buttons ([#7614](https://github.com/LadybirdBrowser/ladybird/pull/7614), [#7616](https://github.com/LadybirdBrowser/ladybird/pull/7616))
+- **[diagrams.net](https://www.diagrams.net)** is now usable after implementing `@-webkit-keyframes` as an alias for `@keyframes` ([#7617](https://github.com/LadybirdBrowser/ladybird/pull/7617))
+- **[TripAdvisor](https://www.tripadvisor.com)** loads after fixing `MessagePort` close behavior ([#7559](https://github.com/LadybirdBrowser/ladybird/pull/7559))
+- **[Google Street View](https://www.google.com/streetview/)** now shows street names after fixing `Canvas.measureText()` ([#7474](https://github.com/LadybirdBrowser/ladybird/pull/7474))
+- **[Roundcube](https://roundcube.net)** got multiple fixes: toolbar button alignment, message list layout, and popover menu clickability ([#7562](https://github.com/LadybirdBrowser/ladybird/pull/7562), [#7558](https://github.com/LadybirdBrowser/ladybird/pull/7558), [#7555](https://github.com/LadybirdBrowser/ladybird/pull/7555))
+- **[hypr.land](https://hypr.land)** now renders after adding MIME type sniffing for streaming HTTP responses ([#7606](https://github.com/LadybirdBrowser/ladybird/pull/7606))
+
+### Web Platform Tests (WPT)
+
+Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world work. This month we've added TODO new test passes, bringing our total to TODO.
+
+TODO: WPT chart image
+
+### Painting and rendering
+
+We replaced the old `ClipFrame` / `PushStackingContext` / `PopStackingContext` system with a new `AccumulatedVisualContext` tree ([#7471](https://github.com/LadybirdBrowser/ladybird/pull/7471)). This tree pre-computes accumulated transforms, clips, scroll offsets, and effects for each paintable, eliminating per-frame recalculation during display list playback and hit testing.
+
+The new architecture fixes a class of bugs where hit testing through nested transforms, scroll containers, and clip-paths would produce incorrect results. It also enables skipping off-screen display list commands with effects like blur, which is particularly beneficial for pages like Discord's landing page that have many blurred decorative images ([#7576](https://github.com/LadybirdBrowser/ladybird/pull/7576)).
+
+On the performance side, we also started caching GPU textures for bitmap-backed images instead of re-uploading every frame ([#7610](https://github.com/LadybirdBrowser/ladybird/pull/7610)), caching `SkTextBlob`s so text blobs are built once during display list recording and reused across paints ([#7607](https://github.com/LadybirdBrowser/ladybird/pull/7607)), and moved SVG mask/clip composition from CPU to GPU ([#7503](https://github.com/LadybirdBrowser/ladybird/pull/7503)).
+
+### Media playback
+
+Building on December's streaming media work, we added HTTP range request support for media playback ([#7473](https://github.com/LadybirdBrowser/ladybird/pull/7473)). Video can now start playing without waiting for the entire file to download, and seeking to an unbuffered position triggers a new range request instead of waiting for sequential download.
+
+We also made video frames go to Skia as subsampled YUV data instead of converting to RGB on the CPU ([#7549](https://github.com/LadybirdBrowser/ladybird/pull/7549)). This offloads color conversion to the GPU, allowing high-resolution video playback without interruptions on machines where the CPU can keep up with decoding. Paused videos now also release their decoded data and decoders after a timeout to save memory ([#7566](https://github.com/LadybirdBrowser/ladybird/pull/7566)).
+
+### JavaScript performance
+
+- **`JSON.parse` now uses simdjson** for parsing, and **`JSON.stringify`** was optimized to use a single `StringBuilder` instead of intermediate allocations ([#7436](https://github.com/LadybirdBrowser/ladybird/pull/7436))
+- **Shape caching for object literals**: When a function creates object literals with the same property names, we now cache and reuse the resulting shape, avoiding repeated shape transitions ([#7406](https://github.com/LadybirdBrowser/ladybird/pull/7406))
+- Constant folding for `LogicalExpression` and double-boolean-not `!!x` optimization
+
+### Regex engine improvements
+
+- Consecutive single-character comparisons are fused into string comparisons ([#7142](https://github.com/LadybirdBrowser/ladybird/pull/7142))
+- A new seek operation replaces the expensive `/.*/` fork-and-backtrack pattern
+- Forks that cannot possibly produce a match are skipped entirely
+- Bytecode buffers are flattened before execution for better cache locality
+- Proper lookbehind support via new `StepBack` opcode ([#7119](https://github.com/LadybirdBrowser/ladybird/pull/7119))
+- Regex modifiers (`(?i:...)`, `(?m:...)`, etc.) are now supported, gaining 64 new test262 passes ([#7318](https://github.com/LadybirdBrowser/ladybird/pull/7318))
+
+### HTTP caching
+
+- Implemented all `Cache-Control` request directives: `no-store`, `no-cache`, `max-age`, `max-stale`, `min-fresh`, and `only-if-cached` ([#7630](https://github.com/LadybirdBrowser/ladybird/pull/7630))
+- Added support for the HTTP `Vary` header, so cached responses are correctly keyed by request headers ([#7325](https://github.com/LadybirdBrowser/ladybird/pull/7325))
+- Integrated the Fetch API's cache mode, gaining 148 new WPT passes ([#7546](https://github.com/LadybirdBrowser/ladybird/pull/7546))
+- Moved cache revalidation entirely to RequestServer, removing a redundant implementation in WebContent ([#7430](https://github.com/LadybirdBrowser/ladybird/pull/7430))
+
+### CSS features
+
+- **`:has()` result caching**: The `:has()` pseudo-class now caches match results per element, avoiding redundant descendant/sibling traversals ([#7314](https://github.com/LadybirdBrowser/ladybird/pull/7314))
+- **Textarea resizing**: The `resize` property is now functional, allowing users to drag-resize textarea elements ([#7206](https://github.com/LadybirdBrowser/ladybird/pull/7206))
+- **`animation-composition`**: Keyframe composition values are now extracted and applied, gaining 684 WPT subtests ([#7337](https://github.com/LadybirdBrowser/ladybird/pull/7337))
+- **`<basic-shape-rect>` improvements**: Border radius support in `inset()`, `rect()`, and `xywh()`, gaining ~1000 WPT passes ([#7339](https://github.com/LadybirdBrowser/ladybird/pull/7339))
+- **Grid layout fixes**: Flexible track intrinsic sizing, `fit-content()` with zero limits, named grid line resolution, and grid track size list composition ([#7456](https://github.com/LadybirdBrowser/ladybird/pull/7456))
+- **`@property` rules**: Custom properties registered via `@property` now have their initial values read in computed style, and rules are properly managed when stylesheets change
+
+### IPC hardening
+
+We did a security hardening pass on LibIPC ([#7569](https://github.com/LadybirdBrowser/ladybird/pull/7569)). Previously, malformed IPC messages could crash the receiving process. Now, decode failures disconnect the peer gracefully, message sizes and file descriptor counts are bounded, and checked arithmetic prevents integer overflows in size calculations. The guiding principle: suspicious incoming messages cause a clean disconnect; encoding errors (our own bugs) still crash immediately so they're caught quickly.
+
+### Firefox DevTools network panel
+
+Our Firefox DevTools integration gained network monitoring support ([#7472](https://github.com/LadybirdBrowser/ladybird/pull/7472)): request and response body viewing, request initiator types, navigation events, and streaming console messages. You can now inspect network traffic in Ladybird using Firefox DevTools.
+
+### Other notable changes
+
+- **System font fallback**: When no font in the cascade contains a glyph, we now query Skia's font manager for a system font, fixing rendering of non-Latin text ([#7536](https://github.com/LadybirdBrowser/ladybird/pull/7536))
+- **SQLite WAL mode**: Enabling WAL mode for our database reduced a `localStorage.setItem` loop from ~3.5 seconds to ~50 milliseconds ([#7656](https://github.com/LadybirdBrowser/ladybird/pull/7656))
+- **XML parser replaced with libxml2**: Our homegrown XML parser was replaced with libxml2 for better spec compliance and robustness ([#7348](https://github.com/LadybirdBrowser/ladybird/pull/7348))
+- **Inline layout performance**: ASCII fast paths for bidi lookups and grapheme segmentation, plus pre-generated text chunks, improving Speedometer scores ([#7422](https://github.com/LadybirdBrowser/ladybird/pull/7422))
+- **GC heap explorer**: A new interactive HTML tool for visualizing and exploring LibGC heap dumps, useful for investigating memory leaks ([#7444](https://github.com/LadybirdBrowser/ladybird/pull/7444))
+- **Cryptography**: ML-KEM key import/export in all formats plus decapsulation (estimated ~1000 WPT passes), ChaCha20-Poly1305 AEAD, Argon2 key derivation, and SHAKE digest support
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_Adam Colvin, Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, aplefull, ayeteadoe, Ben Eidson, Callum Law, Christoffer Haglund, Colleirose, CountBleck, dosisod, Estefania, Federico Tedin, Gingeh, InvalidUsernameException, Jelle Raaijmakers, Jonathan Gamble, Kenneth Myhra, Lorenz A, Luke Wilde, matjojo, Michael Watt, mikiubo, Psychpsyo, pwespi, R-Goc, Reimar, Rocco Corsi, Sam Atkins, Samq64, Shannon Booth, sideshowbarker, Tete17, Tim Ledbetter, Timothy Flynn, Totto16, Undefine, Zaggy1024_

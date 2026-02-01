@@ -1,6 +1,6 @@
 ---
 title: This Month in Ladybird - January 2026
-description: Shifting focus to real websites, GMail performance, site compatibility, painting architecture, IPC hardening, HTTP caching, media streaming, and more.
+description: Shifting focus to real websites, Gmail performance, site compatibility, painting architecture, IPC hardening, HTTP caching, media streaming, and more.
 date: 2026-01-31
 draft: true
 ---
@@ -19,7 +19,7 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 An unfortunate reality of the modern web is that many websites check your `User-Agent` string and serve different content (or no content at all) based on what browser they think you are. With our previous UA string, we were getting degraded UIs, "your browser is not supported" pages, network throttling, and outright HTTP 403 errors from many prominent websites.
 
-We fixed this by adding "Chrome/140.0.0.0" ([#7493](https://github.com/LadybirdBrowser/ladybird/pull/7493)) and "AppleWebKit/537.36 Safari/537.36" ([#7626](https://github.com/LadybirdBrowser/ladybird/pull/7626)) to our UA string. "Ladybird" is still in there. We're not trying to hide, but we do need to play the game if we want websites to serve us their real content. This immediately unlocked modern versions of Google Search, GMail, Instagram, and many other sites.
+We fixed this by adding "Chrome/140.0.0.0" ([#7493](https://github.com/LadybirdBrowser/ladybird/pull/7493)) and "AppleWebKit/537.36 Safari/537.36" ([#7626](https://github.com/LadybirdBrowser/ladybird/pull/7626)) to our UA string. "Ladybird" is still in there. We're not trying to hide, but we do need to play the game if we want websites to serve us their real content. This immediately unlocked modern versions of Google Search, Gmail, Instagram, and many other sites.
 
 _Instagram before and after the UA string change:_
 
@@ -27,16 +27,16 @@ _Instagram before and after the UA string change:_
 | --------------------------------------------------------------- | ------------------------------------------------------------- |
 | ![Before](/assets/img/newsletter-jan-2026-instagram-before.png) | ![After](/assets/img/newsletter-jan-2026-instagram-after.png) |
 
-### GMail performance push
+### Gmail performance push
 
-GMail loaded before January, but Google was serving us a degraded UI due to the old `User-Agent` string, performance was poor, and much of the interface wasn't properly clickable. With the UA fix giving us the real GMail UI, we spent a good chunk of the month on performance and correctness.
+Gmail loaded before January, but Google was serving us a degraded UI due to the old `User-Agent` string, performance was poor, and much of the interface wasn't properly clickable. With the UA fix giving us the real Gmail UI, we spent a good chunk of the month on performance and correctness.
 
 Through a series of profiling-driven PRs, we knocked roughly a second off the inbox load time:
 
 - Eliminated `HashMap` operations in function instantiation by caching parser data, saving ~400ms alone ([#7622](https://github.com/LadybirdBrowser/ladybird/pull/7622))
 - A mixed bag of layout and style optimizations for another ~500ms ([#7623](https://github.com/LadybirdBrowser/ladybird/pull/7623))
 - Optimized `getComputedStyle()` to avoid layout when possible, plus other style computation speedups ([#7633](https://github.com/LadybirdBrowser/ladybird/pull/7633))
-- Various JS engine optimizations found through GMail profiling, including scoping `eval()` deoptimization per-identifier ([#7638](https://github.com/LadybirdBrowser/ladybird/pull/7638))
+- Various JS engine optimizations found through Gmail profiling, including scoping `eval()` deoptimization per-identifier ([#7638](https://github.com/LadybirdBrowser/ladybird/pull/7638))
 - Scoped pseudo-class invalidation to the common ancestor instead of walking the entire document tree, which was over 10% of runtime when hovering mailboxes ([#7639](https://github.com/LadybirdBrowser/ladybird/pull/7639))
 - Fixed percentage height resolution against `min-height`, which was causing layout issues ([#7618](https://github.com/LadybirdBrowser/ladybird/pull/7618))
 
@@ -44,7 +44,7 @@ We also fixed three hit testing bugs that made the compose window fully mouse in
 
 ### More sites working
 
-GMail wasn't the only site that got attention this month:
+Gmail wasn't the only site that got attention this month:
 
 - **[Instagram](https://www.instagram.com)** loads again after implementing `ServiceWorkerContainer.ready` ([#7403](https://github.com/LadybirdBrowser/ladybird/pull/7403))
 - **[Slack](https://slack.com)** hero layout fixed by resolving percentage max-width in intrinsic height calculations ([#7529](https://github.com/LadybirdBrowser/ladybird/pull/7529))

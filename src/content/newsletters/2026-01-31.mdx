@@ -5,7 +5,7 @@ date: 2026-01-31
 draft: true
 ---
 
-With an alpha release on the horizon, we're shifting our primary focus from test scores to real websites. Test suites remain important, but the goal now is making Ladybird work for actual daily browsing. January's 313 merged PRs from 40 contributors reflect that shift, with much of the month spent profiling, fixing, and optimizing real-world sites.
+Over the past year, we've invested heavily in web platform test suites and benchmarks, and that work has paid off — giving us a solid, well-tested foundation with good coverage of edge cases and spec corners. With an alpha release on the horizon, we're now building on that foundation by making real websites and daily-driver usability our primary focus. We'll continue tracking test scores and fixing test failures, but the day-to-day priority is now getting real sites working well. January's 324 merged PRs from 40 contributors reflect that shift, with much of the month spent profiling, fixing, and optimizing real-world sites.
 
 ### Welcoming new sponsors
 
@@ -59,9 +59,11 @@ Gmail wasn't the only site that got attention this month:
 
 ### Web Platform Tests (WPT)
 
-Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world work. This month we've added TODO new test passes, bringing our total to TODO.
+Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world work. This month we've added 13,690 new test passes, bringing our total to 1,991,061.
 
-TODO: WPT chart image
+For context, here are the current top 6 browser engines and their WPT scores today vs. one month ago.
+
+![WPT scores](/assets/img/newsletter-jan-2026-wpt.gif)
 
 ### Painting and rendering
 
@@ -81,11 +83,19 @@ Building on December's streaming media work, we added HTTP range request support
 
 We also made video frames go to Skia as subsampled YUV data instead of converting to RGB on the CPU ([#7549](https://github.com/LadybirdBrowser/ladybird/pull/7549)). This offloads color conversion to the GPU, allowing high-resolution video playback without interruptions on machines where the CPU can keep up with decoding. Paused videos now also release their decoded data and decoders after a timeout to save memory ([#7566](https://github.com/LadybirdBrowser/ladybird/pull/7566)).
 
+Fullscreen mode now works on YouTube ([#7649](https://github.com/LadybirdBrowser/ladybird/pull/7649)), building on the initial fullscreen implementation from [#4330](https://github.com/LadybirdBrowser/ladybird/pull/4330). We don't yet support MediaSource Extensions, so YouTube serves us 360p H.264 fallback video, but it plays and fullscreens correctly:
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-jan-2026-fullscreen.mp4"></source>
+</video>
+
 ### JavaScript performance
 
-- **`JSON.parse` now uses simdjson** for parsing, and **`JSON.stringify`** was optimized to use a single `StringBuilder` instead of intermediate allocations ([#7436](https://github.com/LadybirdBrowser/ladybird/pull/7436))
+- **`JSON.parse` now uses [simdjson](https://github.com/simdjson/simdjson)** for parsing, and **`JSON.stringify`** was optimized to use a single `StringBuilder` instead of intermediate allocations ([#7436](https://github.com/LadybirdBrowser/ladybird/pull/7436))
 - **Shape caching for object literals**: When a function creates object literals with the same property names, we now cache and reuse the resulting shape, avoiding repeated shape transitions ([#7406](https://github.com/LadybirdBrowser/ladybird/pull/7406))
 - Constant folding for `LogicalExpression` and double-boolean-not `!!x` optimization
+- Dead code elimination for branches with always-truthy or always-falsey conditions ([#7587](https://github.com/LadybirdBrowser/ladybird/pull/7587))
+- Reduced bytecode size for template literals by eliminating redundant opcodes ([#7389](https://github.com/LadybirdBrowser/ladybird/pull/7389))
 
 ### Regex engine improvements
 
@@ -119,16 +129,6 @@ We did a security hardening pass on LibIPC ([#7569](https://github.com/LadybirdB
 ### Firefox DevTools network panel
 
 Our Firefox DevTools integration gained network monitoring support ([#7472](https://github.com/LadybirdBrowser/ladybird/pull/7472)): request and response body viewing, request initiator types, navigation events, and streaming console messages. You can now inspect network traffic in Ladybird using Firefox DevTools.
-
-### Fullscreen support
-
-Continuing the work started in [#4330](https://github.com/LadybirdBrowser/ladybird/pull/4330), this month we can enter fullscreen mode on YouTube. ([#7649](https://github.com/LadybirdBrowser/ladybird/pull/7649))
-
-<video controls style="margin-bottom: 2em">
-  <source src="/assets/img/newsletter-jan-2026-fullscreen.mp4"></source>
-</video>
-
-We don't support MediaSource yet, meaning we are limited to 360p H.264 fallback videos, as per March 2025.
 
 ### Other notable changes
 

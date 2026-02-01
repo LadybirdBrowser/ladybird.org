@@ -73,6 +73,10 @@ On the performance side, we also started caching GPU textures for bitmap-backed 
 
 Building on December's streaming media work, we added HTTP range request support for media playback ([#7473](https://github.com/LadybirdBrowser/ladybird/pull/7473)). Video can now start playing without waiting for the entire file to download, and seeking to an unbuffered position triggers a new range request instead of waiting for sequential download.
 
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-jan-2026-media-range-requests.mp4"></source>
+</video>
+
 We also made video frames go to Skia as subsampled YUV data instead of converting to RGB on the CPU ([#7549](https://github.com/LadybirdBrowser/ladybird/pull/7549)). This offloads color conversion to the GPU, allowing high-resolution video playback without interruptions on machines where the CPU can keep up with decoding. Paused videos now also release their decoded data and decoders after a timeout to save memory ([#7566](https://github.com/LadybirdBrowser/ladybird/pull/7566)).
 
 ### JavaScript performance

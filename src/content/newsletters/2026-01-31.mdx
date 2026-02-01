@@ -118,6 +118,16 @@ We did a security hardening pass on LibIPC ([#7569](https://github.com/LadybirdB
 
 Our Firefox DevTools integration gained network monitoring support ([#7472](https://github.com/LadybirdBrowser/ladybird/pull/7472)): request and response body viewing, request initiator types, navigation events, and streaming console messages. You can now inspect network traffic in Ladybird using Firefox DevTools.
 
+### Fullscreen support
+
+Continuing the work started in [#4330](https://github.com/LadybirdBrowser/ladybird/pull/4330), this month we can enter fullscreen mode on YouTube. ([#7649](https://github.com/LadybirdBrowser/ladybird/pull/7649))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-jan-2026-fullscreen.mp4"></source>
+</video>
+
+We don't support MediaSource yet, meaning we are limited to 360p H.264 fallback videos, as per March 2025.
+
 ### Other notable changes
 
 - **System font fallback**: When no font in the cascade contains a glyph, we now query Skia's font manager for a system font, fixing rendering of non-Latin text ([#7536](https://github.com/LadybirdBrowser/ladybird/pull/7536))

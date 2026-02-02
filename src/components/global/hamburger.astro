@@ -1,0 +1,36 @@
+<div class="text-white size-6">
+  <button id="open" class="w-auto h-auto lg:hidden">
+    <img src="../../public/assets/img/hamburger.svg" alt="hamburger" />
+  </button>
+  <div
+    id="list"
+    class="z-10 bg-[#000] fixed top-0 right-0 flex flex-col w-[60%] h-full p-4"
+    style="display: none;"
+  >
+    <button id="close" class="size-6">
+      <img src="../../public/assets/img/close.svg" alt="close" />
+    </button>
+    <ol class="[&>li]:py-2">
+      <li><a href="/#about" class="font-normal">About</a></li>
+      <li><a href="/#news" class="font-normal">News</a></li>
+      <li><a href="/#gi" class="font-normal">Get Involved</a></li>
+      <li><a href="/#sponsors" class="font-normal">Sponsors</a></li>
+    </ol>
+  </div>
+
+  <script>
+    const openButton = document.getElementById("open");
+    const list = document.getElementById("list");
+    const closeButton = document.getElementById("close");
+
+    if (list && openButton && closeButton) {
+      openButton.addEventListener("click", () => {
+        list.style.display = "block";
+      });
+
+      closeButton.addEventListener("click", () => {
+        list.style.display = "none";
+      });
+    }
+  </script>
+</div>

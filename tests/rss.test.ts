@@ -5,7 +5,7 @@ import path from "path";
 
 const rootDir: string = path.join(__dirname, "../");
 
-describe("RSS Feeds", () => {
+describe("Posts RSS Feeds", () => {
   const srcDir = path.join(rootDir, "/src/content/posts");
   const distDir = path.join(rootDir, "/dist/");
 
@@ -44,6 +44,49 @@ describe("RSS Feeds", () => {
           "pubDate",
           "author",
           "category",
+        ])
+      );
+    });
+  });
+});
+
+describe("Newsletters RSS Feeds", () => {
+  const srcDir = path.join(rootDir, "/src/content/newsletters");
+  const distDir = path.join(rootDir, "/dist/");
+
+  const mdFiles = fs
+    .readdirSync(srcDir)
+    .filter((file) => file.endsWith(".mdx"));
+  const nonDraftMdFiles = mdFiles.filter((file) => {
+    const filePath = path.join(srcDir, file);
+    const fileContent = fs.readFileSync(filePath);
+    return !fileContent.includes("draft: true");
+  });
+  const xmlFile = fs.readFileSync(path.join(distDir, "newsletters.rss"));
+
+  const parser = new XMLParser();
+  const parsedXML = parser.parse(xmlFile);
+
+  test("RSS Channel includes overall metadata", () => {
+    expect(parsedXML.rss.channel).toEqual(
+      expect.objectContaining({
+        title: "Ladybird Browser Newsletters",
+        description: "Ladybird is a brand-new browser &amp; web engine",
+        link: "https://ladybird.org",
+      })
+    );
+  });
+
+  test("XML should contain entries for every non-draft newsletter", () => {
+    expect(parsedXML.rss.channel.item).toBeArrayOfSize(nonDraftMdFiles.length);
+    parsedXML.rss.channel.item.forEach((item: any) => {
+      const itemAttributes = Object.keys(item);
+      expect(itemAttributes).toEqual(
+        expect.arrayContaining([
+          "title",
+          "link",
+          "description",
+          "pubDate",
         ])
       );
     });

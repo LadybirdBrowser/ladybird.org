@@ -1,57 +1,50 @@
-<section class="why">
-  <div class="why__eclipse"></div>
+<section class="section section--subtle">
   <div class="container">
-    <div class="why__top">
-      <div class="why__top-left">
-        <h2>What makes <span>Ladybird</span> unique</h2>
-      </div>
-    </div>
+    <h2 class="section-heading">What makes Ladybird different</h2>
 
-    <div class="why__slider">
-      <div class="swiper-slide">
-        <div class="why__slide">
-          <div class="why__slide-icon lightpurple">
-            <img src="/assets/img/truly-independent.svg" alt="star symbol" />
-          </div>
-          <div class="why__slide-tf">
-            <h4>Truly independent</h4>
-            <p>
-              No code from other browsers. We're building a new engine, based on
-              web standards.
-            </p>
-          </div>
-        </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <h4>Truly independent</h4>
+        <p>
+          No code from other browsers. We're building a new engine from scratch,
+          based on web standards.
+        </p>
       </div>
-
-      <div class="swiper-slide">
-        <div class="why__slide">
-          <div class="why__slide-icon darkpurple">
-            <img src="/assets/img/single-focus.svg" alt="target symbol" />
-          </div>
-          <div class="why__slide-tf">
-            <h4>Singular focus</h4>
-            <p>We are focused on one thing: the web browser.</p>
-          </div>
-        </div>
+      <div class="why-item">
+        <h4>Singular focus</h4>
+        <p>We are focused on one thing: building a web browser.</p>
       </div>
-
-      <div class="swiper-slide">
-        <div class="why__slide">
-          <div class="why__slide-icon lightgrey">
-            <img
-              src="/assets/img/no-monetization.svg"
-              alt="crossed out money symbol"
-            />
-          </div>
-          <div class="why__slide-tf">
-            <h4>No monetization</h4>
-            <p>
-              No "default search deals", crypto tokens, or other forms of user
-              monetization, ever.
-            </p>
-          </div>
-        </div>
+      <div class="why-item">
+        <h4>No monetization</h4>
+        <p>
+          No "default search deals", crypto tokens, or other forms of user
+          monetization.
+        </p>
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 640px) {
+    .why-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+    }
+  }
+
+  .why-item h4 {
+    margin-bottom: 8px;
+  }
+
+  .why-item p {
+    font-size: 15px;
+    margin: 0;
+  }
+</style>

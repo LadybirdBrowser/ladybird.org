@@ -1,75 +1,63 @@
 /** @type {import('tailwindcss').Config} */
 const defaultTheme = require("tailwindcss/defaultTheme");
-const colors = require("tailwindcss/colors");
+
 module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
-    animation: {
-      marquee: "marquee 15s linear infinite",
-      marquee2: "marquee2 25s linear infinite",
-      scroller3: "scroller3 25s linear infinite",
-      "spin-slow": "spin 4s linear infinite",
-      "spin-slower": "spin 6s linear infinite",
-      "spin-reverse": "spin-reverse 1s linear infinite",
-      "spin-reverse-slow": "spin-reverse 4s linear infinite",
-      "spin-reverse-slower": "spin-reverse 6s linear infinite",
-      scroller: "scroller 15s linear infinite",
-      scroller2: "scroller2 20s linear infinite",
-      "fade-in": "fade-in 0.5s linear forwards",
-    },
-    keyframes: {
-      marquee: {
-        "0%": { transform: "translateX(0%)" },
-        "100%": { transform: "translateX(-100%)" },
-      },
-      marquee2: {
-        "0%": { transform: "translateX(100%)" },
-        "100%": { transform: "translateX(0%)" },
-      },
-      scroller: {
-        "0%": { transform: "translateY(10em)" },
-        "100%": { transform: "translateY(-14em)" },
-      },
-      scroller2: {
-        "0%": { transform: "translateY(10em)" },
-        "100%": { transform: "translateY(-14em)" },
-      },
-      "fade-in": {
-        from: {
-          opacity: 0,
-        },
-        to: {
-          opacity: 1,
-        },
-      },
-      scroller3: {
-        "100%": {
-          transform: "translateY(-50%)",
-        },
-      },
-      "spin-reverse": {
-        to: {
-          transform: "rotate(-360deg)",
-        },
-      },
-    },
     extend: {
       colors: {
-        black: "#0e0e0e",
-        white: "#d8e7e7",
-        eagle: "#a4b3b3",
-        "pop-blue": "#2541ea",
+        "slate-blue": {
+          DEFAULT: "#6d98cc",
+          900: "#4872a3",
+          700: "#5c8ecc",
+          500: "#86add9",
+          300: "#a8c8ed",
+          100: "#c1d9f5",
+        },
+        violet: {
+          DEFAULT: "#8a64e5",
+          900: "#6a39db",
+          700: "#8257e6",
+          500: "#9d7cf2",
+          300: "#b496ff",
+          100: "#cab5ff",
+          50: "#e0d4ff",
+        },
+        indigo: {
+          DEFAULT: "#2a1373",
+          900: "#190c4a",
+          700: "#260f73",
+          500: "#3c28a1",
+          300: "#553fc4",
+          100: "#8a88eb",
+        },
       },
       fontFamily: {
-        sans: ["Inter", ...defaultTheme.fontFamily.sans],
-        display: ["Basement", ...defaultTheme.fontFamily.sans],
+        sans: ['"General Sans"', "system-ui", "-apple-system", "sans-serif"],
+        mono: [
+          '"Berkeley Mono"',
+          '"SF Mono"',
+          '"Fira Code"',
+          '"JetBrains Mono"',
+          "ui-monospace",
+          "monospace",
+        ],
+      },
+      animation: {
+        "fade-up": "fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "fade-in": "fade-in 0.7s ease forwards",
+      },
+      keyframes: {
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(28px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/typography"),
-
-    require("@tailwindcss/forms"),
-    // ...
-  ],
+  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
 };

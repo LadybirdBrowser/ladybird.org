@@ -1,24 +1,76 @@
-<section
-  class="relative z-10 -top-4 text-[#fff] bg-[url('/assets/img/blurp.webp')] bg-center bg-cover mb-12 flex justify-center"
->
-  <div class="p-6 md:p-8 lg:px-16 lg:py-10">
-    <h2 class="text-3xl lg:text-4xl mb-[0.8em] lg:mb-[0.4em]">
-      Become a <span>Ladybird</span> supporter
-    </h2>
-    <p class="mb-5 max-w-2xl">
-      Ladybird is funded entirely by sponsorships and donations from people and
-      companies who care about the open web.
+<section id="support" class="section section--subtle">
+  <div class="container">
+    <h2 class="section-heading">Support the project</h2>
+    <p>
+      Ladybird is funded entirely by donations and sponsorships. No search
+      deals, no data collection, no ads. Just people and companies who believe
+      in an open web.
     </p>
-    <p class="mb-5 max-w-2xl">
-      We accept one-time and recurring monthly donations via <a
-        href="https://donorbox.org/ladybird">Donorbox</a
-      >.
-    </p>
-    <p class="mb-5 max-w-2xl">
-      If you or your company would like to make a large donation, we would be
-      happy to display your logo on this website! Please <a
-        href="mailto:contact@ladybird.org">contact us</a
-      > about becoming a sponsor.
-    </p>
+
+    <div class="donate-grid">
+      <div>
+        <h3>Become a sponsor</h3>
+        <p>
+          Sponsors are recognized on our website and in project updates.
+          Sponsorships run for one year.
+        </p>
+        <table>
+          <tr><td><strong>Platinum</strong></td><td>$100,000</td></tr>
+          <tr><td><strong>Gold</strong></td><td>$50,000</td></tr>
+          <tr><td><strong>Silver</strong></td><td>$10,000</td></tr>
+          <tr><td><strong>Bronze</strong></td><td>$5,000</td></tr>
+          <tr><td><strong>Copper</strong></td><td>$1,000</td></tr>
+        </table>
+        <p>
+          For sponsorship inquiries, email
+          <a href="mailto:contact@ladybird.org">contact@ladybird.org</a>.
+        </p>
+      </div>
+
+      <div>
+        <h3>Individual donations</h3>
+        <p>
+          One-time or recurring monthly donations via
+          <a href="https://donorbox.org/ladybird">Donorbox</a>. Every
+          contribution helps.
+        </p>
+        <a href="https://donorbox.org/ladybird" class="btn">Donate</a>
+        <p class="donate-note">
+          For larger donations, please
+          <a href="mailto:contact@ladybird.org">contact us directly</a> to avoid
+          processing fees.
+        </p>
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  .donate-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 24px;
+  }
+
+  @media (min-width: 640px) {
+    .donate-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+  }
+
+  .donate-grid h3 {
+    margin-bottom: 12px;
+  }
+
+  .donate-grid table td:first-child {
+    min-width: 100px;
+  }
+
+  .donate-note {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+</style>

@@ -15,24 +15,18 @@ const { frontmatter } = Astro.props;
   author={frontmatter.author}
   image={frontmatter.image}
 >
-  <div class="min-h-screen">
-    <section class="hero hero_single">
-      <div class="container custom-row">
-        <div class="hero__tf">
-          <p class="text-[#fff]">
-            <span
-              class="bg-clip-text text-transparent bg-gradient-to-r from-[#6d98cc] to-[#8a64e5]"
-              >{frontmatter.author || "Announcement"}</span
-            > | {frontmatter.date.toUTCString().slice(0, 16)}
-          </p>
-          <h1 class="text-[#fff]">{frontmatter.title}</h1>
-        </div>
-      </div>
-    </section>
-    <section class="single-content">
-      <div class="container container-narrow">
-        <slot />
-      </div>
-    </section>
-  </div>
+  <section class="hero hero_single">
+    <div class="hero__tf">
+      <p>
+        <strong>{frontmatter.author || "Announcement"}</strong> &mdash;
+        {frontmatter.date.toUTCString().slice(0, 16)}
+      </p>
+      <h1>{frontmatter.title}</h1>
+    </div>
+  </section>
+  <section class="single-content">
+    <div class="container container-narrow">
+      <slot />
+    </div>
+  </section>
 </BaseLayout>

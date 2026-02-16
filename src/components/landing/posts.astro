@@ -5,43 +5,76 @@ const posts = await getCollection("posts");
 posts.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
+
+const visiblePosts = posts
+  .filter((post) => post.data.type !== "Hidden")
+  .slice(0, 6);
 ---
 
-<section class="news" id="news">
-  <div class="news__eclipse"></div>
+<section id="news" class="section">
   <div class="container">
-    <div class="news__top">
-      <h2>News &amp; Announcements</h2>
-    </div>
-    <div class="news__grid">
+    <h2 class="section-heading">News</h2>
+
+    <div class="posts-list">
       {
-        posts
-          .filter((post) => post.data.type !== "Hidden")
-          .splice(0, 6)
-          .map((post) => {
-            return (
-              <a href={`/posts/${post.slug}`}>
-                <div class="news__box">
-                  <div class="news__box-image">
-                    <div class="news__box-category">
-                      <span>{post.data.type}</span>
-                    </div>
-                    <img
-                      src={post.data.image}
-                      alt={
-                        (
-                          post.data.image.split("/").pop() ?? "no alt found"
-                        ).split(".")[0]
-                      }
-                    />
-                  </div>
-                  <h4>{post.data.title}</h4>
-                  <p>{post.data.description}</p>
-                </div>
-              </a>
-            );
-          })
+        visiblePosts.map((post) => (
+          <div class="post-row">
+            <span class="post-date">
+              {new Date(post.data.date).toISOString().slice(0, 10)}
+            </span>
+            <div class="post-info">
+              <a href={`/posts/${post.slug}`}>{post.data.title}</a>
+              <p>{post.data.description}</p>
+            </div>
+          </div>
+        ))
       }
     </div>
   </div>
 </section>
+
+<style>
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .post-row {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    min-width: 90px;
+  }
+
+  .post-info a {
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    text-decoration-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .post-info a:hover {
+    text-decoration-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .post-info p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+  }
+
+  @media (max-width: 640px) {
+    .post-row {
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+</style>

@@ -24,7 +24,9 @@ const { title, description, author, image } = Astro.props;
   </head>
   <body>
     <Navigation />
-    <slot />
+    <main>
+      <slot />
+    </main>
     <Footer />
   </body>
 </html>

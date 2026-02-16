@@ -5,3 +5,11 @@
   font-display: swap;
   src: url("GeneralSans-Variable.woff2") format(woff2) tech(variations);
 }
+
+@font-face {
+  font-family: "Berkeley Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("BerkeleyMonoVariable-Regular.woff2") format(woff2) tech(variations);
+}

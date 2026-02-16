@@ -1,29 +1,153 @@
-<header class="p-[20px] bg-[#000] relative">
-  <div id="header-blobs" class="absolute pointer-events-none z-10 top-0 left-0">
-    <img src="/assets/img/header-eclipse.svg" alt="Header Gradient Blobs" />
-  </div>
-  <div
-    id="header-nav"
-    class="container mx-auto flex flex-row items-center justify-between"
-  >
-    <a id="header-logo" href="/">
-      <img
-        class="w-36 z-10"
-        src="/assets/img/logo-new.webp"
-        alt="Ladybird Logo"
-      />
+<header>
+  <div class="container nav-container">
+    <a href="/" class="nav-logo">
+      <img src="/assets/img/logo-new.webp" alt="Ladybird" />
     </a>
-    <div id="header-links" class="flex-row gap-3 z-20 text-sm hidden lg:flex">
-      <a href="/#about" class="font-normal">About</a>
-      <a href="/#news" class="font-normal">News</a>
-      <a href="/#gi" class="font-normal">Get Involved</a>
-      <a href="/#sponsors" class="font-normal">Sponsors</a>
-      <a href="/#faq" class="font-normal">FAQ</a>
-    </div>
-    <div id="header-donate">
-      <a href="https://donorbox.org/ladybird" class="btn btn--small">
-        Donate
-      </a>
-    </div>
+    <button class="burger" aria-label="Menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav>
+      <a href="/#about">About</a>
+      <a href="/#news">News</a>
+      <a href="/#contribute">Get involved</a>
+      <a href="/#sponsors">Sponsors</a>
+      <a href="/#faq">FAQ</a>
+      <a href="/#support">Support</a>
+    </nav>
   </div>
 </header>
+
+<script>
+  const burger = document.querySelector(".burger");
+  const nav = burger?.closest("header")?.querySelector("nav");
+  burger?.addEventListener("click", () => {
+    const open = burger.getAttribute("aria-expanded") === "true";
+    burger.setAttribute("aria-expanded", String(!open));
+    nav?.classList.toggle("open");
+  });
+  // Close menu when a link is tapped
+  nav?.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => {
+      burger?.setAttribute("aria-expanded", "false");
+      nav?.classList.remove("open");
+    });
+  });
+</script>
+
+<style>
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .nav-logo {
+    text-decoration: none;
+  }
+
+  .nav-logo img {
+    height: 24px;
+    width: auto;
+  }
+
+  .burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .burger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--text-secondary);
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+  }
+
+  .burger[aria-expanded="true"] span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  .burger[aria-expanded="true"] span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .burger[aria-expanded="true"] span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  nav a {
+    font-size: 14px;
+    font-weight: var(--weight-normal);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  nav a:hover {
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 640px) {
+    header {
+      padding: 14px 0;
+    }
+
+    .nav-logo img {
+      height: 20px;
+      width: auto;
+    }
+
+    .burger {
+      display: flex;
+    }
+
+    nav {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      gap: 0;
+      padding-top: 16px;
+    }
+
+    nav.open {
+      display: flex;
+    }
+
+    nav a {
+      font-size: 15px;
+      padding: 10px 0;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .nav-container {
+      flex-wrap: wrap;
+    }
+  }
+</style>

@@ -11,20 +11,14 @@ const displayDate = frontmatter.title.split(" - ")[1];
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
-  <div class="min-h-screen">
-    <section class="hero hero_single">
-      <div class="container custom-row">
-        <h1 class="mx-auto text-center text-[#fff]">
-          This Month in <span>Ladybird</span>
-          <br />
-          {displayDate}
-        </h1>
-      </div>
-    </section>
-    <section class="single-content">
-      <div class="container container-narrow">
-        <slot />
-      </div>
-    </section>
-  </div>
+  <section class="hero hero_single">
+    <div class="hero__tf">
+      <h1>This Month in Ladybird &mdash; {displayDate}</h1>
+    </div>
+  </section>
+  <section class="single-content">
+    <div class="container container-narrow">
+      <slot />
+    </div>
+  </section>
 </BaseLayout>

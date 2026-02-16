@@ -1,181 +1,175 @@
-<section id="faq" class="faq">
+<section id="faq" class="section">
   <div class="container">
-    <div class="faq__tf">
-      <h2>Frequently Asked Questions</h2>
-    </div>
+    <h2 class="section-heading">Frequently asked questions</h2>
 
-    <div class="faq__wrapper">
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">When is it coming?</div>
-          <div class="ac-panel-text">
-            We are targeting Summer 2026 for a first Alpha version on Linux and
-            macOS. This will be aimed at developers and early adopters.
-          </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>When is it coming?</summary>
+        <div class="faq-answer">
+          <p>
+            We are targeting 2026 for a first Alpha version on Linux and macOS.
+            This will be aimed at developers and early adopters.
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">
-            How many people are working on the browser today?
-          </div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>How many people are working on the browser today?</summary>
+        <div class="faq-answer">
+          <p>
             We currently have 8 paid full-time engineers working on Ladybird.
             There is also a large community of volunteer contributors.
-          </div>
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">What's the hiring plan?</div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>What's the hiring plan?</summary>
+        <div class="faq-answer">
+          <p>
             We are growing the team at a reasonable pace, as budget allows.
             Building the right team is more important than building it quickly.
-            <br /><br />
-            We will strive to maintain 18 months of runway at all times.
-          </div>
+          </p>
+          <p>We will strive to maintain 18 months of runway at all times.</p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">
-            What does "No code from other browsers" really mean?
-          </div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>What does "No code from other browsers" really mean?</summary>
+        <div class="faq-answer">
+          <p>
             The focus of the Ladybird project is to build a new browser engine
             from the ground up. We don't use code from Blink, WebKit, Gecko, or
             any other browser engine.
-            <br /><br />
-            For historical reasons, the browser uses various libraries from the SerenityOS
-            project, which has a strong culture of writing
-            <i>everything</i> from scratch. Now that Ladybird has forked from SerenityOS,
-            it is no longer bound by this culture, and we will be making use of 3rd
-            party libraries for common functionality (e.g image/audio/video formats,
-            encryption, graphics, etc.)
-            <br /><br />
+          </p>
+          <p>
+            For historical reasons, the browser uses various libraries from the
+            SerenityOS project, which has a strong culture of writing <em
+              >everything</em
+            > from scratch. Now that Ladybird has forked from SerenityOS, it is no
+            longer bound by this culture, and we will be making use of 3rd party
+            libraries for common functionality (e.g image/audio/video formats, encryption,
+            graphics, etc.)
+          </p>
+          <p>
             We are already using some of the same 3rd party libraries that other
             browsers use, but we will never adopt another browser engine instead
             of building our own.
-          </div>
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">Will Ladybird work on Windows?</div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>Will Ladybird work on Windows?</summary>
+        <div class="faq-answer">
+          <p>
             We don't have anyone actively working on Windows support, and there
             are considerable changes required to make it work well outside a
             Unix-like environment.
-            <br /><br />
-            We would like to do Windows eventually, but it's not a priority at the
-            moment.
-          </div>
+          </p>
+          <p>
+            We would like to do Windows eventually, but it's not a priority at
+            the moment.
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">
-            Will Ladybird work on mobile devices?
-          </div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>Will Ladybird work on mobile devices?</summary>
+        <div class="faq-answer">
+          <p>
             We don't have anyone actively working on an Android or iOS port.
             More effort will be put into mobile once we have the desktop
             versions in a good state.
-            <br /><br />
-            While there is the start of an Android port in the project repository,
-            mobile is not a priority at the moment.
-          </div>
+          </p>
+          <p>
+            While there is the start of an Android port in the project
+            repository, mobile is not a priority at the moment.
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">What are the sponsor tiers?</div>
-          <div class="ac-panel-text">
-            <table class="sponsor-tiers">
-              <tr>
-                <td>Platinum</td>
-                <td>USD $100,000</td>
-              </tr>
-              <tr>
-                <td>Gold</td>
-                <td>USD $50,000</td>
-              </tr>
-              <tr>
-                <td>Silver</td>
-                <td>USD $10,000</td>
-              </tr>
-              <tr>
-                <td>Bronze</td>
-                <td>USD $5,000</td>
-              </tr>
-              <tr>
-                <td>Copper</td>
-                <td>USD $1,000 (no logo, text only)</td>
-              </tr>
-            </table>
-            <br />
-            Sponsorships run for one year, then you are welcome to renew.
-            <br /><br />
-            Sponsors will have their logos/names displayed on our website, and will
-            be thanked in updates / on social media.
-            <br /><br />
-            Please <a href="mailto:contact@ladybird.org">contact us</a> if you are
-            interested in sponsorship.
-          </div>
-        </div>
-      </div>
-
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">
-            How can you be "independent" if you have sponsors?
-          </div>
-          <div class="ac-panel-text">
+      <details class="faq-item">
+        <summary>How can you be "independent" if you have sponsors?</summary>
+        <div class="faq-answer">
+          <p>
             All sponsorships are in the form of unrestricted donations. Board
             seats and other forms of influence are not for sale.
-          </div>
+          </p>
         </div>
-      </div>
+      </details>
 
-      <div class="ac">
-        <div class="ac-header-number"><div>?</div></div>
-        <div>
-          <div class="ac-header-title">
-            Why build a new browser in C++ when safer and more modern languages
-            are available?
-          </div>
-          <div class="ac-panel-text">
-            Ladybird started as a component of the SerenityOS hobby project,
-            which only allows C++. The choice of language was not so much a
-            technical decision, but more one of personal convenience. Andreas
-            was most comfortable with C++ when creating SerenityOS, and now we
-            have almost half a million lines of modern C++ to maintain.
-            <br /><br />
-            However, now that Ladybird has forked and become its own independent
-            project, all constraints previously imposed by SerenityOS are no longer
-            in effect.
-            <br /><br />
-            We previously explored <a href="https://swift.org">Swift</a> as a
-            potential successor language, but we are no longer pursuing that
-            direction. We are currently evaluating other options and will share
-            more when we're ready.
-          </div>
+      <details class="faq-item">
+        <summary
+          >Why build a new browser in C++ when safer and more modern languages
+          are available?</summary
+        >
+        <div class="faq-answer">
+          <p>
+            Ladybird started as a C++ project, and we now have almost half a
+            million lines of modern C++ to maintain. We are currently evaluating
+            options for a successor language and will share more when we're
+            ready.
+          </p>
         </div>
-      </div>
+      </details>
     </div>
   </div>
 </section>
+
+<style>
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .faq-item:first-child {
+    border-top: 1px solid var(--border-light);
+  }
+
+  .faq-item summary {
+    padding: 16px 0;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::marker {
+    display: none;
+    content: "";
+  }
+
+  .faq-item summary::before {
+    content: "+ ";
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    margin-right: 8px;
+  }
+
+  .faq-item[open] summary::before {
+    content: "− ";
+  }
+
+  .faq-answer {
+    padding: 0 0 16px 20px;
+  }
+
+  .faq-answer p {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .faq-answer p:last-child {
+    margin-bottom: 0;
+  }
+</style>

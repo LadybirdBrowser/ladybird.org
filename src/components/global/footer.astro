@@ -1,135 +1,187 @@
-<footer class="bg-[#000] py-0 md:px-20">
-  <div class="container">
-    <div
-      class="flex items-center h-[335px] sm:h-[380px] bg-cover bg-no-repeat relative z-10 -top-[60px] rounded-[40px] md:rounded-[80px] bg-center bg-[url('../../../assets/img/discover-bg.webp')] w-full"
-    >
-      <div class="p-7 md:h-[335px] md:p-10 lg:py-12 lg:px-20">
-        <h2 class="text-[#000] mb-1 text-[36px] lg:text-4xl">
-          Sign up for our newsletter
-        </h2>
-        <p class="text-[#000] mb-6 max-w-[832px] lg:text-lg">
-          We'll e-mail you once a month with updates about Ladybird.
-        </p>
-
-        <div class="flex flex-col">
-          <form
-            action="https://buttondown.com/api/emails/embed-subscribe/ladybird"
-            method="post"
-            class="form-subscribe validate"
-            target="_blank"
-          >
-            <div class="form-group flex justify-center items-center">
-              <input
-                type="email"
-                name="email"
-                class="form-control"
-                placeholder="Your e-mail"
-                required
-              />
-              <button type="submit" aria-label="Subscribe to newsletter">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="38"
-                  height="38"
-                  viewBox="0 0 38 38"
-                  fill="none"
-                >
-                  <rect
-                    width="38"
-                    height="38"
-                    rx="4"
-                    fill="url(#paint0_linear_60_603)"></rect>
-                  <path
-                    d="M29.7071 19.7071C30.0976 19.3166 30.0976 18.6834 29.7071 18.2929L23.3431 11.9289C22.9526 11.5384 22.3195 11.5384 21.9289 11.9289C21.5384 12.3195 21.5384 12.9526 21.9289 13.3431L27.5858 19L21.9289 24.6569C21.5384 25.0474 21.5384 25.6805 21.9289 26.0711C22.3195 26.4616 22.9526 26.4616 23.3431 26.0711L29.7071 19.7071ZM9 20L29 20L29 18L9 18L9 20Z"
-                    fill="white"></path>
-                  <defs>
-                    <linearGradient
-                      id="paint0_linear_60_603"
-                      x1="0"
-                      y1="19"
-                      x2="38"
-                      y2="19"
-                      gradientUnits="userSpaceOnUse"
-                    >
-                      <stop stop-color="#6D98CC"></stop>
-                      <stop offset="1" stop-color="#8A64E5"></stop>
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </button>
-            </div>
-          </form>
-        </div>
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-top">
+      <div class="footer-newsletter">
+        <h3>Stay in the loop</h3>
+        <p>Monthly updates about Ladybird, straight to your inbox.</p>
+        <form
+          action="https://buttondown.com/api/emails/embed-subscribe/ladybird"
+          method="post"
+          class="nl-form"
+          target="_blank"
+        >
+          <input
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+          />
+          <button type="submit" class="btn">Subscribe</button>
+        </form>
       </div>
+
+      <nav class="footer-links">
+        <a href="/#about">About</a>
+        <a href="/#news">News</a>
+        <a href="/#contribute">Get involved</a>
+        <a href="/#support">Support</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/organization/">Organization</a>
+      </nav>
     </div>
 
-    <div>
-      <div
-        class="flex items-center md:items-start flex-col md:flex-row justify-between gap-10"
-      >
-        <div class="h-fit">
-          <img class="max-w-48" src="/assets/img/logo-new.webp" alt="Logo" />
-        </div>
-        <div>
-          <div class="flex gap-14">
-            <div class="flex flex-col">
-              <a href="/#about" class="mb-3 font-normal">About</a>
-              <a href="/#news" class="mb-3 font-normal">News</a>
-              <a href="/#gi" class="mb-3 font-normal">Get Involved</a>
-            </div>
-
-            <div class="flex flex-col">
-              <a href="/#sponsors" class="mb-3 font-normal">Sponsors</a>
-              <a href="/#faq" class="mb-3 font-normal">FAQ</a>
-              <a href="/organization/" class="mb-3 font-normal">Organization</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="flex sm:flex-row flex-col gap-10 items-center justify-between py-[30px] pb-5 px-0 border-t-[#303030] border-t-[1px] mt-8 border-solid"
-      >
-        <div class="[&>p]:text-[#757575] font-normal">
-          <p>© 2024 - {new Date().getFullYear()}. All rights reserved.</p>
-        </div>
-        <div class="flex flex-wrap items-center justify-center gap-1">
-          <a
-            href="https://github.com/LadybirdBrowser/ladybird"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-[#16141b] hover:bg-[#8a64e5]"
-          >
-            <img src="/assets/img/github.svg" alt="GitHub" />
-          </a>
-
-          <a
-            href="https://discord.gg/nvfjVJ4Svh"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-[#16141b] hover:bg-[#8a64e5]"
-          >
-            <img src="/assets/img/discord.svg" alt="Discord" />
-          </a>
-
-          <a
-            href="https://www.youtube.com/@LadybirdBrowser"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-[#16141b] hover:bg-[#8a64e5]"
-          >
-            <img src="/assets/img/youtube.svg" alt="YouTube" />
-          </a>
-
-          <a
-            href="https://x.com/ladybirdbrowser"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-[#16141b] hover:bg-[#8a64e5]"
-          >
-            <img src="/assets/img/x.svg" alt="X/Twitter" />
-          </a>
-
-          <a
-            href="https://ladybird.org/posts.rss"
-            class="w-8 h-8 flex items-center justify-center rounded-full bg-[#16141b] hover:bg-[#8a64e5]"
-          >
-            <img src="/assets/img/rss.svg" alt="RSS" />
-          </a>
-        </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        &copy; 2024&ndash;{new Date().getFullYear()} Ladybird Browser Initiative
+      </p>
+      <div class="footer-social">
+        <a href="https://github.com/LadybirdBrowser/ladybird">GitHub</a>
+        <a href="https://discord.gg/nvfjVJ4Svh">Discord</a>
+        <a href="https://www.youtube.com/@LadybirdBrowser">YouTube</a>
+        <a href="https://x.com/ladybirdbrowser">X</a>
+        <a href="https://ladybird.org/posts.rss">RSS</a>
       </div>
     </div>
   </div>
 </footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0 32px;
+    margin-top: 48px;
+  }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-bottom: 32px;
+  }
+
+  @media (min-width: 640px) {
+    .footer-top {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  .footer-newsletter h3 {
+    margin-bottom: 4px;
+  }
+
+  .footer-newsletter p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .nl-form {
+    display: flex;
+    gap: 8px;
+    max-width: 360px;
+  }
+
+  .nl-form input {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    outline: none;
+  }
+
+  .nl-form input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .nl-form .btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-links a:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  @media (min-width: 640px) {
+    .footer-bottom {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-social a {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .footer-social a:hover {
+    color: var(--text-primary);
+  }
+
+  @media (max-width: 640px) {
+    footer {
+      padding: 32px 0 24px;
+      margin-top: 0;
+    }
+
+    .footer-top {
+      gap: 32px;
+      padding-bottom: 24px;
+    }
+
+    .nl-form {
+      flex-direction: column;
+      max-width: none;
+    }
+
+    .nl-form .btn {
+      align-self: flex-start;
+    }
+
+    .footer-links {
+      gap: 12px 16px;
+    }
+
+    .footer-social {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  }
+</style>

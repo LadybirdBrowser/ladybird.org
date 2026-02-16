@@ -2,10 +2,12 @@
 import Headshot from "./headshot.astro";
 ---
 
-<section id="board" class="board single-content">
-  <div class="container container-narrow">
+<section id="board" class="single-content">
+  <div class="container">
+    <span class="org-section-label">02 / Leadership</span>
     <h2>Leadership</h2>
-    <h3 class="mb-4">Board of Directors</h3>
+
+    <h3 class="board-sub">Board of Directors</h3>
     <div class="headshots-grid">
       <Headshot
         fullName="Andreas Kling"
@@ -23,7 +25,8 @@ import Headshot from "./headshot.astro";
         image="/assets/img/leadership/mike-shaver.webp"
       />
     </div>
-    <h3 class="mb-4">Management</h3>
+
+    <h3 class="board-sub">Management</h3>
     <div class="headshots-grid">
       <Headshot
         fullName="Jelle Raaijmakers"
@@ -33,3 +36,25 @@ import Headshot from "./headshot.astro";
     </div>
   </div>
 </section>
+
+<style>
+  .org-section-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 16px;
+  }
+
+  .board-sub {
+    margin-bottom: 24px;
+    margin-top: 48px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .board-sub:first-of-type {
+    margin-top: 32px;
+  }
+</style>

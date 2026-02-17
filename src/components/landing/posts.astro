@@ -1,13 +1,28 @@
 ---
 import { getCollection } from "astro:content";
 
-const posts = await getCollection("posts");
-posts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
-
-const visiblePosts = posts
+const posts = (await getCollection("posts"))
   .filter((post) => post.data.type !== "Hidden")
+  .map((post) => ({
+    date: post.data.date,
+    title: post.data.title,
+    description: post.data.description,
+    href: `/posts/${post.slug}`,
+  }));
+
+const newsletters = (
+  await getCollection("newsletters", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true
+  )
+).map((newsletter) => ({
+  date: newsletter.data.date,
+  title: newsletter.data.title,
+  description: newsletter.data.description,
+  href: `/newsletter/${newsletter.data.date.toISOString().split("T")[0]}`,
+}));
+
+const allNews = [...posts, ...newsletters]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 6);
 ---
 
@@ -17,19 +32,21 @@ const visiblePosts = posts
 
     <div class="posts-list">
       {
-        visiblePosts.map((post) => (
+        allNews.map((item) => (
           <div class="post-row">
             <span class="post-date">
-              {new Date(post.data.date).toISOString().slice(0, 10)}
+              {new Date(item.date).toISOString().slice(0, 10)}
             </span>
             <div class="post-info">
-              <a href={`/posts/${post.slug}`}>{post.data.title}</a>
-              <p>{post.data.description}</p>
+              <a href={item.href}>{item.title}</a>
+              <p>{item.description}</p>
             </div>
           </div>
         ))
       }
     </div>
+
+    <a href="/news/" class="see-all-link">See all posts &rarr;</a>
   </div>
 </section>
 
@@ -69,6 +86,21 @@ const visiblePosts = posts
     font-size: 14px;
     color: var(--text-muted);
     margin: 2px 0 0;
+  }
+
+  .see-all-link {
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .see-all-link:hover {
+    color: var(--color-accent);
   }
 
   @media (max-width: 640px) {

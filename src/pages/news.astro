@@ -1,0 +1,131 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts"))
+  .filter((post) => post.data.type !== "Hidden")
+  .map((post) => ({
+    date: post.data.date,
+    title: post.data.title,
+    description: post.data.description,
+    href: `/posts/${post.slug}`,
+  }));
+
+const newsletters = (
+  await getCollection("newsletters", ({ data }) =>
+    import.meta.env.PROD ? data.draft !== true : true
+  )
+).map((newsletter) => ({
+  date: newsletter.data.date,
+  title: newsletter.data.title,
+  description: newsletter.data.description,
+  href: `/newsletter/${newsletter.data.date.toISOString().split("T")[0]}`,
+}));
+
+const allNews = [...posts, ...newsletters].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+
+// Group by year
+const byYear = new Map<number, typeof allNews>();
+for (const item of allNews) {
+  const year = new Date(item.date).getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(item);
+}
+---
+
+<BaseLayout
+  title="News"
+  description="News and updates from the Ladybird web browser project."
+>
+  <section class="hero hero_single">
+    <div class="hero__tf">
+      <h1>News</h1>
+      <p>Posts and newsletters from the Ladybird project.</p>
+    </div>
+  </section>
+
+  <section class="single-content">
+    <div class="container">
+      {
+        [...byYear.entries()].map(([year, items]) => (
+          <div class="news-year">
+            <h2>{year}</h2>
+            <div class="news-list">
+              {items.map((item) => (
+                <div class="news-row">
+                  <span class="news-date">
+                    {new Date(item.date).toISOString().slice(0, 10)}
+                  </span>
+                  <div class="news-info">
+                    <a href={item.href}>{item.title}</a>
+                    <p>{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .news-year {
+    margin-bottom: 48px;
+  }
+
+  .news-year:last-child {
+    margin-bottom: 0;
+  }
+
+  .news-year h2 {
+    margin-bottom: 20px;
+  }
+
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .news-row {
+    display: flex;
+    gap: 20px;
+    align-items: baseline;
+  }
+
+  .news-date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    min-width: 90px;
+  }
+
+  .news-info a {
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    text-decoration-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .news-info a:hover {
+    text-decoration-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .news-info p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+  }
+
+  @media (max-width: 640px) {
+    .news-row {
+      flex-direction: column;
+      gap: 2px;
+    }
+  }
+</style>

@@ -1,0 +1,125 @@
+---
+title: This Month in Ladybird - February 2026
+description: Adopting Rust, text editing overhaul, performance work on YouTube and Reddit, ScrollTimeline, CSS @counter-style, SVG partial relayout, and more.
+date: 2026-02-28
+draft: true
+---
+
+February brought the biggest language strategy shift since Ladybird's founding: we removed all Swift code and replaced it with a complete Rust reimplementation of the LibJS frontend. Beyond that headline, we merged 347 PRs from 34 contributors, with major improvements to text editing, site-specific performance, CSS features, and SVG rendering.
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- [Hnefatafl Org](https://hnefatafl.org) with $1,000
+- [Softwired Technologies](https://softwiredtech.com) with $1,000
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Adopting Rust for LibJS
+
+We tried adopting Swift as a second language alongside C++ back in 2024, but after a long stretch of no progress, we acknowledged it wasn't going anywhere and removed all Swift code, build infrastructure, and tests from the codebase ([#7999](https://github.com/LadybirdBrowser/ladybird/pull/7999)).
+
+In its place, we landed a complete Rust reimplementation of the LibJS frontend pipeline: lexer, parser, AST, scope collector, and bytecode code generator ([#8104](https://github.com/LadybirdBrowser/ladybird/pull/8104)). The translation was done using AI coding agents (Claude Code and Codex), human-directed rather than autonomous. The Rust pipeline produces byte-for-byte identical bytecode output to the C++ implementation, verified across 52,898 test262 tests and 12,461 Ladybird-specific tests with zero regressions.
+
+It's enabled by default on all platforms. You can switch back to the C++ pipeline by setting `LIBJS_CPP=1`, or run both pipelines in lockstep with `LIBJS_COMPARE_PIPELINES=1` to verify identical output.
+
+For the full story on why we made this change and how the translation worked, see our [blog post about adopting Rust](/posts/adopting-rust/).
+
+### Text editing and selection
+
+We spent much of February overhauling text editing and selection, and the results are really noticeable. A bunch of interactions that felt broken or missing now just work:
+
+- **Double-click and triple-click dragging**: You can double-click to select a word and drag to extend the selection word-by-word, or triple-click and drag to extend paragraph-by-paragraph ([#7771](https://github.com/LadybirdBrowser/ladybird/pull/7771))
+- **Auto-scrolling**: Dragging a selection past the edge of a scrollable container now automatically scrolls to follow your cursor ([#7839](https://github.com/LadybirdBrowser/ladybird/pull/7839))
+- **Scrollable text inputs**: When text in an `<input>` overflows the visible area, the content now scrolls properly instead of getting clipped
+- **Caret rendering**: Empty `contenteditable` elements, `<input>`s, and `<textarea>`s now show a blinking caret where you'd expect one ([#7859](https://github.com/LadybirdBrowser/ladybird/pull/7859))
+- **`::selection` styling**: CSS `::selection` rules now apply to text and form controls, including `text-decoration` and `text-shadow`
+- **Tab key navigation**: Tabbing into an `<input>` now selects its contents, matching other browsers
+
+### Performance
+
+We continued profiling and optimizing specific popular websites:
+
+- **Reddit**: Layout and rendering optimizations driven by profiling Reddit's infinite scroll ([#7872](https://github.com/LadybirdBrowser/ladybird/pull/7872))
+- **YouTube**: Several rounds of profiling led to CSS property computation shortcuts, display caching, and eliminating unnecessary synchronous layouts ([#8051](https://github.com/LadybirdBrowser/ladybird/pull/8051), [#8059](https://github.com/LadybirdBrowser/ladybird/pull/8059), [#8084](https://github.com/LadybirdBrowser/ladybird/pull/8084))
+- **YouTube Music**: Further layout and style optimizations ([#8076](https://github.com/LadybirdBrowser/ladybird/pull/8076))
+- **slither.io**: IDL binding and overload resolution optimizations found by profiling the popular browser game ([#8203](https://github.com/LadybirdBrowser/ladybird/pull/8203))
+
+There were also broader improvements:
+
+- CSS custom properties now use structural sharing, so elements that inherit the same values share a single copy instead of each getting their own ([#7928](https://github.com/LadybirdBrowser/ladybird/pull/7928))
+- Animated images (GIFs, etc.) now decode frames on demand instead of all at once, which cut over 1 GiB of memory usage on [cloudflare.com](https://www.cloudflare.com) alone ([#7930](https://github.com/LadybirdBrowser/ladybird/pull/7930))
+
+### More sites working
+
+- **[Discord](https://discord.com)** went from ~65 FPS to 120 FPS on an M4 MacBook. Skipping display list commands under zero-area clips ([#8132](https://github.com/LadybirdBrowser/ladybird/pull/8132)) and reworking mask compositing to use `saveLayer` + `DstIn` instead of allocating surfaces ([#8100](https://github.com/LadybirdBrowser/ladybird/pull/8100)) made the biggest difference
+- **[X.com](https://x.com)** is noticeably more responsive after we stopped doing synchronous layouts for `Element.clientLeft` and `Element.clientTop`, which X calls frequently ([#8084](https://github.com/LadybirdBrowser/ladybird/pull/8084))
+- **[Wikipedia](https://en.wikipedia.org)** got multiple layout fixes: image boxes in articles render correctly ([#7746](https://github.com/LadybirdBrowser/ladybird/pull/7746)) and colspan cells in infoboxes no longer break the layout ([#7725](https://github.com/LadybirdBrowser/ladybird/pull/7725))
+
+_Wikipedia infobox before and after:_
+
+| Before                                                                                                                  | After                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-feb-2026-wikipedia-before.png)](/assets/img/newsletter-feb-2026-wikipedia-before.png) | [![After](/assets/img/newsletter-feb-2026-wikipedia-after.png)](/assets/img/newsletter-feb-2026-wikipedia-after.png) |
+
+- **[GitHub](https://github.com)** issue labels were being clipped due to incorrect overflow handling. They now display properly ([#7755](https://github.com/LadybirdBrowser/ladybird/pull/7755))
+
+| Before                                                                                                            | After                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-feb-2026-github-before.png)](/assets/img/newsletter-feb-2026-github-before.png) | [![After](/assets/img/newsletter-feb-2026-github-after.png)](/assets/img/newsletter-feb-2026-github-after.png) |
+
+- **[Tumblr](https://tumblr.com)** now loads its feed after fixing scoping of function declarations with destructured parameters ([#7907](https://github.com/LadybirdBrowser/ladybird/pull/7907))
+
+![Tumblr feed loading in Ladybird](/assets/img/newsletter-feb-2026-tumblr.png)
+
+- **[JetBrains](https://jetbrains.com)** video playlist layout fixed by correctly applying min/max-height constraints on absolutely positioned elements ([#7858](https://github.com/LadybirdBrowser/ladybird/pull/7858))
+
+| Before                                                                                                                  | After                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-feb-2026-jetbrains-before.png)](/assets/img/newsletter-feb-2026-jetbrains-before.png) | [![After](/assets/img/newsletter-feb-2026-jetbrains-after.png)](/assets/img/newsletter-feb-2026-jetbrains-after.png) |
+
+### CSS features
+
+- **`@counter-style`**: Full implementation of the `@counter-style` at-rule, including all six counter system algorithms and the `symbols()` function ([#7708](https://github.com/LadybirdBrowser/ladybird/pull/7708), [#8052](https://github.com/LadybirdBrowser/ladybird/pull/8052), [#8196](https://github.com/LadybirdBrowser/ladybird/pull/8196)). We also added complex predefined counter styles for Chinese, Japanese, Korean, and Ethiopian numbering systems ([#8180](https://github.com/LadybirdBrowser/ladybird/pull/8180))
+- **`@font-feature-values`**: Fonts that define alternate glyphs (stylistic sets, swashes, etc.) can now be accessed via CSS ([#7979](https://github.com/LadybirdBrowser/ladybird/pull/7979))
+- **`ScrollTimeline`**: You can now drive CSS animations from scroll position instead of time using `animation-timeline: scroll()`. This enables effects like progress bars and parallax that respond to scrolling ([#7196](https://github.com/LadybirdBrowser/ladybird/pull/7196), [#7883](https://github.com/LadybirdBrowser/ladybird/pull/7883))
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-feb-2026-scroll-timeline.mp4"></source>
+</video>
+
+- **`word-break`**: Long words and CJK text now break correctly according to the Unicode line breaking algorithm, fixing text layout on sites like the Chinese Wikipedia ([#7556](https://github.com/LadybirdBrowser/ladybird/pull/7556))
+
+_Chinese Wikipedia before and after `word-break`:_
+
+| Before                                                                                                                  | After                                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-feb-2026-wordbreak-before.png)](/assets/img/newsletter-feb-2026-wordbreak-before.png) | [![After](/assets/img/newsletter-feb-2026-wordbreak-after.png)](/assets/img/newsletter-feb-2026-wordbreak-after.png) |
+
+- **Grid dense packing**: `grid-auto-flow: dense` now works, filling gaps in the grid instead of leaving holes ([#7990](https://github.com/LadybirdBrowser/ladybird/pull/7990))
+
+### SVG partial relayout
+
+Previously, any change to an SVG element's attributes triggered a full layout tree rebuild for the entire SVG. This month we landed partial SVG relayout ([#7816](https://github.com/LadybirdBrowser/ladybird/pull/7816)), so changes to transforms, viewBox, and other attributes only invalidate the affected subtree. This makes a big difference on sites like [Duolingo](https://www.duolingo.com) and [Cloudflare](https://www.cloudflare.com) that use animated SVGs extensively.
+
+We also implemented `SVGPatternElement` ([#8011](https://github.com/LadybirdBrowser/ladybird/pull/8011)), the `feTurbulence` filter ([#7864](https://github.com/LadybirdBrowser/ladybird/pull/7864)), and `dominant-baseline` for SVG text ([#8173](https://github.com/LadybirdBrowser/ladybird/pull/8173)).
+
+### Web Platform Tests (WPT)
+
+Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world compatibility work, with 7,379 new test passes bringing our total to 1,998,398.
+
+### Other notable changes
+
+- **Media controls via shadow DOM**: Media element controls (`<audio>`, `<video>`) are now implemented using UA shadow DOM instead of ad-hoc painting. The controls are real DOM elements now, which makes them styleable and easier to maintain ([#8056](https://github.com/LadybirdBrowser/ladybird/pull/8056))
+- **Fullscreen API**: We completed the spec-compliant implementation of `requestFullscreen()` and `exitFullscreen()`, including fullscreen event handlers, default UA styles, and proper cleanup when elements are removed or documents unloaded
+- **LibJS architecture**: Scope analysis was separated from parsing ([#7852](https://github.com/LadybirdBrowser/ladybird/pull/7852)), the AST is now freed after bytecode generation ([#7896](https://github.com/LadybirdBrowser/ladybird/pull/7896)), and the runtime environment stack was replaced with explicit completion records ([#7840](https://github.com/LadybirdBrowser/ladybird/pull/7840), [#7846](https://github.com/LadybirdBrowser/ladybird/pull/7846))
+- **Tab close confirmation**: Tabs with unsaved state can now prevent accidental closure via `beforeunload` ([#6743](https://github.com/LadybirdBrowser/ladybird/pull/6743))
+- **Download images**: Right-click any image and download it directly ([#7735](https://github.com/LadybirdBrowser/ladybird/pull/7735))
+- **test262 on PRs**: JavaScript conformance tests now run on every PR ([#8018](https://github.com/LadybirdBrowser/ladybird/pull/8018))
+
+### Credits
+
+We'd like to thank everyone who contributed code this month:
+
+_Adam Colvin, Alex Gordon, Ali Mohammad Pur, Aliaksandr Kalenik, Andreas Kling, Andrew Kaster, aplefull, Ben Wiederhake, Callum Law, Chase Knowlden, CountBleck, devgianlu, InvalidUsernameException, Jelle Raaijmakers, Jonathan Gamble, Luke Wilde, Marcus Nilsson, mikiubo, Niccolo Antonelli Dziri, Praise-Garfield, Psychpsyo, pwespi, R-Goc, Rocco Corsi, Salman Chishti, Sam Atkins, Shannon Booth, Simon Farre, Tim Ledbetter, Timothy Flynn, Undefine, Vahan Arakelyan, xnacly, Zaggy1024_

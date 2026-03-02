@@ -117,6 +117,24 @@ Using regular HTML elements makes adding features much easier, unlocks new optio
 
 With the controls acting as a subtree of the video element, we can now update the video frame without rebuilding the entire display list. ([#8037](https://github.com/LadybirdBrowser/ladybird/pull/8037))
 
+### Cookie versioning
+
+The `document.cookie` property is used to read and write cookies from JavaScript. This property is synchronous, meaning
+every cookie access blocks JavaScript execution while the browser fetches the latest cookie string. In modern multi-process
+browsers, this requires inter-process communication to the process that stores the cookies. On real-world pages, scripts
+frequently read document.cookie hundreds of times. The Chrome team [performed a study](https://blog.chromium.org/2024/06/introducing-shared-memory-versioning-to.html)
+and found that 87% of these result in the same cookie string being returned.
+
+Ladybird now implements cookie versioning and caching to eliminate most of those redundant look ups ([#7717](https://github.com/LadybirdBrowser/ladybird/pull/7717)).
+A shared version counter tracks when cookies change, and the WebContent process keeps a cached copy of the cookie string.
+If JavaScript calls `document.cookie` and the version hasn't changed, the cached value is returned immediately with no IPC.
+As a result, hundreds of blocking calls during page load are eliminated.
+
+We also rearchitected how we attach cookies the the HTTP `Set-Cookie` request header ([#7847](https://github.com/LadybirdBrowser/ladybird/pull/7847)).
+We previously attached this header from the WebContent process within our Fetch implementation. This used the same cookie
+infrastructure as `document.cookie`, so this access also blocked the page for every request. We moved this operation to
+our networking process, where we can asynchronously attach the cookie header.
+
 ### Web Platform Tests (WPT)
 
 Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world compatibility work, with 7,379 new test passes bringing our total to 1,998,398.

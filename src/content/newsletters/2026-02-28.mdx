@@ -113,7 +113,7 @@ Our [WPT](https://web-platform-tests.org) scores continued to climb alongside th
 ### Other notable changes
 
 - **Media controls via shadow DOM**: Media element controls (`<audio>`, `<video>`) are now implemented using UA shadow DOM instead of ad-hoc painting. The controls are real DOM elements now, which makes them styleable and easier to maintain ([#8056](https://github.com/LadybirdBrowser/ladybird/pull/8056))
-- **Fullscreen API**: We completed the spec-compliant implementation of `requestFullscreen()` and `exitFullscreen()`, including fullscreen event handlers, default UA styles, and proper cleanup when elements are removed or documents unloaded
+- **Fullscreen API**: We completed the spec-compliant implementation of `requestFullscreen()` and `exitFullscreen()`, including fullscreen event handlers, default UA styles, and proper cleanup when elements are removed or documents unloaded ([#7649](https://github.com/LadybirdBrowser/ladybird/pull/7649))
 - **LibJS architecture**: Scope analysis was separated from parsing ([#7852](https://github.com/LadybirdBrowser/ladybird/pull/7852)), the AST is now freed after bytecode generation ([#7896](https://github.com/LadybirdBrowser/ladybird/pull/7896)), and the runtime environment stack was replaced with explicit completion records ([#7840](https://github.com/LadybirdBrowser/ladybird/pull/7840), [#7846](https://github.com/LadybirdBrowser/ladybird/pull/7846))
 - **Tab close confirmation**: Tabs with unsaved state can now prevent accidental closure via `beforeunload` ([#6743](https://github.com/LadybirdBrowser/ladybird/pull/6743))
 - **Download images**: Right-click any image and download it directly ([#7735](https://github.com/LadybirdBrowser/ladybird/pull/7735))

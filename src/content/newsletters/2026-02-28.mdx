@@ -2,7 +2,7 @@
 title: This Month in Ladybird - February 2026
 description: Adopting Rust, text editing overhaul, performance work on YouTube and Reddit, ScrollTimeline, CSS @counter-style, SVG partial relayout, and more.
 date: 2026-02-28
-draft: true
+draft: false
 ---
 
 February brought the biggest language strategy shift since Ladybird's founding: we removed all Swift code and replaced it with a complete Rust reimplementation of the LibJS frontend. Beyond that headline, we merged 347 PRs from 34 contributors, with major improvements to text editing, site-specific performance, CSS features, and SVG rendering.
@@ -18,7 +18,7 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 ### Adopting Rust for LibJS
 
-We tried adopting Swift as a second language alongside C++ back in 2024, but after a long stretch of no progress, we acknowledged it wasn't going anywhere and removed all Swift code, build infrastructure, and tests from the codebase ([#7999](https://github.com/LadybirdBrowser/ladybird/pull/7999)).
+Back in 2024, we tried adopting Swift as a second language alongside C++. It didn't pan out for us, so we removed all Swift code from the codebase ([#7999](https://github.com/LadybirdBrowser/ladybird/pull/7999)).
 
 In its place, we landed a complete Rust reimplementation of the LibJS frontend pipeline: lexer, parser, AST, scope collector, and bytecode code generator ([#8104](https://github.com/LadybirdBrowser/ladybird/pull/8104)). The translation was done using AI coding agents (Claude Code and Codex), human-directed rather than autonomous. The Rust pipeline produces byte-for-byte identical bytecode output to the C++ implementation, verified across 52,898 test262 tests and 12,461 Ladybird-specific tests with zero regressions.
 

@@ -105,13 +105,24 @@ Previously, any change to an SVG element's attributes triggered a full layout tr
 
 We also implemented `SVGPatternElement` ([#8011](https://github.com/LadybirdBrowser/ladybird/pull/8011)), the `feTurbulence` filter ([#7864](https://github.com/LadybirdBrowser/ladybird/pull/7864)), and `dominant-baseline` for SVG text ([#8173](https://github.com/LadybirdBrowser/ladybird/pull/8173)).
 
+### New Media Controls
+
+Media element controls (`<audio>`, `<video>`) have been redesigned, and are now implemented using shadow DOM instead of manual layout and painting:
+
+<video controls style="margin-bottom: 1em">
+  <source src="/assets/img/newsletter-feb-2026-media-controls.mp4"></source>
+</video>
+
+Using regular HTML elements makes adding features much easier, unlocks new options for styling (transitions, filters), all while automatically taking advantage of future improvements to layout performance.
+
+With the controls acting as a subtree of the video element, we can now update the video frame without rebuilding the entire display list. ([#8037](https://github.com/LadybirdBrowser/ladybird/pull/8037))
+
 ### Web Platform Tests (WPT)
 
 Our [WPT](https://web-platform-tests.org) scores continued to climb alongside the real-world compatibility work, with 7,379 new test passes bringing our total to 1,998,398.
 
 ### Other notable changes
 
-- **Media controls via shadow DOM**: Media element controls (`<audio>`, `<video>`) are now implemented using UA shadow DOM instead of ad-hoc painting. The controls are real DOM elements now, which makes them styleable and easier to maintain ([#8056](https://github.com/LadybirdBrowser/ladybird/pull/8056))
 - **Fullscreen API**: We completed the spec-compliant implementation of `requestFullscreen()` and `exitFullscreen()`, including fullscreen event handlers, default UA styles, and proper cleanup when elements are removed or documents unloaded ([#7649](https://github.com/LadybirdBrowser/ladybird/pull/7649))
 - **LibJS architecture**: Scope analysis was separated from parsing ([#7852](https://github.com/LadybirdBrowser/ladybird/pull/7852)), the AST is now freed after bytecode generation ([#7896](https://github.com/LadybirdBrowser/ladybird/pull/7896)), and the runtime environment stack was replaced with explicit completion records ([#7840](https://github.com/LadybirdBrowser/ladybird/pull/7840), [#7846](https://github.com/LadybirdBrowser/ladybird/pull/7846))
 - **Tab close confirmation**: Tabs with unsaved state can now prevent accidental closure via `beforeunload` ([#6743](https://github.com/LadybirdBrowser/ladybird/pull/6743))

@@ -1,0 +1,911 @@
+<section id="wpt" class="section wpt-home">
+  <div class="container">
+    <div class="wpt-home__intro">
+      <div>
+        <h2 class="section-heading">Progress</h2>
+        <p class="wpt-home__lede">
+          Ladybird tracks aligned WPT runs against the major browser engines.
+          This pulls the latest data from <a href="https://wpt.fyi" target="_blank" rel="noreferrer">wpt.fyi</a>
+          and shows recent momentum in total subtest passes plus current parity
+          against the major browsers.
+        </p>
+      </div>
+
+      <div class="wpt-home__controls">
+        <label>
+          <span>History</span>
+          <select id="wpt-run-count">
+            <option value="5">5 runs</option>
+            <option value="10" selected>10 runs</option>
+            <option value="15">15 runs</option>
+            <option value="50">50 runs</option>
+            <option value="100">100 runs</option>
+          </select>
+        </label>
+        <button id="wpt-refresh" type="button">Refresh</button>
+      </div>
+    </div>
+
+    <p id="wpt-status" class="wpt-home__status" aria-live="polite">Loading WPT data...</p>
+
+    <div class="wpt-home__panel">
+      <div class="wpt-home__stats">
+        <article class="wpt-stat">
+          <span class="wpt-stat__label">Ladybird pass rate</span>
+          <strong id="wpt-ladybird-percent" class="wpt-stat__value">--</strong>
+          <span id="wpt-ladybird-meta" class="wpt-stat__meta">Latest run loading</span>
+        </article>
+
+        <article class="wpt-stat">
+          <span class="wpt-stat__label">Passing subtests</span>
+          <strong id="wpt-ladybird-passes" class="wpt-stat__value">--</strong>
+          <span id="wpt-ladybird-total" class="wpt-stat__meta">Tracked total --</span>
+        </article>
+
+        <article class="wpt-stat">
+          <span class="wpt-stat__label">Progress across window</span>
+          <strong id="wpt-window-gain" class="wpt-stat__value">--</strong>
+          <span id="wpt-window-range" class="wpt-stat__meta">Across selected run window</span>
+        </article>
+      </div>
+
+      <article class="wpt-home__parity-note">
+        <p class="wpt-home__parity-note-label">Parity</p>
+        <p class="wpt-home__parity-note-copy">
+          Each percentage shows Ladybird's current WPT pass count divided by the
+          other browser's pass count in the latest aligned run. `100%` means
+          equal pass count for that snapshot.
+        </p>
+      </article>
+      <div id="wpt-parity" class="wpt-home__parity-grid"></div>
+
+      <div class="wpt-home__chart-card">
+        <div class="wpt-home__chart-head">
+          <div class="wpt-home__chart-title">
+            <h3>Aligned run history</h3>
+            <p>Total subtest passes, oldest to newest</p>
+          </div>
+          <div id="wpt-legend" class="wpt-home__legend"></div>
+        </div>
+
+        <div class="wpt-home__chart-frame">
+          <svg id="wpt-chart" viewBox="0 0 820 360" class="wpt-home__chart" aria-label="WPT passes over time">
+            <g id="wpt-chart-grid"></g>
+            <g id="wpt-chart-area"></g>
+            <g id="wpt-chart-series"></g>
+            <g id="wpt-chart-labels"></g>
+          </svg>
+          <div id="wpt-tooltip" class="wpt-home__tooltip" hidden></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://wpt.fyi/api';
+    const PRODUCTS = ['chrome[experimental]', 'edge[experimental]', 'firefox[experimental]', 'safari[experimental]', 'ladybird'];
+    const PRODUCT_PARAM = PRODUCTS.map((product) => `product=${encodeURIComponent(product)}`).join('&');
+    const PASS_STATUS_CODE = 'P';
+    const ENGINE_ORDER = ['ladybird', 'chrome', 'edge', 'firefox', 'safari'];
+    const ENGINE_LABELS = {
+      ladybird: 'Ladybird',
+      chrome: 'Chrome',
+      edge: 'Edge',
+      firefox: 'Firefox',
+      safari: 'Safari',
+    };
+    const ENGINE_COLORS = {
+      ladybird: '#ff4d6d',
+      chrome: '#7bd88f',
+      edge: '#6d98cc',
+      firefox: '#ff9b5f',
+      safari: '#c7b6ff',
+    };
+
+    const runCountSelect = document.getElementById('wpt-run-count');
+    const refreshButton = document.getElementById('wpt-refresh');
+    const statusEl = document.getElementById('wpt-status');
+    const ladybirdPercentEl = document.getElementById('wpt-ladybird-percent');
+    const ladybirdPassesEl = document.getElementById('wpt-ladybird-passes');
+    const ladybirdMetaEl = document.getElementById('wpt-ladybird-meta');
+    const ladybirdTotalEl = document.getElementById('wpt-ladybird-total');
+    const windowGainEl = document.getElementById('wpt-window-gain');
+    const windowRangeEl = document.getElementById('wpt-window-range');
+    const parityEl = document.getElementById('wpt-parity');
+    const legendEl = document.getElementById('wpt-legend');
+    const gridEl = document.getElementById('wpt-chart-grid');
+    const areaEl = document.getElementById('wpt-chart-area');
+    const seriesEl = document.getElementById('wpt-chart-series');
+    const labelsEl = document.getElementById('wpt-chart-labels');
+    const chartEl = document.getElementById('wpt-chart');
+    const chartFrameEl = document.querySelector('.wpt-home__chart-frame');
+    const tooltipEl = document.getElementById('wpt-tooltip');
+
+    let abortController = null;
+    let hoverRects = [];
+
+    const getSummaryCounts = (value) => {
+      if (!value || !Array.isArray(value.c)) {
+        return null;
+      }
+
+      const subtestPasses = value.c[0] ?? 0;
+      const subtestTotal = value.c[1] ?? 0;
+      const hasHarnessOnlyResult = subtestTotal === 0;
+      const harnessPass = hasHarnessOnlyResult && value.s === PASS_STATUS_CODE ? 1 : 0;
+      return [subtestPasses + harnessPass, subtestTotal + (hasHarnessOnlyResult ? 1 : 0)];
+    };
+
+    const fetchJson = async (url, signal) => {
+      const response = await fetch(url, { signal });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${response.status}`);
+      }
+      return response.json();
+    };
+
+    const resetUi = () => {
+      ladybirdPercentEl.textContent = '--';
+      ladybirdPassesEl.textContent = '--';
+      ladybirdMetaEl.textContent = 'Latest run loading';
+      ladybirdTotalEl.textContent = 'Tracked total --';
+      windowGainEl.textContent = '--';
+      windowRangeEl.textContent = 'Across selected run window';
+      parityEl.innerHTML = '';
+      legendEl.innerHTML = '';
+      gridEl.innerHTML = '';
+      areaEl.innerHTML = '';
+      seriesEl.innerHTML = '';
+      labelsEl.innerHTML = '';
+      tooltipEl.hidden = true;
+      hoverRects = [];
+    };
+
+    const fetchRunPoint = async (sha, signal) => {
+      const runs = await fetchJson(`${API_BASE}/runs?sha=${sha}&${PRODUCT_PARAM}`, signal);
+      if (!Array.isArray(runs) || runs.length === 0) {
+        return null;
+      }
+
+      const engines = [];
+
+      for (const browser of runs) {
+        if (!browser?.results_url) {
+          continue;
+        }
+
+        const summary = await fetchJson(browser.results_url, signal);
+        let passes = 0;
+        let total = 0;
+
+        for (const value of Object.values(summary)) {
+          const counts = getSummaryCounts(value);
+          if (!counts) {
+            continue;
+          }
+          passes += counts[0];
+          total += counts[1];
+        }
+
+        const rawName = String(browser.browser_name || '').toLowerCase();
+        engines.push({
+          rawName,
+          name: ENGINE_LABELS[rawName] || rawName,
+          passes,
+          total,
+        });
+      }
+
+      if (engines.length === 0) {
+        return null;
+      }
+
+      return {
+        fullSha: sha,
+        sha: sha.slice(0, 7),
+        date: new Date(runs[0].created_at).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+        }),
+        engines,
+      };
+    };
+
+    const fetchHistoricalPoint = async (sha, signal) => {
+      const runs = await fetchJson(`${API_BASE}/runs?sha=${sha}&${PRODUCT_PARAM}`, signal);
+      if (!Array.isArray(runs) || runs.length === 0) {
+        return null;
+      }
+
+      const runIds = runs.map((run) => run.id).join(',');
+      const searchData = await fetchJson(`${API_BASE}/search?run_ids=${runIds}&page=1`, signal);
+      const results = Array.isArray(searchData.results) ? searchData.results : [];
+      const enginePasses = new Array(runs.length).fill(0);
+      const engineTotals = new Array(runs.length).fill(0);
+
+      for (const result of results) {
+        result.legacy_status?.forEach((status, index) => {
+          enginePasses[index] += status?.passes ?? 0;
+          engineTotals[index] += status?.total ?? 0;
+        });
+      }
+
+      const sampleCount = results.length || 1;
+      const scale = (searchData.total ?? sampleCount) / sampleCount;
+
+      return {
+        fullSha: sha,
+        sha: sha.slice(0, 7),
+        date: new Date(runs[0].created_at).toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+        }),
+        engines: runs.map((run, index) => {
+          const rawName = String(run.browser_name || '').toLowerCase();
+          return {
+            rawName,
+            name: ENGINE_LABELS[rawName] || rawName,
+            passes: Math.round(enginePasses[index] * scale),
+            total: Math.round(engineTotals[index] * scale),
+          };
+        }),
+      };
+    };
+
+    const renderLegend = () => {
+      legendEl.innerHTML = ENGINE_ORDER.map((name) => `
+        <span class="wpt-home__legend-item">
+          <i style="background:${ENGINE_COLORS[name]}"></i>
+          ${ENGINE_LABELS[name]}
+        </span>
+      `).join('');
+    };
+
+    const setSummary = (points) => {
+      const latest = points[points.length - 1];
+      const first = points[0];
+      const latestLadybird = latest.engines.find((engine) => engine.rawName === 'ladybird');
+      const firstLadybird = first.engines.find((engine) => engine.rawName === 'ladybird');
+
+      if (!latestLadybird) {
+        return;
+      }
+
+      const trackedTotal = Math.max(...latest.engines.map((engine) => engine.total || 0));
+      const percent = trackedTotal > 0 ? (latestLadybird.passes / trackedTotal) * 100 : 0;
+      const gain = firstLadybird ? latestLadybird.passes - firstLadybird.passes : 0;
+
+      ladybirdPercentEl.textContent = `${percent.toFixed(1)}%`;
+      ladybirdPassesEl.textContent = latestLadybird.passes.toLocaleString();
+      ladybirdMetaEl.textContent = `Latest run ${latest.sha} on ${latest.date}`;
+      ladybirdTotalEl.textContent = `${trackedTotal.toLocaleString()} tracked total`;
+      windowGainEl.textContent = `${gain >= 0 ? '+' : ''}${gain.toLocaleString()}`;
+      windowRangeEl.textContent = points.length > 1 ? `${first.date} to ${latest.date}` : `Latest aligned run`;
+
+      const competitors = ENGINE_ORDER
+        .filter((name) => name !== 'ladybird')
+        .map((name) => {
+          const engine = latest.engines.find((entry) => entry.rawName === name);
+          if (!engine || engine.passes <= 0) {
+            return null;
+          }
+
+          const parity = (latestLadybird.passes / engine.passes) * 100;
+          const gap = engine.passes - latestLadybird.passes;
+          return {
+            name: ENGINE_LABELS[name],
+            color: ENGINE_COLORS[name],
+            parity,
+            gap,
+          };
+        })
+        .filter(Boolean);
+
+      parityEl.innerHTML = competitors.map((entry) => `
+        <article class="wpt-parity-card">
+          <div class="wpt-parity-card__top">
+            <p class="wpt-parity-card__name">
+              <i style="background:${entry.color}"></i>
+              ${entry.name}
+            </p>
+            <strong class="wpt-parity-card__percent">${entry.parity.toFixed(1)}%</strong>
+          </div>
+          <div class="wpt-parity-card__track">
+            <span class="wpt-parity-card__fill" style="width:${Math.max(0, Math.min(entry.parity, 100)).toFixed(2)}%; background:${entry.color}"></span>
+          </div>
+          <p class="wpt-parity-card__meta">${entry.gap.toLocaleString()} passes behind</p>
+        </article>
+      `).join('');
+    };
+
+    const renderChart = (points) => {
+      const W = 820;
+      const H = 360;
+      const padL = 56;
+      const padR = 16;
+      const padT = 18;
+      const padB = 44;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const orderedPoints = [...points];
+
+      const seriesMap = {};
+      for (const name of ENGINE_ORDER) {
+        seriesMap[name] = orderedPoints.map((point) => {
+          const engine = point.engines.find((entry) => entry.rawName === name);
+          return engine ? engine.passes : 0;
+        });
+      }
+
+      const allValues = Object.values(seriesMap).flat().filter((value) => value > 0);
+      const minValue = Math.min(...allValues);
+      const maxValue = Math.max(...allValues);
+      const range = Math.max(maxValue - minValue, 1);
+
+      const toX = (index) => padL + (index / Math.max(orderedPoints.length - 1, 1)) * innerW;
+      const toY = (value) => padT + innerH - ((value - minValue) / range) * innerH;
+
+      const yTicks = 3;
+      const tickValues = Array.from({ length: yTicks + 1 }, (_, index) => minValue + (range / yTicks) * index);
+
+      gridEl.innerHTML = tickValues.map((value) => `
+        <g>
+          <line x1="${padL}" y1="${toY(value)}" x2="${padL + innerW}" y2="${toY(value)}"></line>
+          <text x="${padL - 8}" y="${toY(value) + 4}" text-anchor="end">${value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : value.toLocaleString()}</text>
+        </g>
+      `).join('');
+
+      const xLabelIndexes = Array.from(new Set([
+        0,
+        Math.max(0, Math.floor((orderedPoints.length - 1) / 2)),
+        orderedPoints.length - 1,
+      ]));
+
+      labelsEl.innerHTML = xLabelIndexes.map((index) => `
+        <text x="${toX(index)}" y="${H - 12}" text-anchor="middle">${orderedPoints[index].date}</text>
+      `).join('');
+
+      const ladybirdValues = seriesMap.ladybird;
+      const ladybirdCoords = ladybirdValues.map((value, index) => [toX(index), toY(value)]);
+      const firstX = toX(0);
+      const lastX = toX(ladybirdValues.length - 1);
+      const baselineY = padT + innerH;
+      const ladybirdAreaPath = [
+        `M ${firstX} ${baselineY}`,
+        ...ladybirdCoords.map(([x, y]) => `L ${x} ${y}`),
+        `L ${lastX} ${baselineY}`,
+        'Z',
+      ].join(' ');
+      areaEl.innerHTML = `
+        <path d="${ladybirdAreaPath}"></path>
+      `;
+
+      seriesEl.innerHTML = ENGINE_ORDER.map((name) => {
+        const pointsList = seriesMap[name]
+          .map((value, index) => `${toX(index)},${toY(value)}`);
+        const pointsAttr = pointsList
+          .join(' ');
+        const strokeWidth = name === 'ladybird' ? 3 : 1.5;
+        const opacity = name === 'ladybird' ? 1 : 0.45;
+        const lastPoint = pointsList[pointsList.length - 1].split(',');
+        return `
+          <g>
+            <polyline points="${pointsAttr}" style="stroke:${ENGINE_COLORS[name]};stroke-width:${strokeWidth};opacity:${opacity}"></polyline>
+            <circle cx="${lastPoint[0]}" cy="${lastPoint[1]}" r="${name === 'ladybird' ? 4 : 2.75}" style="fill:${ENGINE_COLORS[name]};opacity:${name === 'ladybird' ? 1 : 0.8}"></circle>
+          </g>
+        `;
+      }).join('');
+
+      const getRunUrl = (point) => {
+        const products = PRODUCTS.map((product) => `product=${encodeURIComponent(product)}`).join('&');
+        return `https://wpt.fyi/results/?sha=${encodeURIComponent(point.fullSha || point.sha)}&label=master&aligned&${products}`;
+      };
+
+      hoverRects.forEach((rect) => rect.remove());
+      hoverRects = orderedPoints.map((point, index) => {
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', `${toX(index) - innerW / Math.max(orderedPoints.length * 2, 2)}`);
+        rect.setAttribute('y', `${padT}`);
+        rect.setAttribute('width', `${innerW / Math.max(orderedPoints.length, 1)}`);
+        rect.setAttribute('height', `${innerH}`);
+        rect.setAttribute('fill', 'transparent');
+        rect.style.cursor = 'pointer';
+        rect.addEventListener('mouseenter', () => {
+          const rows = ENGINE_ORDER.map((name) => {
+            const engine = point.engines.find((entry) => entry.rawName === name);
+            return `
+              <div class="wpt-home__tooltip-row">
+                <span class="wpt-home__tooltip-name"><i style="background:${ENGINE_COLORS[name]}"></i>${ENGINE_LABELS[name]}</span>
+                <span>${engine ? engine.passes.toLocaleString() : '0'}</span>
+              </div>
+            `;
+          }).join('');
+
+          tooltipEl.innerHTML = `
+            <p class="wpt-home__tooltip-title">${point.sha} <span>${point.date}</span></p>
+            ${rows}
+            <p class="wpt-home__tooltip-hint">Click to open this run on wpt.fyi</p>
+          `;
+          tooltipEl.hidden = false;
+          const targetPercent = (toX(index) / W) * 100;
+          const frameWidth = chartFrameEl?.clientWidth || 0;
+          const tooltipWidth = tooltipEl.offsetWidth || 180;
+          const halfTooltipPercent = frameWidth > 0 ? ((tooltipWidth / 2) / frameWidth) * 100 : 0;
+          const clampedPercent = Math.max(halfTooltipPercent + 2, Math.min(100 - halfTooltipPercent - 2, targetPercent));
+          tooltipEl.style.left = `${clampedPercent}%`;
+        });
+        rect.addEventListener('mouseleave', () => {
+          tooltipEl.hidden = true;
+        });
+        rect.addEventListener('click', () => {
+          window.open(getRunUrl(point), '_blank', 'noopener');
+        });
+        chartEl.appendChild(rect);
+        return rect;
+      });
+    };
+
+    const loadData = async () => {
+      if (abortController) {
+        abortController.abort();
+      }
+
+      abortController = new AbortController();
+      const signal = abortController.signal;
+      const count = Number(runCountSelect.value);
+
+      resetUi();
+      statusEl.className = 'wpt-home__status is-loading';
+      statusEl.textContent = 'Loading WPT data...';
+      refreshButton.disabled = true;
+      runCountSelect.disabled = true;
+
+      try {
+        const shas = await fetchJson(`${API_BASE}/shas?${PRODUCT_PARAM}&aligned=true&max-count=${count}&label=master`, signal);
+        const newestToOldestShas = Array.isArray(shas) ? [...shas] : [];
+
+        if (newestToOldestShas.length === 0) {
+          throw new Error('No aligned runs found');
+        }
+
+        renderLegend();
+        const latestPoint = await fetchRunPoint(newestToOldestShas[0], signal);
+        if (!latestPoint) {
+          throw new Error('Unable to load latest WPT run');
+        }
+
+        const historyMap = new Map([[newestToOldestShas[0], latestPoint]]);
+        const getOrderedHistory = () =>
+          [...newestToOldestShas]
+            .reverse()
+            .map((sha) => historyMap.get(sha))
+            .filter(Boolean);
+
+        const renderPartial = (loadedCount) => {
+          const history = getOrderedHistory();
+          setSummary(history);
+          if (history.length >= 2) {
+            renderChart(history);
+          }
+          statusEl.className = 'wpt-home__status is-loading';
+          statusEl.textContent = `Loaded ${loadedCount} of ${newestToOldestShas.length} aligned runs from wpt.fyi`;
+        };
+
+        renderPartial(1);
+
+        for (let index = 1; index < newestToOldestShas.length; index++) {
+          const point = await fetchHistoricalPoint(newestToOldestShas[index], signal);
+          if (point) {
+            historyMap.set(newestToOldestShas[index], point);
+          }
+          renderPartial(historyMap.size);
+        }
+
+        const finalHistory = getOrderedHistory();
+        if (finalHistory.length < 2) {
+          throw new Error('Not enough WPT history available');
+        }
+
+        setSummary(finalHistory);
+        renderChart(finalHistory);
+        statusEl.className = 'wpt-home__status';
+        statusEl.textContent = `Tracking ${finalHistory.length} aligned runs from wpt.fyi`;
+      } catch (error) {
+        if (error?.name === 'AbortError') {
+          return;
+        }
+        statusEl.className = 'wpt-home__status is-error';
+        statusEl.textContent = error?.message || 'Failed to load WPT data';
+      } finally {
+        refreshButton.disabled = false;
+        runCountSelect.disabled = false;
+      }
+    };
+
+    refreshButton.addEventListener('click', loadData);
+    runCountSelect.addEventListener('change', loadData);
+
+    loadData();
+  </script>
+</section>
+
+<style is:global>
+  .wpt-home {
+    border-top: 1px solid var(--border);
+  }
+
+  .wpt-home__intro {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .wpt-home__lede {
+    max-width: 640px;
+    color: var(--text-secondary);
+  }
+
+  .wpt-home__controls {
+    display: flex;
+    align-items: end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .wpt-home__controls label {
+    display: grid;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .wpt-home__controls select,
+  .wpt-home__controls button {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-subtle);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .wpt-home__controls button {
+    cursor: pointer;
+  }
+
+  .wpt-home__controls select:hover,
+  .wpt-home__controls button:hover {
+    border-color: var(--color-accent);
+  }
+
+  .wpt-home__status {
+    margin: 0 0 18px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-family: var(--font-mono);
+  }
+
+  .wpt-home__status.is-loading {
+    color: var(--color-slate);
+  }
+
+  .wpt-home__status.is-error {
+    color: #fb7185;
+  }
+
+  .wpt-home__panel {
+    display: grid;
+    gap: 18px;
+  }
+
+  .wpt-home__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .wpt-stat {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-subtle);
+  }
+
+  .wpt-stat__label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .wpt-stat__value {
+    color: var(--text-primary);
+    font-size: 34px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-family: var(--font-mono);
+  }
+
+  .wpt-stat__meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .wpt-home__chart-card {
+    position: relative;
+    padding: 22px 22px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    overflow: hidden;
+  }
+
+  .wpt-home__parity-head h3 {
+    margin: 0 0 6px;
+    color: var(--text-primary);
+    font-size: 18px;
+  }
+
+  .wpt-home__parity-head p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .wpt-home__parity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .wpt-home__parity-note {
+    display: grid;
+    gap: 8px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-subtle);
+  }
+
+  .wpt-home__parity-note-label {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .wpt-home__parity-note-copy {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .wpt-parity-card {
+    display: grid;
+    gap: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-subtle);
+  }
+
+  .wpt-parity-card__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: baseline;
+  }
+
+  .wpt-parity-card__name {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    font-size: 15px;
+  }
+
+  .wpt-parity-card__name i {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+  }
+
+  .wpt-parity-card__percent {
+    color: var(--text-primary);
+    font-size: 34px;
+    line-height: 1;
+    font-family: var(--font-mono);
+    letter-spacing: -0.04em;
+  }
+
+  .wpt-parity-card__track {
+    width: 100%;
+    height: 8px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .wpt-parity-card__fill {
+    display: block;
+    height: 100%;
+    border-radius: 6px;
+  }
+
+  .wpt-parity-card__meta {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .wpt-home__chart-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 14px;
+  }
+
+  .wpt-home__chart-title h3 {
+    margin: 0 0 6px;
+    color: var(--text-primary);
+    font-size: 18px;
+  }
+
+  .wpt-home__chart-title p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .wpt-home__legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: end;
+  }
+
+  .wpt-home__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+  }
+
+  .wpt-home__legend-item i {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 6px;
+  }
+
+  .wpt-home__chart-frame {
+    position: relative;
+    height: 360px;
+  }
+
+  .wpt-home__chart {
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: var(--text-primary);
+  }
+
+  #wpt-chart-grid line {
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 1;
+    stroke-dasharray: 3 6;
+  }
+
+  #wpt-chart-grid text,
+  #wpt-chart-labels text {
+    fill: #8a8a8a;
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+
+  #wpt-chart-area path {
+    fill: rgba(138, 100, 229, 0.14);
+  }
+
+  #wpt-chart-series polyline {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .wpt-home__tooltip {
+    position: absolute;
+    top: 10px;
+    transform: translateX(-50%);
+    min-width: 180px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.92);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+  }
+
+  .wpt-home__tooltip-title {
+    margin: 0 0 10px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: var(--font-mono);
+  }
+
+  .wpt-home__tooltip-title span {
+    color: var(--text-muted);
+  }
+
+  .wpt-home__tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .wpt-home__tooltip-hint {
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: var(--font-mono);
+  }
+
+  .wpt-home__tooltip-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .wpt-home__tooltip-name i {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 900px) {
+    .wpt-home__intro,
+    .wpt-home__chart-head {
+      display: grid;
+    }
+
+    .wpt-home__legend {
+      justify-content: start;
+    }
+
+    .wpt-home__stats {
+      grid-template-columns: 1fr;
+    }
+
+    .wpt-home__parity-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wpt-home__chart-frame {
+      height: 300px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .wpt-home__parity-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

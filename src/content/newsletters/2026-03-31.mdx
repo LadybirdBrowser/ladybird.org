@@ -109,6 +109,15 @@ In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 
 | [![Before](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png) | [![After](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png) |
 
 - **`clip-path: inset()` border-radius**: The `inset()` function now supports border-radius values. ([#8442](https://github.com/LadybirdBrowser/ladybird/pull/8442))
+- **Float fixes**: `clear` now clears past all stacked floats, floats now lower past opposite-side blockers, line boxes now shift below floats when their content doesn't fit, and more. ([#8615](https://github.com/LadybirdBrowser/ladybird/pull/8615), [#8662](https://github.com/LadybirdBrowser/ladybird/pull/8662))
+
+| Before                                                                                                                                              | After                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [![Before](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-before.png)](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-before.png) | [![After](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-after.png)](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-after.png) |
+
+| Before                                                                                                                          | After                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-mar-2026-kerser-floats-before.png)](/assets/img/newsletter-mar-2026-kerser-floats-before.png) | [![After](/assets/img/newsletter-mar-2026-kerser-floats-after.png)](/assets/img/newsletter-mar-2026-kerser-floats-after.png) |
 
 ### Style invalidation
 

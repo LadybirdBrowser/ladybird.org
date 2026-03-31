@@ -1,23 +1,115 @@
 ---
 title: This Month in Ladybird - March 2026
-description: A summary goes here.
+description: Hand-written assembly interpreter, off-thread parsing, new regex engine, Mach port IPC, bookmarks, CSS if()/inherit()/@container/@function, style invalidation, and more.
 date: 2026-03-31
 draft: true
 ---
 
-_Introduction goes here!_
+Hello friends! In March we merged 332 PRs from 49 contributors, 19 of whom made their first ever commit to Ladybird. Here's what we've been up to.
 
 ### Welcoming new sponsors
 
-_Sponsors go here!_
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsor:
+
+- [Zain Allarakhia](https://za1.co) with $1,000
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### LibJS compiler frontend is now Rust-only
+
+Last month, we landed a complete Rust reimplementation of the LibJS compiler frontend and shipped it as the default pipeline. In March, we took the final step: deleting the C++ compiler pipeline entirely ([#8517](https://github.com/LadybirdBrowser/ladybird/pull/8517)). The C++ parser, AST, lexer, and bytecode code generator are all gone. The Rust pipeline is now the only path. This removed roughly 20,600 lines of C++ code.
+
+With the old pipeline out of the way, we were able to clean up compatibility shims in the Rust codegen and simplify the build, including switching to [cbindgen](https://github.com/mozilla/cbindgen) for automatically generating FFI headers instead of maintaining them by hand ([#8476](https://github.com/LadybirdBrowser/ladybird/pull/8476)).
+
+### Bookmarks
+
+Ladybird now has persistent bookmarks ([#8589](https://github.com/LadybirdBrowser/ladybird/pull/8589)). You can bookmark pages, manage them through the application menu, and they persist across sessions in a JSON-backed store. Both the Qt and AppKit UIs have bookmark menus and toolbar integration. Folder support is in the model but not yet exposed in the UI.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2026-bookmarks.webm"></source>
+</video>
+
+### Assembly bytecode interpreter
+
+We added AsmInt, a hand-written assembly bytecode interpreter for LibJS ([#8299](https://github.com/LadybirdBrowser/ladybird/pull/8299)). Instead of interpreting bytecode through a C++ switch loop, AsmInt uses a custom DSL that compiles to native x86_64 and AArch64 assembly. Hot paths like arithmetic, comparisons, and property access stay entirely in hand-written assembly, only calling into C++ for complex operations.
+
+Kraken benchmarks improved 1.5-2x, and SunSpider improved 10-50% across many subtests.
+
+After the initial landing, we spent much of the month squeezing more out of the generated assembly:
+
+- Using hardware overflow flags for int32 arithmetic instead of software checks ([#8314](https://github.com/LadybirdBrowser/ladybird/pull/8314))
+- Pinning frequently-used tag constants in callee-saved registers ([#8324](https://github.com/LadybirdBrowser/ladybird/pull/8324))
+- Caching the program base + program counter in a callee-saved register on AArch64
+- Eliding redundant floating-point comparisons in consecutive branch instructions
+- Moving NaN canonicalization to cold fixup blocks
+- Emitting proper unwind info for both x86_64 and AArch64 so profilers and debuggers can unwind through assembly frames ([#8484](https://github.com/LadybirdBrowser/ladybird/pull/8484))
+
+### More sites working
+
+**[chess.com](https://chess.com)** was pegging the CPU at 100% due to linear scans in IndexedDB. Switching to binary search and fixing a CSS animation crash made the site usable ([#8546](https://github.com/LadybirdBrowser/ladybird/pull/8546)).
+
+**[microsoft.com](https://microsoft.com)** got a series of rendering fixes: shadow DOM selector matching, whitespace handling, letter-spacing, and grid item sizing. The site looks noticeably better now ([#8562](https://github.com/LadybirdBrowser/ladybird/pull/8562)).
+
+| Before                                                                                                                      | After                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-1.png)](/assets/img/newsletter-mar-2026-microsoft-before-1.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-1.png)](/assets/img/newsletter-mar-2026-microsoft-after-1.png) |
+| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-2.png)](/assets/img/newsletter-mar-2026-microsoft-before-2.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-2.png)](/assets/img/newsletter-mar-2026-microsoft-after-2.png) |
+
+### New regex engine
+
+The ECMA-262 regex engine was rewritten from scratch in Rust ([#8612](https://github.com/LadybirdBrowser/ladybird/pull/8612)). The old engine went directly from parser to bytecode, which made it very hard to optimize. The new engine builds an AST first, giving us room to analyze and transform patterns before generating bytecode. This has already paid off: the Octane regexp benchmark runs about 6x faster. We imported V8 and WebKit's regex test suites to ensure correctness.
+
+### JavaScript performance
+
+The parser now runs on worker threads ([#8211](https://github.com/LadybirdBrowser/ladybird/pull/8211)). When the HTML parser encounters a `<script>` tag, it dispatches parsing to a thread pool and only performs bytecode generation on the main thread. This keeps the main thread responsive during page load, and the improvement is immediately noticeable on script-heavy sites: vscode.dev loads 1.1 seconds faster and x.com loads 0.65 seconds faster.
+
+Object property storage got an overhaul ([#8479](https://github.com/LadybirdBrowser/ladybird/pull/8479)). Named properties now live behind a raw pointer with 2 inline slots directly on Object, so small objects avoid heap allocation entirely. Indexed properties replaced a virtual dispatch hierarchy with inline Packed/Holey/Dictionary storage kinds, and `Array.prototype` methods get fast paths for packed arrays.
+
+JS-to-JS calls now stay in the interpreter dispatch loop instead of re-entering the interpreter from C++ ([#8270](https://github.com/LadybirdBrowser/ladybird/pull/8270)). Async/await also got faster: non-thenable await values skip promise machinery entirely ([#8449](https://github.com/LadybirdBrowser/ladybird/pull/8449)), and awaiting when the microtask queue is empty resolves synchronously ([#8454](https://github.com/LadybirdBrowser/ladybird/pull/8454)).
+
+In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 56 to 16 bytes and `StatementKind` from 88 to 32 bytes, which cut 15% of RSS when parsing large bundles like Instagram's ([#8581](https://github.com/LadybirdBrowser/ladybird/pull/8581)).
 
 ### CSS features
 
 - **`if()`**: The `if()` function can now be used in property values, with the `supports()` and `media()` conditions both supported. ([#8244](https://github.com/LadybirdBrowser/ladybird/pull/8244))
 - **`inherit()`**: We implemented `inherit()`, which allows property values to use the inherited value of any property. ([#8409](https://github.com/LadybirdBrowser/ladybird/pull/8409))
-- **`@supports env(variable-name)`**: The `env()` function now works in `@supports`, allowing pages to query if Ladybird supports a given environment variable. ([#8645](https://github.com/LadybirdBrowser/ladybird/pull/8645))
-- **`@font-feature-values`**: We now honor `@font-feature-values`, applying its instructions when rendering fonts. ([#8050](https://github.com/LadybirdBrowser/ladybird/pull/8050))
-- **Pseudo-element custom properties**: We now correctly allow custom properties defined for the `::first-line`, `::first-letter`, and `::placeholder` pseudo-elements. ([#8267](https://github.com/LadybirdBrowser/ladybird/pull/8267))
+- **`@container`**: Initial parsing support for CSS container queries and `CSSContainerRule`. ([#8626](https://github.com/LadybirdBrowser/ladybird/pull/8626))
+- **`@function`**: Initial parsing support for CSS custom functions. ([#8624](https://github.com/LadybirdBrowser/ladybird/pull/8624))
+- **`@font-feature-values`**: We now parse and apply `@font-feature-values` rules, including `font-variant-alternates: historical-forms`. ([#8050](https://github.com/LadybirdBrowser/ladybird/pull/8050))
+- **`text-decoration-skip-ink`**: Text decorations (underlines, etc.) now cut out around glyph descenders and ascenders, matching the behavior of other browsers. ([#8606](https://github.com/LadybirdBrowser/ladybird/pull/8606))
+
+| Before                                                                                                                | After                                                                                                              |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [![Before](/assets/img/newsletter-mar-2026-skip-ink-before.png)](/assets/img/newsletter-mar-2026-skip-ink-before.png) | [![After](/assets/img/newsletter-mar-2026-skip-ink-after.png)](/assets/img/newsletter-mar-2026-skip-ink-after.png) |
+
+- **`scroll-behavior`**: The `scroll-behavior` CSS property is now supported, enabling smooth scrolling. ([#8434](https://github.com/LadybirdBrowser/ladybird/pull/8434))
+- **`text-overflow` ellipsis**: Reworked as a line box post-processing step, so ellipsis now works correctly with inline elements and mixed content. ([#8600](https://github.com/LadybirdBrowser/ladybird/pull/8600))
+
+| Before                                                                                                                | After                                                                                                              |
+| --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [![Before](/assets/img/newsletter-mar-2026-ellipsis-before.png)](/assets/img/newsletter-mar-2026-ellipsis-before.png) | [![After](/assets/img/newsletter-mar-2026-ellipsis-after.png)](/assets/img/newsletter-mar-2026-ellipsis-after.png) |
+
+- **`@supports env()`**: The `env()` function now works in `@supports`, allowing pages to query if Ladybird supports a given environment variable. ([#8645](https://github.com/LadybirdBrowser/ladybird/pull/8645))
+- **Pseudo-element custom properties**: Custom properties defined for `::first-line`, `::first-letter`, and `::placeholder` pseudo-elements now work correctly. ([#8267](https://github.com/LadybirdBrowser/ladybird/pull/8267))
+- **Flexbox baseline alignment**: Flex items with `align-items: baseline` now align correctly, fixing emoji reaction alignment on GitHub among other things. ([#8587](https://github.com/LadybirdBrowser/ladybird/pull/8587))
+
+| Before                                                                                                                                | After                                                                                                                              |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| [![Before](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png) | [![After](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png) |
+
+- **`clip-path: inset()` border-radius**: The `inset()` function now supports border-radius values. ([#8540](https://github.com/LadybirdBrowser/ladybird/pull/8540))
+
+### Style invalidation
+
+Sibling invalidation sets ([#8332](https://github.com/LadybirdBrowser/ladybird/pull/8332)) make CSS style invalidation much more precise. Previously, changing an element's class could trigger style recalculation across a wide swath of the tree. Now, invalidation follows the combinator structure of the selectors that actually matched. For example, `.a + .b` only invalidates the adjacent sibling rather than the entire subtree.
+
+`:has()` invalidation now deduplicates ancestor walks ([#8353](https://github.com/LadybirdBrowser/ladybird/pull/8353)), works correctly with nested `:is()` selectors ([#8351](https://github.com/LadybirdBrowser/ladybird/pull/8351)), and font-load invalidation only marks elements that actually use the loaded font ([#8357](https://github.com/LadybirdBrowser/ladybird/pull/8357)).
+
+### macOS IPC overhaul
+
+All IPC on macOS now goes through Mach ports instead of Unix sockets ([#8514](https://github.com/LadybirdBrowser/ladybird/pull/8514)). Mach ports are the native IPC primitive on macOS and support atomic transfer of port rights between processes. This lets us send IOSurface backing stores (GPU-shared memory) directly over the main IPC channel ([#8595](https://github.com/LadybirdBrowser/ladybird/pull/8595)) instead of through a separate side channel, simplifying the architecture and enabling IOSurfaces on Intel Macs as well.
+
+A new `IPC::Attachment` abstraction ([#8404](https://github.com/LadybirdBrowser/ladybird/pull/8404)) unifies file descriptor and Mach port passing across platforms. We also removed several allocation hot spots in the message enqueue and decode paths.
 
 ### Web Platform Tests (WPT)
 
@@ -25,10 +117,18 @@ _WPT scores go here!_
 
 ### Other notable changes
 
-- **Scoped custom element registries**: We implemented the ability to have more than one custom element registry, which helps avoid clashes when multiple libraries define custom elements with the same name. ([#8613](https://github.com/LadybirdBrowser/ladybird/pull/8613))
+Scoped custom element registries ([#8613](https://github.com/LadybirdBrowser/ladybird/pull/8613)) allow more than one `CustomElementRegistry` per page, avoiding name clashes when multiple libraries define custom elements with the same tag name. Form-associated custom elements ([#8534](https://github.com/LadybirdBrowser/ladybird/pull/8534)) let custom elements participate in form validation and submission through `ElementInternals`. This enables frameworks like Home Assistant that rely on the feature.
+
+The Temporal API now supports international calendars (Chinese, Hebrew, Islamic, and others) using icu4x ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325)), bringing Temporal test262 compliance to 100% for core tests and 99.1% for Intl402.
+
+IndexedDB transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264)). This fixed issues on sites that use IndexedDB heavily.
+
+The document unload and destroy lifecycle was rewritten to follow the spec ([#8397](https://github.com/LadybirdBrowser/ladybird/pull/8397), [#8660](https://github.com/LadybirdBrowser/ladybird/pull/8660)), replacing several blocking `spin_until()` calls with proper state machines and async flow.
+
+Paint commands are now cached per paintable ([#8271](https://github.com/LadybirdBrowser/ladybird/pull/8271)), so subsequent display list rebuilds replay cached commands instead of re-resolving all paint properties.
 
 ### Credits
 
 We'd like to thank everyone who contributed code this month:
 
-_NAMES!_
+_Adam Colvin, aguiarcode, Ali Mohammad Pur, Aliaksandr Kalenik, alwin, Andreas Kling, Andrew Kaster, Callum Law, Charlie Tonneslan, Christian Frey, Davi Gomes, desmese, dominick038, Dylan Hart, Glenn Skrzypczak, Guilherme Mendes, InvalidUsernameException, Ivan Krasilnikov, Jelle Raaijmakers, Jenn Barosa, Johan Dahlin, Jonathan Gamble, juhotuho10, Lluc Simó, Luke Wilde, Matt Van Horn, Michael Watt, MichielN19, mikiubo, Nicolas Danelon, Ollie Hensman-Crook, Praise-Garfield, Psychpsyo, pwespi, Rob Ryan, Rocco Corsi, RubenKelevra, Ryszard Goc, Sam Atkins, sasetz, Shannon Booth, sideshowbarker, slim, Tim Ledbetter, Timothy Flynn, Undefine, zac, Zaggy1024_

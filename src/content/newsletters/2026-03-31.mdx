@@ -121,7 +121,7 @@ Scoped custom element registries ([#8613](https://github.com/LadybirdBrowser/lad
 
 The Temporal API now supports international calendars (Chinese, Hebrew, Islamic, and others) using icu4x ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325)), bringing Temporal test262 compliance to 100% for core tests and 99.1% for Intl402.
 
-IndexedDB transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264)). This fixed issues on sites that use IndexedDB heavily.
+IndexedDB transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264), [#8295](https://github.com/LadybirdBrowser/ladybird/pull/8295)). This fixed issues on sites that use IndexedDB heavily.
 
 The document unload and destroy lifecycle was rewritten to follow the spec ([#8397](https://github.com/LadybirdBrowser/ladybird/pull/8397), [#8660](https://github.com/LadybirdBrowser/ladybird/pull/8660)), replacing several blocking `spin_until()` calls with proper state machines and async flow.
 

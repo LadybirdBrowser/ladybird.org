@@ -119,7 +119,7 @@ _WPT scores go here!_
 
 Scoped custom element registries ([#8613](https://github.com/LadybirdBrowser/ladybird/pull/8613)) allow more than one `CustomElementRegistry` per page, avoiding name clashes when multiple libraries define custom elements with the same tag name. Form-associated custom elements ([#8534](https://github.com/LadybirdBrowser/ladybird/pull/8534)) let custom elements participate in form validation and submission through `ElementInternals`. This enables frameworks like Home Assistant that rely on the feature.
 
-The Temporal API now supports international calendars (Chinese, Hebrew, Islamic, and others) using icu4x ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325)), bringing Temporal test262 compliance to 100% for core tests and 99.1% for Intl402.
+The Temporal API now supports international calendars (Chinese, Hebrew, Islamic, and others) using icu4x ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325), [#8356](https://github.com/LadybirdBrowser/ladybird/pull/8356)), bringing Temporal test262 compliance to 100% for both core and Intl402 tests.
 
 IndexedDB transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264), [#8295](https://github.com/LadybirdBrowser/ladybird/pull/8295)). This fixed issues on sites that use IndexedDB heavily.
 

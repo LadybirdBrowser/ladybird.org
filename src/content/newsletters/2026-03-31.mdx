@@ -5,7 +5,7 @@ date: 2026-03-31
 draft: true
 ---
 
-Hello friends! In March we merged 332 PRs from 49 contributors, 19 of whom made their first ever commit to Ladybird. Here's what we've been up to.
+Hello friends! In March we merged 332 PRs from 49 contributors, 20 of whom made their first ever commit to Ladybird. Here's what we've been up to.
 
 ### Welcoming new sponsors
 
@@ -176,6 +176,34 @@ Selectors parsed by `querySelector` and `querySelectorAll` are now kept in a per
 WebCrypto now supports KMAC authentication. ([#8445](https://github.com/LadybirdBrowser/ladybird/pull/8445))
 
 ### Credits
+
+We want to give a shout-out to the 20 people who made their first contribution this month:
+
+- [aguiarcode](https://github.com/aguiarcode) — Fixed headline text selection on [Tweakers](https://tweakers.net/) ([#8466](https://github.com/LadybirdBrowser/ladybird/pull/8466))
+- [alwin](https://github.com/alwinsDen) — Fixed an outdated script to configure clangd, a C++ language server used by Ladybird developers ([#8558](https://github.com/LadybirdBrowser/ladybird/pull/8558))
+- Charlie Tonneslan — Fixed a typo in our CSS code comments ([#8591](https://github.com/LadybirdBrowser/ladybird/pull/8591))
+- [Christian Frey](https://github.com/christianfrey) — Enabled IOSurfaces on Intel Macs ([#8279](https://github.com/LadybirdBrowser/ladybird/pull/8279))
+- [Davi Gomes](https://github.com/dkvhr)
+  - Fixed comparing GC weak pointers to references not compiling ([#8422](https://github.com/LadybirdBrowser/ladybird/pull/8422))
+  - Consistently placed `#pragma once` declarations to be above includes in header files ([#8561](https://github.com/LadybirdBrowser/ladybird/pull/8561))
+- [desmese](https://github.com/desmese) — Fixed a rounding error when calculating the radius of an SVG circle ([#7964](https://github.com/LadybirdBrowser/ladybird/pull/7964))
+- [dominick038](https://github.com/dominick038) — Clamped extreme CSS dimensional values in more places to prevent crashes during layout ([#8367](https://github.com/LadybirdBrowser/ladybird/pull/8367))
+- [Dylan Hart](https://github.com/exec)
+  - Fixed canvas font parsing crashing on detached documents ([#8634](https://github.com/LadybirdBrowser/ladybird/pull/8634))
+  - Fixed a crash when selecting text on the Ladybird website ([#8638](https://github.com/LadybirdBrowser/ladybird/pull/8638))
+  - Fixed input being dropped in the Google search box ([#8642](https://github.com/LadybirdBrowser/ladybird/pull/8642))
+- [Guilherme Mendes](https://github.com/Guizas14) — Made it so that `<br>` elements that are being displayed are always treated as `display: inline;` ([#8646](https://github.com/LadybirdBrowser/ladybird/pull/8646))
+- [Ivan Krasilnikov](https://github.com/ivankra) — Fixed parsing of multi-line YAML flags in test262 test configurations, which caused us to fail those tests ([#8664](https://github.com/LadybirdBrowser/ladybird/pull/8664))
+- [Jenn Barosa](https://github.com/jennbarosa) — Fixed a crash on [Modrinth](https://modrinth.com) where a navigation being superseded left session history out of sync ([#8275](https://github.com/LadybirdBrowser/ladybird/pull/8275))
+- [juhotuho10](https://github.com/juhotuho10) — Enabled clippy linting for our Rust code ([#8200](https://github.com/LadybirdBrowser/ladybird/pull/8200))
+- [Lluc Simó](https://github.com/acrilique) — Fixed a crash when multiple fetches are started and cancelled in a short timespan ([#8282](https://github.com/LadybirdBrowser/ladybird/pull/8282))
+- [Matt Van Horn](https://github.com/mvanhorn) — Fixed a crash when double clicking with an unrecognised mouse button ([#8433](https://github.com/LadybirdBrowser/ladybird/pull/8433))
+- [MichielN19](https://github.com/punthenk) — Fixed input elements with placeholder text being positioned too low ([#8062](https://github.com/LadybirdBrowser/ladybird/pull/8062))
+- [Ollie Hensman-Crook](https://github.com/olliehcrook) — Fixed JavaScript object methods always being treated as a constructor ([#8306](https://github.com/LadybirdBrowser/ladybird/pull/8306))
+- [RubenKelevra](https://github.com/RubenKelevra) — Prevented parsing deeply nested JSON objects from crashing and fixed several differences between our C++ and Rust JavaScript parsers ([#8242](https://github.com/LadybirdBrowser/ladybird/pull/8242), [#8415](https://github.com/LadybirdBrowser/ladybird/pull/8415))
+- [Ryszard Goc](https://github.com/R-Goc) — Made clangd enforce angled brackets in `#include <path/to/file>` for AK and library files ([#8268](https://github.com/LadybirdBrowser/ladybird/pull/8268))
+- [sasetz](https://github.com/sasetz) — Fixed the mouse cursor always being the default in iframes ([#8556](https://github.com/LadybirdBrowser/ladybird/pull/8556))
+- [slim](https://github.com/xD-saleem) — Refactored checking a JavaScript token is an identifier in the parser to be more idiomatic Rust ([#8168](https://github.com/LadybirdBrowser/ladybird/pull/8168))
 
 We'd like to thank everyone who contributed code this month:
 

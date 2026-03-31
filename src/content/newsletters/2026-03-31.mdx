@@ -125,6 +125,18 @@ Sibling invalidation sets ([#8332](https://github.com/LadybirdBrowser/ladybird/p
 
 `:has()` invalidation now deduplicates ancestor walks ([#8353](https://github.com/LadybirdBrowser/ladybird/pull/8353)), works correctly with nested `:is()` selectors ([#8351](https://github.com/LadybirdBrowser/ladybird/pull/8351)), and font-load invalidation only marks elements that actually use the loaded font ([#8357](https://github.com/LadybirdBrowser/ladybird/pull/8357)).
 
+### Improved CSS calc() support
+
+All calc() support classes, such as `CalculatedOr<T>` and `LengthOrAutoOrCalculated`, have been removed. These have been replaced with `StyleValue`, which allows us to support calc() in more places ([#8676](https://github.com/LadybirdBrowser/ladybird/pull/8676)).
+
+For example:
+
+- `clip: rect()`
+- `repeat()`
+- Percentages in `color-mix()`
+- `sizes` attribute in `<img srcset>`
+- Grid track placements (`grid-column-start`, `grid-row-start`, etc.)
+
 ### macOS IPC overhaul
 
 All IPC on macOS now goes through Mach ports instead of Unix sockets ([#8514](https://github.com/LadybirdBrowser/ladybird/pull/8514)). Mach ports are the native IPC primitive on macOS and support atomic transfer of port rights between processes. This lets us send IOSurface backing stores (GPU-shared memory) directly over the main IPC channel ([#8595](https://github.com/LadybirdBrowser/ladybird/pull/8595)) instead of through a separate side channel, simplifying the architecture and enabling IOSurfaces on Intel Macs as well.

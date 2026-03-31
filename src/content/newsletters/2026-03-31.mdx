@@ -137,6 +137,16 @@ For example:
 - `sizes` attribute in `<img srcset>`
 - Grid track placements (`grid-column-start`, `grid-row-start`, etc.)
 
+### IntersectionObserver improvements
+
+Scroll margins are now supported, allowing content just outside of a scroll container's clip rect to be considered for intersection.
+
+Intermediate scroll containers are now accounted for, so clipped content is no longer considered intersecting.
+
+The number of allocations on the hot path was reduced and the threshold index is now found with binary search instead of linear search.
+
+([#8574](https://github.com/LadybirdBrowser/ladybird/pull/8574))
+
 ### macOS IPC overhaul
 
 All IPC on macOS now goes through Mach ports instead of Unix sockets ([#8514](https://github.com/LadybirdBrowser/ladybird/pull/8514)). Mach ports are the native IPC primitive on macOS and support atomic transfer of port rights between processes. This lets us send IOSurface backing stores (GPU-shared memory) directly over the main IPC channel ([#8595](https://github.com/LadybirdBrowser/ladybird/pull/8595)) instead of through a separate side channel, simplifying the architecture and enabling IOSurfaces on Intel Macs as well.

@@ -45,6 +45,16 @@ After the initial landing, we spent much of the month squeezing more out of the 
 - Moving NaN canonicalization to cold fixup blocks
 - Emitting proper unwind info for both x86_64 and AArch64 so profilers and debuggers can unwind through assembly frames ([#8455](https://github.com/LadybirdBrowser/ladybird/pull/8455))
 
+### Media Source Extensions
+
+We've implemented a portion of the Media Source Extensions spec, supporting playback of VP9 video and Opus audio in WebM ([#8655](https://github.com/LadybirdBrowser/ladybird/pull/8655)). This allows YouTube quality selection to work, up to 4K on most videos:
+
+<video controls style="margin-bottom: 1em">
+  <source src="/assets/img/newsletter-mar-2026-mse.webm"></source>
+</video>
+
+Memory usage will be high for now because we don't yet evict any buffered data when requested by the page, so the feature is only available with the `--expose-experimental-interfaces` flag until the implementation is more complete.
+
 ### More sites working
 
 **[chess.com](https://chess.com)** was pegging the CPU at 100% due to linear scans in IndexedDB. Switching to binary search and fixing a CSS animation crash made the site usable ([#8546](https://github.com/LadybirdBrowser/ladybird/pull/8546)).

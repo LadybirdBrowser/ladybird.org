@@ -2,10 +2,10 @@
 title: This Month in Ladybird - March 2026
 description: Hand-written assembly interpreter, off-thread parsing, new regex engine, Mach port IPC, bookmarks, CSS if()/inherit()/@container/@function, style invalidation, and more.
 date: 2026-03-31
-draft: true
+draft: false
 ---
 
-Hello friends! In March we merged 332 PRs from 49 contributors, 20 of whom made their first ever commit to Ladybird. Here's what we've been up to.
+Hello friends! In March we merged 352 PRs from 49 contributors, 19 of whom made their first-ever commit to Ladybird! Here's what we've been up to.
 
 ### Welcoming new sponsors
 
@@ -15,29 +15,6 @@ Ladybird is entirely funded by the generous support of companies and individuals
 - [zacoons](https://zacoons.com) with $1,000
 
 We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
-
-### Bookmarks
-
-Ladybird now has persistent bookmarks ([#8589](https://github.com/LadybirdBrowser/ladybird/pull/8589), [#8715](https://github.com/LadybirdBrowser/ladybird/pull/8715)). You can bookmark pages, manage them through the application and context menus, and they persist across sessions in a JSON-backed store. Both the Qt and AppKit UIs have bookmark menus and toolbar integration.
-
-<video controls style="margin-bottom: 2em">
-  <source src="/assets/img/newsletter-mar-2026-bookmarks.webm"></source>
-</video>
-
-### Assembly bytecode interpreter
-
-We added AsmInt, a hand-written assembly bytecode interpreter for LibJS ([#8299](https://github.com/LadybirdBrowser/ladybird/pull/8299)). Instead of interpreting bytecode through a C++ switch loop, AsmInt uses a custom DSL that compiles to native x86_64 and AArch64 assembly. Hot paths like arithmetic, comparisons, and property access stay entirely in hand-written assembly, only calling into C++ for complex operations.
-
-Kraken benchmarks improved 1.5-2x, and SunSpider improved 10-50% across many subtests.
-
-After the initial landing, we spent much of the month squeezing more out of the generated assembly:
-
-- Using hardware overflow flags for int32 arithmetic instead of software checks ([#8314](https://github.com/LadybirdBrowser/ladybird/pull/8314))
-- Pinning frequently-used tag constants in callee-saved registers ([#8324](https://github.com/LadybirdBrowser/ladybird/pull/8324))
-- Caching the program base + program counter in a callee-saved register on AArch64
-- Eliding redundant floating-point comparisons in consecutive branch instructions
-- Moving NaN canonicalization to cold fixup blocks
-- Emitting proper unwind info for both x86_64 and AArch64 so profilers and debuggers can unwind through assembly frames ([#8455](https://github.com/LadybirdBrowser/ladybird/pull/8455))
 
 ### Media Source Extensions
 
@@ -49,28 +26,42 @@ We've implemented a portion of the [Media Source Extensions](https://developer.m
 
 As you can see from the video, playback performance still needs work, and memory usage will be high because we don't yet evict buffered data when requested by the page. The feature is only available with the `--expose-experimental-interfaces` flag until the implementation is more complete.
 
-### More sites working
+### Hand-written assembly interpreter
 
-**[chess.com](https://chess.com)** was pegging the CPU at 100% due to linear scans in IndexedDB. Switching to binary search and fixing a CSS animation crash made the site usable ([#8546](https://github.com/LadybirdBrowser/ladybird/pull/8546)).
+We added AsmInt, a hand-written assembly bytecode interpreter for LibJS ([#8299](https://github.com/LadybirdBrowser/ladybird/pull/8299)). Instead of interpreting bytecode through a C++ switch loop, AsmInt uses a custom DSL that compiles to native x86_64 and AArch64 assembly. Hot paths like arithmetic, comparisons, and property access stay entirely in hand-written assembly, only calling into C++ for complex operations.
 
-**[microsoft.com](https://microsoft.com)** got a series of rendering fixes: shadow DOM selector matching, whitespace handling, letter-spacing, and grid item sizing. The site looks noticeably better now ([#8562](https://github.com/LadybirdBrowser/ladybird/pull/8562)).
+Between AsmInt, the new regex engine, and other optimizations throughout the month, our benchmark scores improved significantly: Kraken 1.44x, Octane 1.37x, and SunSpider 1.69x.
 
-| Before                                                                                                                      | After                                                                                                                    |
-| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-1.png)](/assets/img/newsletter-mar-2026-microsoft-before-1.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-1.png)](/assets/img/newsletter-mar-2026-microsoft-after-1.png) |
-| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-2.png)](/assets/img/newsletter-mar-2026-microsoft-before-2.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-2.png)](/assets/img/newsletter-mar-2026-microsoft-after-2.png) |
+After the initial landing, we spent much of the month squeezing more out of the generated assembly:
+
+- Using hardware overflow flags for int32 arithmetic instead of software checks ([#8314](https://github.com/LadybirdBrowser/ladybird/pull/8314))
+- Pinning frequently-used tag constants in callee-saved registers ([#8324](https://github.com/LadybirdBrowser/ladybird/pull/8324))
+- Caching the program base + program counter in a callee-saved register on AArch64
+- Eliding redundant floating-point comparisons in consecutive branch instructions
+- Moving NaN canonicalization to cold fixup blocks
+- Emitting proper unwind info for both x86_64 and AArch64 so profilers and debuggers can unwind through assembly frames ([#8455](https://github.com/LadybirdBrowser/ladybird/pull/8455))
+
+### Bookmarks
+
+Ladybird now has persistent bookmarks ([#8589](https://github.com/LadybirdBrowser/ladybird/pull/8589), [#8715](https://github.com/LadybirdBrowser/ladybird/pull/8715)). You can bookmark pages, manage them through the application and context menus, and they persist across sessions in a JSON-backed store. Both the Qt and AppKit UIs have bookmark menus and toolbar integration.
+
+<video controls style="margin-bottom: 2em">
+  <source src="/assets/img/newsletter-mar-2026-bookmarks.webm"></source>
+</video>
 
 ### New regex engine
 
 The ECMA-262 regex engine was rewritten from scratch in Rust ([#8612](https://github.com/LadybirdBrowser/ladybird/pull/8612)). The old engine went directly from parser to bytecode, which made it very hard to optimize. The new engine builds an AST first, giving us room to analyze and transform patterns before generating bytecode. This has already paid off: the Octane regexp benchmark runs about 6x faster. We imported V8 and WebKit's regex test suites to ensure correctness.
 
-### JavaScript performance
+### More JavaScript engine work
 
-The parser now runs on worker threads ([#8211](https://github.com/LadybirdBrowser/ladybird/pull/8211)). When the HTML parser encounters a `<script>` tag, it dispatches parsing to a thread pool and only performs bytecode generation on the main thread. This keeps the main thread responsive during page load, and the improvement is immediately noticeable on script-heavy sites: vscode.dev loads 1.1 seconds faster and x.com loads 0.65 seconds faster.
+The parser now runs on worker threads ([#8211](https://github.com/LadybirdBrowser/ladybird/pull/8211)). When the HTML parser encounters a `<script>` tag, it dispatches parsing to a thread pool and only performs bytecode generation on the main thread. Since the parser is written in safe Rust, parallelizing it was straightforward. Here's a profile of x.com loading: the main thread carries on executing JavaScript while four background threads parse downloaded scripts in parallel.
+
+[![CPU activity showing parallel JS parsing on x.com](/assets/img/newsletter-mar-2026-parser-threads.png)](/assets/img/newsletter-mar-2026-parser-threads.png)
 
 Object property storage got an overhaul ([#8479](https://github.com/LadybirdBrowser/ladybird/pull/8479)). Named properties now live behind a raw pointer with 2 inline slots directly on Object, so small objects avoid heap allocation entirely. Indexed properties replaced a virtual dispatch hierarchy with inline Packed/Holey/Dictionary storage kinds, and `Array.prototype` methods get fast paths for packed arrays.
 
-JS-to-JS calls now stay in the interpreter dispatch loop instead of re-entering the interpreter from C++ ([#8270](https://github.com/LadybirdBrowser/ladybird/pull/8270)). Async/await also got faster: non-thenable await values skip promise machinery entirely ([#8449](https://github.com/LadybirdBrowser/ladybird/pull/8449)), and awaiting when the microtask queue is empty resolves synchronously ([#8454](https://github.com/LadybirdBrowser/ladybird/pull/8454)).
+JS-to-JS calls now stay in the interpreter dispatch loop instead of re-entering the interpreter from C++ ([#8270](https://github.com/LadybirdBrowser/ladybird/pull/8270)). `async`/`await` also got faster: non-thenable await values skip promise machinery entirely ([#8449](https://github.com/LadybirdBrowser/ladybird/pull/8449)), and awaiting when the microtask queue is empty resolves synchronously ([#8454](https://github.com/LadybirdBrowser/ladybird/pull/8454)).
 
 In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 56 to 16 bytes and `StatementKind` from 88 to 32 bytes, which cut 15% of RSS when parsing large bundles like Instagram's ([#8581](https://github.com/LadybirdBrowser/ladybird/pull/8581)).
 
@@ -112,13 +103,24 @@ In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 
 
 - **`calc()` in more places**: `calc()` now works in `clip: rect()`, `repeat()`, percentages in `color-mix()`, the `sizes` attribute in `<img srcset>`, grid track placements, and more. ([#8676](https://github.com/LadybirdBrowser/ladybird/pull/8676))
 
-### Style invalidation
+### Smarter style invalidation
 
 Sibling invalidation sets ([#8332](https://github.com/LadybirdBrowser/ladybird/pull/8332)) make CSS style invalidation much more precise. Previously, changing an element's class could trigger style recalculation across a wide swath of the tree. Now, invalidation follows the combinator structure of the selectors that actually matched. For example, `.a + .b` only invalidates the adjacent sibling rather than the entire subtree.
 
 `:has()` invalidation now deduplicates ancestor walks ([#8353](https://github.com/LadybirdBrowser/ladybird/pull/8353)), works correctly with nested `:is()` selectors ([#8351](https://github.com/LadybirdBrowser/ladybird/pull/8351)), and font-load invalidation only marks elements that actually use the loaded font ([#8357](https://github.com/LadybirdBrowser/ladybird/pull/8357)).
 
-### Removing the legacy JavaScript compiler frontend
+### More sites working
+
+**[chess.com](https://chess.com)** was pegging the CPU at 100% due to linear scans in IndexedDB. Switching to binary search and fixing a CSS animation crash made the site usable ([#8546](https://github.com/LadybirdBrowser/ladybird/pull/8546)).
+
+**[microsoft.com](https://microsoft.com)** got a series of rendering fixes: shadow DOM selector matching, whitespace handling, letter-spacing, and grid item sizing. The site looks noticeably better now ([#8562](https://github.com/LadybirdBrowser/ladybird/pull/8562)).
+
+| Before                                                                                                                      | After                                                                                                                    |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-1.png)](/assets/img/newsletter-mar-2026-microsoft-before-1.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-1.png)](/assets/img/newsletter-mar-2026-microsoft-after-1.png) |
+| [![Before](/assets/img/newsletter-mar-2026-microsoft-before-2.png)](/assets/img/newsletter-mar-2026-microsoft-before-2.png) | [![After](/assets/img/newsletter-mar-2026-microsoft-after-2.png)](/assets/img/newsletter-mar-2026-microsoft-after-2.png) |
+
+### Removing the legacy JS compiler
 
 Last month, we landed a complete reimplementation of the LibJS compiler frontend and made it the default pipeline. In March, we took the final step: deleting the old compiler pipeline entirely ([#8517](https://github.com/LadybirdBrowser/ladybird/pull/8517)). The old parser, AST, lexer, and bytecode code generator are all gone. This removed roughly 20,000 lines of C++ code.
 
@@ -156,7 +158,7 @@ Selectors parsed by `querySelector` and `querySelectorAll` are now kept in a per
 
 ### Credits
 
-We want to give a shout-out to the 20 people who made their first contribution this month:
+We want to give a special shout-out to the 19 people who made their first code contribution this month:
 
 - [aguiarcode](https://github.com/aguiarcode). Fixed headline text selection on [Tweakers](https://tweakers.net/) ([#8466](https://github.com/LadybirdBrowser/ladybird/pull/8466))
 - [alwin](https://github.com/alwinsDen). Fixed an outdated script to configure clangd, a C++ language server used by Ladybird developers ([#8558](https://github.com/LadybirdBrowser/ladybird/pull/8558))
@@ -180,10 +182,9 @@ We want to give a shout-out to the 20 people who made their first contribution t
 - [MichielN19](https://github.com/punthenk). Fixed input elements with placeholder text being positioned too low ([#8062](https://github.com/LadybirdBrowser/ladybird/pull/8062))
 - [Ollie Hensman-Crook](https://github.com/olliehcrook). Fixed JavaScript object methods always being treated as a constructor ([#8306](https://github.com/LadybirdBrowser/ladybird/pull/8306))
 - [RubenKelevra](https://github.com/RubenKelevra). Prevented parsing deeply nested JSON objects from crashing and fixed several parser inconsistencies ([#8242](https://github.com/LadybirdBrowser/ladybird/pull/8242), [#8415](https://github.com/LadybirdBrowser/ladybird/pull/8415))
-- [Ryszard Goc](https://github.com/R-Goc). Made clangd enforce angled brackets in `#include <path/to/file>` for AK and library files ([#8268](https://github.com/LadybirdBrowser/ladybird/pull/8268))
 - [sasetz](https://github.com/sasetz). Fixed the mouse cursor always being the default in iframes ([#8556](https://github.com/LadybirdBrowser/ladybird/pull/8556))
 - [slim](https://github.com/xD-saleem). Refactored identifier checking in the parser ([#8168](https://github.com/LadybirdBrowser/ladybird/pull/8168))
 
-We'd like to thank everyone who contributed code this month:
+And of course we'd like to thank everyone who contributed code this month:
 
 _Adam Colvin, aguiarcode, Ali Mohammad Pur, Aliaksandr Kalenik, alwin, Andreas Kling, Andrew Kaster, Callum Law, Charlie Tonneslan, Christian Frey, Davi Gomes, desmese, dominick038, Dylan Hart, Glenn Skrzypczak, Guilherme Mendes, InvalidUsernameException, Ivan Krasilnikov, Jelle Raaijmakers, Jenn Barosa, Johan Dahlin, Jonathan Gamble, juhotuho10, Lluc Simó, Luke Wilde, Matt Van Horn, Michael Watt, MichielN19, mikiubo, Nicolas Danelon, Ollie Hensman-Crook, Praise-Garfield, Psychpsyo, pwespi, Rob Ryan, Rocco Corsi, RubenKelevra, Ryszard Goc, Sam Atkins, sasetz, Shannon Booth, sideshowbarker, slim, Tim Ledbetter, Timothy Flynn, Undefine, zac, Zaggy1024_

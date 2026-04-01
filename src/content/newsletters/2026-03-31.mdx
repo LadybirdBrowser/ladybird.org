@@ -16,12 +16,6 @@ Ladybird is entirely funded by the generous support of companies and individuals
 
 We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
 
-### LibJS compiler frontend is now Rust-only
-
-Last month, we landed a complete Rust reimplementation of the LibJS compiler frontend and shipped it as the default pipeline. In March, we took the final step: deleting the C++ compiler pipeline entirely ([#8517](https://github.com/LadybirdBrowser/ladybird/pull/8517)). The C++ parser, AST, lexer, and bytecode code generator are all gone. The Rust pipeline is now the only path. This removed roughly 20,600 lines of C++ code.
-
-With the old pipeline out of the way, we were able to clean up compatibility shims in the Rust codegen and simplify the build, including switching to [cbindgen](https://github.com/mozilla/cbindgen) for automatically generating FFI headers instead of maintaining them by hand ([#8476](https://github.com/LadybirdBrowser/ladybird/pull/8476)).
-
 ### Bookmarks
 
 Ladybird now has persistent bookmarks ([#8589](https://github.com/LadybirdBrowser/ladybird/pull/8589), [#8715](https://github.com/LadybirdBrowser/ladybird/pull/8715)). You can bookmark pages, manage them through the application and context menus, and they persist across sessions in a JSON-backed store. Both the Qt and AppKit UIs have bookmark menus and toolbar integration.
@@ -47,13 +41,13 @@ After the initial landing, we spent much of the month squeezing more out of the 
 
 ### Media Source Extensions
 
-We've implemented a portion of the Media Source Extensions spec, supporting playback of VP9 video and Opus audio in WebM ([#8655](https://github.com/LadybirdBrowser/ladybird/pull/8655)). This allows YouTube quality selection to work, up to 4K on most videos:
+We've implemented a portion of the [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) spec, supporting playback of VP9 video and Opus audio in WebM ([#8655](https://github.com/LadybirdBrowser/ladybird/pull/8655)). This allows YouTube quality selection to work, up to 4K on most videos:
 
 <video controls style="margin-bottom: 1em">
   <source src="/assets/img/newsletter-mar-2026-mse.webm"></source>
 </video>
 
-Memory usage will be high for now because we don't yet evict any buffered data when requested by the page, so the feature is only available with the `--expose-experimental-interfaces` flag until the implementation is more complete.
+As you can see from the video, playback performance still needs work, and memory usage will be high because we don't yet evict buffered data when requested by the page. The feature is only available with the `--expose-experimental-interfaces` flag until the implementation is more complete.
 
 ### More sites working
 
@@ -82,19 +76,19 @@ In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 
 
 ### CSS features
 
-- **`if()`**: The `if()` function can now be used in property values, with the `supports()` and `media()` conditions both supported. ([#8244](https://github.com/LadybirdBrowser/ladybird/pull/8244))
-- **`inherit()`**: We implemented `inherit()`, which allows property values to use the inherited value of any property. ([#8409](https://github.com/LadybirdBrowser/ladybird/pull/8409))
-- **`@container`**: Initial parsing support for CSS container queries and `CSSContainerRule`. ([#8626](https://github.com/LadybirdBrowser/ladybird/pull/8626))
-- **`@function`**: Initial parsing support for CSS custom functions. ([#8624](https://github.com/LadybirdBrowser/ladybird/pull/8624))
-- **`@font-feature-values`**: We now parse and apply `@font-feature-values` rules, including `font-variant-alternates: historical-forms`. ([#8050](https://github.com/LadybirdBrowser/ladybird/pull/8050))
-- **`text-decoration-skip-ink`**: Text decorations (underlines, etc.) now cut out around glyph descenders and ascenders, matching the behavior of other browsers. ([#8606](https://github.com/LadybirdBrowser/ladybird/pull/8606))
+- **[`if()`](https://developer.mozilla.org/en-US/docs/Web/CSS/if)**: The `if()` function can now be used in property values, with the `supports()` and `media()` conditions both supported. ([#8244](https://github.com/LadybirdBrowser/ladybird/pull/8244))
+- **[`inherit()`](https://drafts.csswg.org/css-values-5/#funcdef-inherit)**: We implemented `inherit()`, which allows property values to use the inherited value of any property. ([#8409](https://github.com/LadybirdBrowser/ladybird/pull/8409))
+- **[`@container`](https://developer.mozilla.org/en-US/docs/Web/CSS/@container)**: Initial parsing support for CSS container queries and `CSSContainerRule`. ([#8626](https://github.com/LadybirdBrowser/ladybird/pull/8626))
+- **[`@function`](https://drafts.csswg.org/css-mixins-1/)**: Initial parsing support for CSS custom functions. ([#8624](https://github.com/LadybirdBrowser/ladybird/pull/8624))
+- **[`@font-feature-values`](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-feature-values)**: We now parse and apply `@font-feature-values` rules, including `font-variant-alternates: historical-forms`. ([#8050](https://github.com/LadybirdBrowser/ladybird/pull/8050))
+- **[`text-decoration-skip-ink`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-decoration-skip-ink)**: Text decorations (underlines, etc.) now cut out around glyph descenders and ascenders, matching the behavior of other browsers. ([#8606](https://github.com/LadybirdBrowser/ladybird/pull/8606))
 
 | Before                                                                                                                | After                                                                                                              |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [![Before](/assets/img/newsletter-mar-2026-skip-ink-before.png)](/assets/img/newsletter-mar-2026-skip-ink-before.png) | [![After](/assets/img/newsletter-mar-2026-skip-ink-after.png)](/assets/img/newsletter-mar-2026-skip-ink-after.png) |
 
-- **`scroll-behavior`**: The `scroll-behavior` CSS property is now supported, enabling smooth scrolling. ([#8434](https://github.com/LadybirdBrowser/ladybird/pull/8434))
-- **`text-overflow` ellipsis**: Reworked as a line box post-processing step, so ellipsis now works correctly with inline elements and mixed content. ([#8600](https://github.com/LadybirdBrowser/ladybird/pull/8600))
+- **[`scroll-behavior`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-behavior)**: The `scroll-behavior` CSS property is now supported, enabling smooth scrolling. ([#8434](https://github.com/LadybirdBrowser/ladybird/pull/8434))
+- **[`text-overflow`](https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow) ellipsis**: Reworked as a line box post-processing step, so ellipsis now works correctly with inline elements and mixed content. ([#8600](https://github.com/LadybirdBrowser/ladybird/pull/8600))
 
 | Before                                                                                                                | After                                                                                                              |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
@@ -108,16 +102,15 @@ In the parser, we boxed large AST enum variants, bringing `ExpressionKind` from 
 | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | [![Before](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-before.png) | [![After](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png)](/assets/img/newsletter-mar-2026-flexbox-baseline-after.png) |
 
-- **`clip-path: inset()` border-radius**: The `inset()` function now supports border-radius values. ([#8442](https://github.com/LadybirdBrowser/ladybird/pull/8442))
+- **[`clip-path: inset()`](https://developer.mozilla.org/en-US/docs/Web/CSS/basic-shape/inset) border-radius**: The `inset()` function now supports border-radius values. ([#8442](https://github.com/LadybirdBrowser/ladybird/pull/8442))
 - **Float fixes**: `clear` now clears past all stacked floats, floats now lower past opposite-side blockers, line boxes now shift below floats when their content doesn't fit, and more. ([#8615](https://github.com/LadybirdBrowser/ladybird/pull/8615), [#8662](https://github.com/LadybirdBrowser/ladybird/pull/8662))
 
 | Before                                                                                                                                              | After                                                                                                                                            |
 | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [![Before](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-before.png)](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-before.png) | [![After](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-after.png)](/assets/img/newsletter-mar-2026-wikipedia-welsh-article-after.png) |
+| [![Before](/assets/img/newsletter-mar-2026-kerser-floats-before.png)](/assets/img/newsletter-mar-2026-kerser-floats-before.png)                     | [![After](/assets/img/newsletter-mar-2026-kerser-floats-after.png)](/assets/img/newsletter-mar-2026-kerser-floats-after.png)                     |
 
-| Before                                                                                                                          | After                                                                                                                        |
-| ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [![Before](/assets/img/newsletter-mar-2026-kerser-floats-before.png)](/assets/img/newsletter-mar-2026-kerser-floats-before.png) | [![After](/assets/img/newsletter-mar-2026-kerser-floats-after.png)](/assets/img/newsletter-mar-2026-kerser-floats-after.png) |
+- **`calc()` in more places**: `calc()` now works in `clip: rect()`, `repeat()`, percentages in `color-mix()`, the `sizes` attribute in `<img srcset>`, grid track placements, and more. ([#8676](https://github.com/LadybirdBrowser/ladybird/pull/8676))
 
 ### Style invalidation
 
@@ -125,27 +118,11 @@ Sibling invalidation sets ([#8332](https://github.com/LadybirdBrowser/ladybird/p
 
 `:has()` invalidation now deduplicates ancestor walks ([#8353](https://github.com/LadybirdBrowser/ladybird/pull/8353)), works correctly with nested `:is()` selectors ([#8351](https://github.com/LadybirdBrowser/ladybird/pull/8351)), and font-load invalidation only marks elements that actually use the loaded font ([#8357](https://github.com/LadybirdBrowser/ladybird/pull/8357)).
 
-### Improved CSS calc() support
+### Removing the legacy JavaScript compiler frontend
 
-All calc() support classes, such as `CalculatedOr<T>` and `LengthOrAutoOrCalculated`, have been removed. These have been replaced with `StyleValue`, which allows us to support calc() in more places ([#8676](https://github.com/LadybirdBrowser/ladybird/pull/8676)).
+Last month, we landed a complete reimplementation of the LibJS compiler frontend and made it the default pipeline. In March, we took the final step: deleting the old compiler pipeline entirely ([#8517](https://github.com/LadybirdBrowser/ladybird/pull/8517)). The old parser, AST, lexer, and bytecode code generator are all gone. This removed roughly 20,000 lines of C++ code.
 
-For example:
-
-- `clip: rect()`
-- `repeat()`
-- Percentages in `color-mix()`
-- `sizes` attribute in `<img srcset>`
-- Grid track placements (`grid-column-start`, `grid-row-start`, etc.)
-
-### IntersectionObserver improvements
-
-Scroll margins are now supported, allowing content just outside of a scroll container's clip rect to be considered for intersection.
-
-Intermediate scroll containers are now accounted for, so clipped content is no longer considered intersecting.
-
-The number of allocations on the hot path was reduced and the threshold index is now found with binary search instead of linear search.
-
-([#8574](https://github.com/LadybirdBrowser/ladybird/pull/8574))
+With the old pipeline out of the way, we were able to clean up compatibility shims in the codegen and simplify the build, including switching to [cbindgen](https://github.com/mozilla/cbindgen) for automatically generating FFI headers instead of maintaining them by hand ([#8476](https://github.com/LadybirdBrowser/ladybird/pull/8476)).
 
 ### macOS IPC overhaul
 
@@ -155,55 +132,57 @@ A new `IPC::Attachment` abstraction ([#8404](https://github.com/LadybirdBrowser/
 
 ### Web Platform Tests (WPT)
 
-_WPT scores go here!_
+We crossed the 2 million mark this month! Our WPT score went from 1,998,398 to 2,003,690, a net gain of 5,292 subtests.
 
 ### Other notable changes
 
-Scoped custom element registries ([#8613](https://github.com/LadybirdBrowser/ladybird/pull/8613)) allow more than one `CustomElementRegistry` per page, avoiding name clashes when multiple libraries define custom elements with the same tag name. Form-associated custom elements ([#8534](https://github.com/LadybirdBrowser/ladybird/pull/8534)) let custom elements participate in form validation and submission through `ElementInternals`. This enables frameworks like Home Assistant that rely on the feature.
+[Scoped custom element registries](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry) ([#8613](https://github.com/LadybirdBrowser/ladybird/pull/8613)) allow more than one `CustomElementRegistry` per page, avoiding name clashes when multiple libraries define custom elements with the same tag name. [Form-associated custom elements](https://developer.mozilla.org/en-US/docs/Web/API/ElementInternals) ([#8534](https://github.com/LadybirdBrowser/ladybird/pull/8534)) let custom elements participate in form validation and submission through `ElementInternals`. This enables frameworks like Home Assistant that rely on the feature.
 
-The Temporal API now supports international calendars (Chinese, Hebrew, Islamic, and others) using icu4x ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325), [#8356](https://github.com/LadybirdBrowser/ladybird/pull/8356)), bringing Temporal test262 compliance to 100% for both core and Intl402 tests.
+The [Temporal](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal) API now supports international calendars (Chinese, Hebrew, Islamic, and others) using [icu4x](https://github.com/unicode-org/icu4x) ([#8325](https://github.com/LadybirdBrowser/ladybird/pull/8325), [#8356](https://github.com/LadybirdBrowser/ladybird/pull/8356)), bringing Temporal [test262](https://github.com/tc39/test262) compliance to 100% for both core and Intl402 tests.
 
-IndexedDB transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264), [#8295](https://github.com/LadybirdBrowser/ladybird/pull/8295)). This fixed issues on sites that use IndexedDB heavily.
+[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) transactions are now correctly ordered by dependency, and request reverts work properly ([#8264](https://github.com/LadybirdBrowser/ladybird/pull/8264), [#8295](https://github.com/LadybirdBrowser/ladybird/pull/8295)). This fixed issues on sites that use IndexedDB heavily.
 
 The document unload and destroy lifecycle was rewritten to follow the spec ([#8397](https://github.com/LadybirdBrowser/ladybird/pull/8397), [#8660](https://github.com/LadybirdBrowser/ladybird/pull/8660)), replacing several blocking `spin_until()` calls with proper state machines and async flow.
 
 Paint commands are now cached per paintable ([#8271](https://github.com/LadybirdBrowser/ladybird/pull/8271)), so subsequent display list rebuilds replay cached commands instead of re-resolving all paint properties.
 
+[IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver) now supports scroll margins, correctly accounts for intermediate scroll containers, and uses binary search for threshold lookups. The number of allocations on the hot path was also reduced. ([#8574](https://github.com/LadybirdBrowser/ladybird/pull/8574))
+
 The built-in media controls now have a button to toggle fullscreen. ([#8219](https://github.com/LadybirdBrowser/ladybird/pull/8219))
 
 Selectors parsed by `querySelector` and `querySelectorAll` are now kept in a per-document cache, avoiding re-parsing selectors that are repeatedly used. ([#8535](https://github.com/LadybirdBrowser/ladybird/pull/8535))
 
-WebCrypto now supports KMAC authentication. ([#8445](https://github.com/LadybirdBrowser/ladybird/pull/8445))
+[WebCrypto](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) now supports KMAC authentication. ([#8445](https://github.com/LadybirdBrowser/ladybird/pull/8445))
 
 ### Credits
 
 We want to give a shout-out to the 20 people who made their first contribution this month:
 
-- [aguiarcode](https://github.com/aguiarcode) — Fixed headline text selection on [Tweakers](https://tweakers.net/) ([#8466](https://github.com/LadybirdBrowser/ladybird/pull/8466))
-- [alwin](https://github.com/alwinsDen) — Fixed an outdated script to configure clangd, a C++ language server used by Ladybird developers ([#8558](https://github.com/LadybirdBrowser/ladybird/pull/8558))
-- Charlie Tonneslan — Fixed a typo in our CSS code comments ([#8591](https://github.com/LadybirdBrowser/ladybird/pull/8591))
-- [Christian Frey](https://github.com/christianfrey) — Enabled IOSurfaces on Intel Macs ([#8279](https://github.com/LadybirdBrowser/ladybird/pull/8279))
+- [aguiarcode](https://github.com/aguiarcode). Fixed headline text selection on [Tweakers](https://tweakers.net/) ([#8466](https://github.com/LadybirdBrowser/ladybird/pull/8466))
+- [alwin](https://github.com/alwinsDen). Fixed an outdated script to configure clangd, a C++ language server used by Ladybird developers ([#8558](https://github.com/LadybirdBrowser/ladybird/pull/8558))
+- Charlie Tonneslan. Fixed a typo in our CSS code comments ([#8591](https://github.com/LadybirdBrowser/ladybird/pull/8591))
+- [Christian Frey](https://github.com/christianfrey). Enabled IOSurfaces on Intel Macs ([#8279](https://github.com/LadybirdBrowser/ladybird/pull/8279))
 - [Davi Gomes](https://github.com/dkvhr)
   - Fixed comparing GC weak pointers to references not compiling ([#8422](https://github.com/LadybirdBrowser/ladybird/pull/8422))
   - Consistently placed `#pragma once` declarations to be above includes in header files ([#8561](https://github.com/LadybirdBrowser/ladybird/pull/8561))
-- [desmese](https://github.com/desmese) — Fixed a rounding error when calculating the radius of an SVG circle ([#7964](https://github.com/LadybirdBrowser/ladybird/pull/7964))
-- [dominick038](https://github.com/dominick038) — Clamped extreme CSS dimensional values in more places to prevent crashes during layout ([#8367](https://github.com/LadybirdBrowser/ladybird/pull/8367))
+- [desmese](https://github.com/desmese). Fixed a rounding error when calculating the radius of an SVG circle ([#7964](https://github.com/LadybirdBrowser/ladybird/pull/7964))
+- [dominick038](https://github.com/dominick038). Clamped extreme CSS dimensional values in more places to prevent crashes during layout ([#8367](https://github.com/LadybirdBrowser/ladybird/pull/8367))
 - [Dylan Hart](https://github.com/exec)
   - Fixed canvas font parsing crashing on detached documents ([#8634](https://github.com/LadybirdBrowser/ladybird/pull/8634))
   - Fixed a crash when selecting text on the Ladybird website ([#8638](https://github.com/LadybirdBrowser/ladybird/pull/8638))
   - Fixed input being dropped in the Google search box ([#8642](https://github.com/LadybirdBrowser/ladybird/pull/8642))
-- [Guilherme Mendes](https://github.com/Guizas14) — Made it so that `<br>` elements that are being displayed are always treated as `display: inline;` ([#8646](https://github.com/LadybirdBrowser/ladybird/pull/8646))
-- [Ivan Krasilnikov](https://github.com/ivankra) — Fixed parsing of multi-line YAML flags in test262 test configurations, which caused us to fail those tests ([#8664](https://github.com/LadybirdBrowser/ladybird/pull/8664))
-- [Jenn Barosa](https://github.com/jennbarosa) — Fixed a crash on [Modrinth](https://modrinth.com) where a navigation being superseded left session history out of sync ([#8275](https://github.com/LadybirdBrowser/ladybird/pull/8275))
-- [juhotuho10](https://github.com/juhotuho10) — Enabled clippy linting for our Rust code ([#8200](https://github.com/LadybirdBrowser/ladybird/pull/8200))
-- [Lluc Simó](https://github.com/acrilique) — Fixed a crash when multiple fetches are started and cancelled in a short timespan ([#8282](https://github.com/LadybirdBrowser/ladybird/pull/8282))
-- [Matt Van Horn](https://github.com/mvanhorn) — Fixed a crash when double clicking with an unrecognised mouse button ([#8433](https://github.com/LadybirdBrowser/ladybird/pull/8433))
-- [MichielN19](https://github.com/punthenk) — Fixed input elements with placeholder text being positioned too low ([#8062](https://github.com/LadybirdBrowser/ladybird/pull/8062))
-- [Ollie Hensman-Crook](https://github.com/olliehcrook) — Fixed JavaScript object methods always being treated as a constructor ([#8306](https://github.com/LadybirdBrowser/ladybird/pull/8306))
-- [RubenKelevra](https://github.com/RubenKelevra) — Prevented parsing deeply nested JSON objects from crashing and fixed several differences between our C++ and Rust JavaScript parsers ([#8242](https://github.com/LadybirdBrowser/ladybird/pull/8242), [#8415](https://github.com/LadybirdBrowser/ladybird/pull/8415))
-- [Ryszard Goc](https://github.com/R-Goc) — Made clangd enforce angled brackets in `#include <path/to/file>` for AK and library files ([#8268](https://github.com/LadybirdBrowser/ladybird/pull/8268))
-- [sasetz](https://github.com/sasetz) — Fixed the mouse cursor always being the default in iframes ([#8556](https://github.com/LadybirdBrowser/ladybird/pull/8556))
-- [slim](https://github.com/xD-saleem) — Refactored checking a JavaScript token is an identifier in the parser to be more idiomatic Rust ([#8168](https://github.com/LadybirdBrowser/ladybird/pull/8168))
+- [Guilherme Mendes](https://github.com/Guizas14). Made it so that `<br>` elements that are being displayed are always treated as `display: inline;` ([#8646](https://github.com/LadybirdBrowser/ladybird/pull/8646))
+- [Ivan Krasilnikov](https://github.com/ivankra). Fixed parsing of multi-line YAML flags in test262 test configurations, which caused us to fail those tests ([#8664](https://github.com/LadybirdBrowser/ladybird/pull/8664))
+- [Jenn Barosa](https://github.com/jennbarosa). Fixed a crash on [Modrinth](https://modrinth.com) where a navigation being superseded left session history out of sync ([#8275](https://github.com/LadybirdBrowser/ladybird/pull/8275))
+- [juhotuho10](https://github.com/juhotuho10). Enabled clippy linting ([#8200](https://github.com/LadybirdBrowser/ladybird/pull/8200))
+- [Lluc Simó](https://github.com/acrilique). Fixed a crash when multiple fetches are started and cancelled in a short timespan ([#8282](https://github.com/LadybirdBrowser/ladybird/pull/8282))
+- [Matt Van Horn](https://github.com/mvanhorn). Fixed a crash when double clicking with an unrecognised mouse button ([#8433](https://github.com/LadybirdBrowser/ladybird/pull/8433))
+- [MichielN19](https://github.com/punthenk). Fixed input elements with placeholder text being positioned too low ([#8062](https://github.com/LadybirdBrowser/ladybird/pull/8062))
+- [Ollie Hensman-Crook](https://github.com/olliehcrook). Fixed JavaScript object methods always being treated as a constructor ([#8306](https://github.com/LadybirdBrowser/ladybird/pull/8306))
+- [RubenKelevra](https://github.com/RubenKelevra). Prevented parsing deeply nested JSON objects from crashing and fixed several parser inconsistencies ([#8242](https://github.com/LadybirdBrowser/ladybird/pull/8242), [#8415](https://github.com/LadybirdBrowser/ladybird/pull/8415))
+- [Ryszard Goc](https://github.com/R-Goc). Made clangd enforce angled brackets in `#include <path/to/file>` for AK and library files ([#8268](https://github.com/LadybirdBrowser/ladybird/pull/8268))
+- [sasetz](https://github.com/sasetz). Fixed the mouse cursor always being the default in iframes ([#8556](https://github.com/LadybirdBrowser/ladybird/pull/8556))
+- [slim](https://github.com/xD-saleem). Refactored identifier checking in the parser ([#8168](https://github.com/LadybirdBrowser/ladybird/pull/8168))
 
 We'd like to thank everyone who contributed code this month:
 

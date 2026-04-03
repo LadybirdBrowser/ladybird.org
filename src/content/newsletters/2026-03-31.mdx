@@ -28,7 +28,7 @@ As you can see from the video, playback performance still needs work, and memory
 
 ### Hand-written assembly interpreter
 
-We added AsmInt, a hand-written assembly bytecode interpreter for LibJS ([#8299](https://github.com/LadybirdBrowser/ladybird/pull/8299)). Instead of interpreting bytecode through a C++ switch loop, AsmInt uses a custom DSL that compiles to native x86_64 and AArch64 assembly. Hot paths like arithmetic, comparisons, and property access stay entirely in hand-written assembly, only calling into C++ for complex operations.
+We added AsmInt, a hand-written assembly bytecode interpreter for LibJS ([#8299](https://github.com/LadybirdBrowser/ladybird/pull/8299)). Instead of interpreting bytecode through a "threaded interpreter" in C++, AsmInt uses a custom DSL that compiles to native x86_64 and AArch64 assembly. Hot paths like arithmetic, comparisons, and property access stay entirely in hand-written assembly, only calling into C++ for complex operations.
 
 Between AsmInt, the new regex engine, and other optimizations throughout the month, our benchmark scores improved significantly: Kraken 1.44x, Octane 1.37x, and SunSpider 1.69x.
 

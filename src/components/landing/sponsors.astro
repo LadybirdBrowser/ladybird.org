@@ -247,6 +247,13 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     min-height: 56px;
   }
 
+  @media (prefers-color-scheme: light) {
+    .logo-card {
+      background: rgba(0, 0, 0, 0.85);
+      border-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
   .logo-card a {
     display: flex;
     align-items: center;
@@ -265,6 +272,12 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     font-weight: var(--weight-medium);
     color: var(--text-primary);
     white-space: nowrap;
+  }
+
+  @media (prefers-color-scheme: light) {
+    .card-name {
+      color: #fff;
+    }
   }
 
   .tier-text {

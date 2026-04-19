@@ -41,11 +41,17 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
     padding: 20px 0;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    header {
+      border-color: var(--border);
+    }
   }
 
   .nav-container {
@@ -105,13 +111,13 @@
   nav a {
     font-size: 14px;
     font-weight: var(--weight-normal);
-    color: var(--text-muted);
+    color: #aaa;
     text-decoration: none;
     transition: color 0.2s;
   }
 
   nav a:hover {
-    color: var(--text-primary);
+    color: #fff;
   }
 
   @media (max-width: 640px) {

@@ -5,7 +5,7 @@ date: 2026-04-30
 draft: true
 ---
 
-April was the month Ladybird started feeling like a real browser to use. We now render PDFs inline using the same [pdf.js](https://mozilla.github.io/pdf.js/) viewer Firefox ships, alongside a new GTK4/libadwaita Linux frontend, persistent browsing history with rich autocomplete, an `about:bookmarks` management page, and middle-mouse autoscroll. Under the hood, the HTML parser learned to scan ahead and stream, JavaScript compilation moved to a background thread pool, every iframe rasterizes on its own thread, and DNS lookups stopped blocking the event loop. 333 PRs from 33 contributors, 7 of whom made their first-ever commit to Ladybird. Let's dig in.
+Hello friends! In April we merged 333 PRs from 33 contributors, 7 of whom made their first-ever commit to Ladybird! Here's what we've been up to.
 
 ### Welcoming new sponsors
 
@@ -18,9 +18,7 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 ### Inline PDF viewer
 
-PDFs now render inline through the bundled [pdf.js](https://mozilla.github.io/pdf.js/) viewer ([#9132](https://github.com/LadybirdBrowser/ladybird/pull/9132)). pdf.js is the same viewer Firefox ships, implemented entirely in JavaScript, HTML, and CSS. Page navigation, text selection, zoom, find-in-document, the works. The fact that we can drop in a production web application of pdf.js's complexity and have it just run is a milestone for our platform.
-
-Once it was running, profiling against the [multi-thousand-page Intel ISA Manual](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) drove ~900ms of further speedups in our typed-array view cache and `:has()` invalidation, both covered later in this newsletter.
+PDFs now render inline through the bundled [pdf.js](https://mozilla.github.io/pdf.js/) viewer ([#9132](https://github.com/LadybirdBrowser/ladybird/pull/9132)). pdf.js is a full-featured PDF viewer written entirely in JavaScript, HTML, and CSS, with page navigation, text selection, zoom, and find-in-document. Profiling pdf.js loading the [Intel ISA Manual](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) also drove improvements to our typed-array view cache and `:has()` invalidation.
 
 <img
   src="/assets/img/newsletter-apr-2026-pdf-viewer.png"
@@ -50,7 +48,7 @@ With the C++/Rust transition behind us, we spent April cashing in.
 
 **O(1) bytecode register allocator.** `Generator::allocate_register` used to scan the free pool to find the lowest-numbered register. We were spending ~800ms in this function alone while loading x.com. With the C++/Rust pipeline parity period over, the allocator is now a plain LIFO stack ([#9007](https://github.com/LadybirdBrowser/ladybird/pull/9007)).
 
-**Cached for-in iteration.** `for (key in obj)` sites now cache the flattened enumerable key snapshot and reuse it as long as the receiver's shape, indexed storage, and prototype chain still match ([#8856](https://github.com/LadybirdBrowser/ladybird/pull/8856)). Speedometer 2 went from 67.7 to 73.6, and Speedometer 3 from 4.11 to 4.22.
+**Cached for-in iteration.** `for (key in obj)` sites now cache the flattened enumerable key snapshot and reuse it as long as the receiver's shape, indexed storage, and prototype chain still match ([#8856](https://github.com/LadybirdBrowser/ladybird/pull/8856)). Speedometer 2 went from 67.7 to 73.6, and Speedometer 3 from 4.11 to 4.22!
 
 A grab-bag of other improvements:
 
@@ -62,7 +60,7 @@ A grab-bag of other improvements:
 - Source positions are preserved end-to-end in bytecode source maps, saving ~250ms on x.com. ([#9027](https://github.com/LadybirdBrowser/ladybird/pull/9027))
 - Zero-copy `TransferArrayBuffer` saves ~130ms on YouTube load. ([#9088](https://github.com/LadybirdBrowser/ladybird/pull/9088))
 - Cached typed-array views switched from a `WeakHashSet` to an intrusive list, saving ~250ms loading the Intel ISA PDF in pdf.js. ([#9180](https://github.com/LadybirdBrowser/ladybird/pull/9180))
-- Every `Promise` used to allocate two `PromiseResolvingFunction` cells, each holding an `AK::Function` with an off-GC malloc'd closure capture that didn't actually capture anything. The closures are now static functions dispatched by a `Kind` enum, dropping a per-resolver allocation across every promise the engine creates. ([#9188](https://github.com/LadybirdBrowser/ladybird/pull/9188))
+- Every `Promise` allocated two `PromiseResolvingFunction` cells with `AK::Function` closures that didn't actually capture anything. They're now static functions dispatched by a `Kind` enum, dropping a per-resolver allocation across every promise the engine creates. ([#9188](https://github.com/LadybirdBrowser/ladybird/pull/9188))
 - Skipping property-table marking for non-dictionary shapes cut 1.3 seconds off GC time while loading [maptiler.com](https://www.maptiler.com/maps/). ([#9044](https://github.com/LadybirdBrowser/ladybird/pull/9044))
 - A fast path for `Array.prototype.indexOf` on packed arrays ([#9123](https://github.com/LadybirdBrowser/ladybird/pull/9123))
 - `Array.prototype.sort` reuses cached UTF-16 instead of re-transcoding on every comparison ([#9036](https://github.com/LadybirdBrowser/ladybird/pull/9036))
@@ -71,7 +69,7 @@ A grab-bag of other improvements:
 
 ### GTK4 / libadwaita frontend
 
-Ladybird has a new Linux frontend built on GTK4 and libadwaita, sitting alongside the existing Qt frontend ([#8691](https://github.com/LadybirdBrowser/ladybird/pull/8691)). It's inspired by GNOME Web (Epiphany) and follows GNOME's design guidelines: no menubar, a hamburger menu, and `AdwTabView` for tabs. Out of the box you get autocomplete and security icons in the URL bar, find-in-page, fullscreen, context menus, the full set of UA dialogs, clipboard, multi-window, light/dark theme, and DPR scaling.
+Ladybird has a new Linux frontend built on GTK4 and libadwaita, sitting alongside the existing Qt frontend ([#8691](https://github.com/LadybirdBrowser/ladybird/pull/8691)). It's inspired by GNOME Web (Epiphany) and follows GNOME's design guidelines: no menubar, a hamburger menu, and `AdwTabView` for tabs. Out of the box you get autocomplete and security icons in the URL bar, find-in-page, fullscreen, context menus, alert/confirm/prompt/color/file dialogs, clipboard, multi-window, light/dark theme, and DPR scaling.
 
 <video controls style="margin-bottom: 2em; max-width: 100%;">
   <source src="/assets/img/newsletter-apr-2026-gtk4.mp4"></source>
@@ -89,7 +87,7 @@ Type in the address bar and you now get rich, history-aware suggestions: previou
 
 ### Bookmarks
 
-Following last month's bookmarks landing, April brought a proper management UI:
+Last month we got bookmarks. This month they got a proper management UI:
 
 - An `about:bookmarks` page for managing bookmarks and folders ([#8825](https://github.com/LadybirdBrowser/ladybird/pull/8825))
 - Bookmark import and export from the new page ([#8938](https://github.com/LadybirdBrowser/ladybird/pull/8938))
@@ -104,7 +102,7 @@ Following last month's bookmarks landing, April brought a proper management UI:
 
 ### Cache and CacheStorage
 
-We implemented [`Cache` and `CacheStorage`](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) end to end, with all nine methods (`open`, `has`, `delete`, `keys`, `match`, `matchAll`, `add`, `addAll`, `put`) backed by an ephemeral in-memory store ([#8745](https://github.com/LadybirdBrowser/ladybird/pull/8745)). Our pass count in the WPT `service-workers/cache-storage` suite jumped from 17 to 448, and Discord stops throwing on startup, which is why it can finally render.
+We implemented [`Cache` and `CacheStorage`](https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage) end to end, with all nine methods (`open`, `has`, `delete`, `keys`, `match`, `matchAll`, `add`, `addAll`, `put`) backed by an ephemeral in-memory store ([#8745](https://github.com/LadybirdBrowser/ladybird/pull/8745)). Our pass count in the WPT `service-workers/cache-storage` suite jumped from 17 to 448.
 
 ### CSS features
 
@@ -121,7 +119,7 @@ We implemented [`Cache` and `CacheStorage`](https://developer.mozilla.org/en-US/
 | <img src="/assets/img/newsletter-apr-2026-anchor-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-apr-2026-anchor-after.png" style="max-width: 100%;" alt="After" /> |
 
 - **Color interpolation: +930 WPT**: A from-scratch rewrite aligned with [css-color-4](https://drafts.csswg.org/css-color-4/). We now interpolate in float instead of `u8`, handle missing and powerless components correctly, deal with out-of-gamut sRGB, and apply alpha multipliers consistently. ([#8934](https://github.com/LadybirdBrowser/ladybird/pull/8934))
-- **Presentational hints through the cascade**: Legacy presentational HTML attributes (`align`, `bgcolor`, etc.) used to bypass the regular CSS cascade and write directly into the element's cascaded properties. They now go through the cascade as normal author declarations under a new `AuthorPresentationalHint` origin, so `var()` substitution and the invalid-at-computed-value-time fallback work correctly. Fixes a crash on [html.spec.whatwg.org](https://html.spec.whatwg.org). ([#9176](https://github.com/LadybirdBrowser/ladybird/pull/9176))
+- **Presentational hints through the cascade**: Legacy presentational HTML attributes (`align`, `bgcolor`, etc.) used to bypass the regular CSS cascade and write directly into the element's cascaded properties. They now go through the cascade as normal author declarations, so `var()` substitution and the invalid-at-computed-value-time fallback work correctly. Fixes a crash on [html.spec.whatwg.org](https://html.spec.whatwg.org). ([#9176](https://github.com/LadybirdBrowser/ladybird/pull/9176))
 - **`align` on table sections and rows**: `<thead>`, `<tbody>`, `<tfoot>`, and `<tr>` honor the `align` presentational attribute, fixing button placement on [bricklink.com](https://www.bricklink.com/). ([#9177](https://github.com/LadybirdBrowser/ladybird/pull/9177))
 
   | Before                                                                                                     | After                                                                                                    |
@@ -129,7 +127,7 @@ We implemented [`Cache` and `CacheStorage`](https://developer.mozilla.org/en-US/
   | <img src="/assets/img/newsletter-apr-2026-table-align-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-apr-2026-table-align-after.png" style="max-width: 100%;" alt="After" /> |
 
 - **`stroke-dasharray` interpolation**: SVG dashes finally animate smoothly. ([#9133](https://github.com/LadybirdBrowser/ladybird/pull/9133))
-- **`autofocus`**: Elements with the `autofocus` attribute actually receive focus on page load now, via the spec's autofocus candidate processing steps. ([#9016](https://github.com/LadybirdBrowser/ladybird/pull/9016))
+- **`autofocus`**: Elements with the `autofocus` attribute actually receive focus on page load now. ([#9016](https://github.com/LadybirdBrowser/ladybird/pull/9016))
 - **List markers in RTL text**: Bullets now sit on the right side of right-to-left text, fixing list rendering on Arabic Wikipedia. ([#9099](https://github.com/LadybirdBrowser/ladybird/pull/9099))
 
   | Before                                                                                             | After                                                                                            |
@@ -155,17 +153,19 @@ Profile of loading x.com when DNS is slow, before and after:
   alt="After"
 />
 
-**RequestServer memory churn.** Draining queued response data was O(n²) when WebContent was slower than the network. RequestServer was spending ~30 seconds in `memcpy` and 3 seconds in `Vector::remove` while opening a YouTube video. Switching `AllocatingMemoryStream` to a singly-linked chunk list made consumption O(1). ([#9028](https://github.com/LadybirdBrowser/ladybird/pull/9028))
+**RequestServer memory churn.** Draining queued response data was O(n²) when WebContent was slower than the network. RequestServer was spending ~30 seconds in `memcpy` and 3 seconds in `Vector::remove` while opening a YouTube video! Switching `AllocatingMemoryStream` to a singly-linked chunk list made consumption O(1). ([#9028](https://github.com/LadybirdBrowser/ladybird/pull/9028))
 
 **Smarter `Accept` header.** We now advertise AVIF and WebP for image requests, matching other engines. Some CDNs use the `Accept` header to decide whether to serve modern formats or fall back to JPEG. ([#9046](https://github.com/LadybirdBrowser/ladybird/pull/9046))
 
 ### Style invalidation
 
-March's invalidation work continued at pace, with four big wins:
+Selector invalidation used to be straightforward: selectors always looked downward. `:host` ruined that. `:has()` made it way worse. Any descendant change can now force you to walk up the tree finding ancestors whose `:has()` arguments just flipped, and a lot of this month's invalidation work is about making that walk less wasteful.
+
+Four big wins this month:
 
 - **Reddit rule cache rebuilds: 13.2s → 3.2s.** Stylesheet mutations no longer rebuild every style scope's cache when only one scope changed. ([#9138](https://github.com/LadybirdBrowser/ladybird/pull/9138))
 - **Reddit infinite scroll: 11% fewer pointless recomputes.** Sibling structural invalidation stopped fanning out to descendants that don't observe the position. ([#9155](https://github.com/LadybirdBrowser/ladybird/pull/9155))
-- **`:has()` mutation invalidation skips unaffected anchors**, with big wins measured on [azure.com](https://azure.com/). ([#9168](https://github.com/LadybirdBrowser/ladybird/pull/9168))
+- **`:has()` mutation invalidation skips unaffected anchors**, with substantial reductions measured on [azure.com](https://azure.com/). ([#9168](https://github.com/LadybirdBrowser/ladybird/pull/9168))
 - **`:has()` child-list visits on the Intel ISA PDF: 71k → 1.6k.** Coalesced when pending data already covers every concrete feature bucket the scope cares about, saving ~650ms on the pdf.js load. ([#9179](https://github.com/LadybirdBrowser/ladybird/pull/9179))
 
 A large new structural-invalidation test battery exposed and fixed several invalidation holes ([#9095](https://github.com/LadybirdBrowser/ladybird/pull/9095)), and a string of smaller tightenings landed around hover, stylesheet mutation scope, custom-property maps, and computed-style diffing ([#9077](https://github.com/LadybirdBrowser/ladybird/pull/9077), [#9049](https://github.com/LadybirdBrowser/ladybird/pull/9049), [#9079](https://github.com/LadybirdBrowser/ladybird/pull/9079), [#9080](https://github.com/LadybirdBrowser/ladybird/pull/9080), [#9141](https://github.com/LadybirdBrowser/ladybird/pull/9141)).
@@ -180,7 +180,7 @@ Our C++ and Rust code now share a single allocator instance, [mimalloc v2](https
 
 ### Middle-mouse autoscroll
 
-A long-standing missing feature in Ladybird: hold the middle mouse button and drag to scroll, or click the middle mouse button in place to enter autoscroll mode ([#8881](https://github.com/LadybirdBrowser/ladybird/pull/8881), [#8928](https://github.com/LadybirdBrowser/ladybird/pull/8928)).
+Hold the middle mouse button and drag to scroll, or click in place to enter autoscroll mode ([#8881](https://github.com/LadybirdBrowser/ladybird/pull/8881), [#8928](https://github.com/LadybirdBrowser/ladybird/pull/8928)).
 
 <video controls style="margin-bottom: 2em; max-width: 100%;">
   <source src="/assets/img/newsletter-apr-2026-middle-mouse-autoscroll.mp4"></source>
@@ -188,15 +188,13 @@ A long-standing missing feature in Ladybird: hold the middle mouse button and dr
 
 ### Sites that work better
 
-The biggest visible wins this month are on Reddit, Discord, and YouTube.
+The biggest visible wins this month are on Reddit and YouTube.
 
-[**Reddit**](https://reddit.com) image gallery carousels actually work now, after fixing two unrelated layout bugs around `::slotted()` matching and absolutely positioned descendants of split inlines ([#9148](https://github.com/LadybirdBrowser/ladybird/pull/9148)). And thanks to `TextDecoderStream`, the SPA stops swallowing link clicks, so you can finally open the comments. Infinite scroll also benefits from the structural-invalidation work covered above.
+[**Reddit**](https://reddit.com) image gallery carousels actually work now, after fixing two unrelated layout bugs around `::slotted()` matching and absolutely positioned descendants of split inlines ([#9148](https://github.com/LadybirdBrowser/ladybird/pull/9148)). And thanks to `TextDecoderStream`, the SPA stops swallowing link clicks, so you can finally open the comments! Infinite scroll also benefits from the structural-invalidation work covered above.
 
 <video controls style="margin-bottom: 1em; max-width: 100%;">
   <source src="/assets/img/newsletter-apr-2026-reddit-gallery.webm"></source>
 </video>
-
-[**Discord**](https://discord.com) loads at all now. It depends on `self.caches`, and without the new `Cache` and `CacheStorage` implementation it just threw on startup and never rendered.
 
 [**YouTube**](https://youtube.com) benefits from a stack of unrelated improvements: off-thread top-level JS compile, off-thread WOFF2 decompression (saves ~170ms on Gmail too, [#8976](https://github.com/LadybirdBrowser/ladybird/pull/8976)), reduced `@font-face` fetch fanout (177 → ~9 fetches on initial load, [#9032](https://github.com/LadybirdBrowser/ladybird/pull/9032)), the RequestServer memory churn fix, and zero-copy `TransferArrayBuffer`.
 
@@ -225,7 +223,7 @@ The upside of the import is that WPT now actually measures JavaScript conformanc
 - **Layout state slimming**: Rarely-used `UsedValues` properties moved behind a lazy pointer, dropping the struct from 424 to 176 bytes and cutting `LayoutState::populate_node_from()` from 139ms to 65ms while loading [sainsburys.co.uk](https://www.sainsburys.co.uk). ([#9104](https://github.com/LadybirdBrowser/ladybird/pull/9104))
 - **Targeted ShadowRoot layout invalidation**: Setting `innerHTML` on a shadow root no longer invalidates the entire document's layout tree. Reduces layout-and-paint time on [pomax.github.io/bezierinfo](https://pomax.github.io/bezierinfo/) by 21%. ([#9191](https://github.com/LadybirdBrowser/ladybird/pull/9191))
 - **Fetch body chunks straight into the stream**: Fetched bytes used to be delivered through a pull-promise dance that allocated seven GC objects per chunk and did nothing useful. They now go directly into the byte stream controller. ([#9169](https://github.com/LadybirdBrowser/ladybird/pull/9169))
-- **Cross-site popup navigation**: When a popup tab does a cross-site navigation, we no longer kill the WebContent process its parent is still using. ([#8730](https://github.com/LadybirdBrowser/ladybird/pull/8730))
+- **Cross-site popup navigation**: Navigating a popup tab to a different site no longer kills the parent's WebContent process. ([#8730](https://github.com/LadybirdBrowser/ladybird/pull/8730))
 - **`Ctrl+Tab` for tab navigation**: On the Qt UI, `Ctrl+Tab` and `Ctrl+Shift+Tab` cycle through open tabs. ([#8704](https://github.com/LadybirdBrowser/ladybird/pull/8704))
 - **Address-bar error page**: When you type text into the address bar that can't be sanitized into a URL or search query (for instance, with search disabled), you now get a proper error page instead of the input being silently dropped. ([#9072](https://github.com/LadybirdBrowser/ladybird/pull/9072))
 - **`TextDecoderStream`**: The streaming counterpart to `TextDecoder` is now implemented, including the partial-UTF-8 hold-back across chunk boundaries that makes the Reddit comments fix above possible. ([#9143](https://github.com/LadybirdBrowser/ladybird/pull/9143))

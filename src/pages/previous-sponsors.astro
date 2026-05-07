@@ -1,0 +1,17 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+import Sponsors from "@/components/landing/sponsors.astro";
+import { previousSponsors } from "@/components/landing/sponsors";
+---
+
+<BaseLayout
+  title="Previous sponsors"
+  description="Previous Ladybird sponsors who supported the project."
+>
+  <Sponsors
+    sponsors={previousSponsors}
+    heading="Previous sponsors"
+    id="previous-sponsors"
+    description="We are grateful to the organizations and individuals who previously supported Ladybird."
+  />
+</BaseLayout>

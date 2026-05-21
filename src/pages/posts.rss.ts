@@ -29,7 +29,9 @@ export async function GET(context: APIContext) {
     title: "Ladybird Browser Posts",
     description: "Ladybird is a brand-new browser &amp; web engine",
     site: context.site!,
-    items: [...postItems, ...newsletterItems],
+    items: [...postItems, ...newsletterItems].sort(
+      (a, b) => b.pubDate.getTime() - a.pubDate.getTime()
+    ),
     trailingSlash: false,
   });
 }

@@ -6,11 +6,15 @@ import path from "path";
 const rootDir: string = path.join(__dirname, "../");
 
 describe("RSS Feeds", () => {
-  const srcDir = path.join(rootDir, "/src/content/posts");
+  const postsDir = path.join(rootDir, "/src/content/posts");
+  const newslettersDir = path.join(rootDir, "/src/content/newsletters");
   const distDir = path.join(rootDir, "/dist/");
 
-  const mdFiles = fs
-    .readdirSync(srcDir)
+  const postFiles = fs
+    .readdirSync(postsDir)
+    .filter((file) => file.endsWith(".mdx"));
+  const newsletterFiles = fs
+    .readdirSync(newslettersDir)
     .filter((file) => file.endsWith(".mdx"));
   const xmlFile = fs.readFileSync(path.join(distDir, "posts.rss"));
 
@@ -27,13 +31,20 @@ describe("RSS Feeds", () => {
     );
   });
 
-  test("XML should contain entries for every non-hidden post", async () => {
-    const nonHiddenMdFiles = mdFiles.filter((file) => {
-      const filePath = path.join(srcDir, file);
+  test("XML should contain entries for every non-hidden post and non-draft newsletter", async () => {
+    const nonHiddenPosts = postFiles.filter((file) => {
+      const filePath = path.join(postsDir, file);
       const fileContent = fs.readFileSync(filePath);
       return !fileContent.includes("type: Hidden");
     });
-    expect(parsedXML.rss.channel.item).toBeArrayOfSize(nonHiddenMdFiles.length);
+    const nonDraftNewsletters = newsletterFiles.filter((file) => {
+      const filePath = path.join(newslettersDir, file);
+      const fileContent = fs.readFileSync(filePath);
+      return !fileContent.includes("draft: true");
+    });
+    expect(parsedXML.rss.channel.item).toBeArrayOfSize(
+      nonHiddenPosts.length + nonDraftNewsletters.length
+    );
     parsedXML.rss.channel.item.forEach((item: any) => {
       const itemAttributes = Object.keys(item);
       expect(itemAttributes).toEqual(

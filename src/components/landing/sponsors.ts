@@ -149,6 +149,7 @@ export const currentSponsors: SponsorTier[] = [
       { name: "Zain Allarakhia", href: "https://za1.co" },
       { name: "zacoons", href: "https://zacoons.com" },
       { name: "Jakub Stęplowski", href: "https://jakubsteplow.ski" },
+      { name: "wheelofnames.com", href: "https://wheelofnames.com" },
     ],
   },
   {

@@ -1,0 +1,181 @@
+---
+title: This Month in Ladybird - May 2026
+description: Passing Cloudflare Turnstile, async scrolling on an out-of-process compositor, Media Source Extensions on by default, a WebAssembly JIT, native content blocking, the HTML parser in Rust, on-disk JS bytecode cache, CSS @container/@scope/subgrid, and more.
+date: 2026-05-31
+draft: true
+---
+
+Hello friends! May was a busy month, with 464 pull requests merged. Ladybird now clears Cloudflare Turnstile, and scrolling has moved onto an out-of-process compositor. Here's what we've been up to.
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- [CodeRabbit](https://coderabbit.ai) with $10,000
+- [wheelofnames.com](https://wheelofnames.com) with $1,000
+
+We're incredibly grateful for their support. If you're interested in sponsoring the project, please [contact us](mailto:contact@ladybird.org).
+
+### Passing Cloudflare Turnstile
+
+[Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) is the bot-detection challenge that sits in front of a large number of sites, deciding whether you're a real browser before it lets you reach the page. Until this month it refused to let Ladybird through, which kept us out of a lot of sites.
+
+<video
+  autoplay
+  loop
+  muted
+  playsinline
+  controls
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source src="/assets/img/newsletter-may-2026-turnstile.mp4"></source>
+</video>
+
+Two things got us here. Over the past several months we've been chipping away at the many little web compatibility gaps that Cloudflare's checks expect a real browser to handle. Cloudflare also made a change on their end to help. We can't say exactly which combination of the two did it, but in our testing Ladybird now clears the challenge and loads the page.
+
+### Async scrolling on an out-of-process compositor
+
+Scrolling has historically run on the main thread, so a busy page could make scrolling stutter. This month we moved scrolling off the main thread onto a compositor, and then moved that compositor into its own process.
+
+It landed in stages: async viewport scrolling on a compositor thread ([#9370](https://github.com/LadybirdBrowser/ladybird/pull/9370)), then nested scrollable boxes ([#9407](https://github.com/LadybirdBrowser/ladybird/pull/9407)) and viewport scrollbars ([#9386](https://github.com/LadybirdBrowser/ladybird/pull/9386)) on the same path, with async scrolling enabled by default ([#9413](https://github.com/LadybirdBrowser/ladybird/pull/9413)). The compositor then grew into a feature-gated separate process ([#9564](https://github.com/LadybirdBrowser/ladybird/pull/9564)), with backing store management moved across the boundary and crash recovery so a compositor crash doesn't take down the page ([#9589](https://github.com/LadybirdBrowser/ladybird/pull/9589)). It's now the default ([#9604](https://github.com/LadybirdBrowser/ladybird/pull/9604)). Scrolling stays smooth even while the main thread is busy with layout or JavaScript.
+
+Here's IMDb being scrolled while it loads, without and with async scrolling:
+
+| Without async scrolling                                                                                                                         | With async scrolling                                                                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| <video controls muted loop playsinline style="max-width: 100%;"><source src="/assets/img/newsletter-may-2026-scroll-sync.mp4"></source></video> | <video controls muted loop playsinline style="max-width: 100%;"><source src="/assets/img/newsletter-may-2026-scroll-async.mp4"></source></video> |
+
+### Media Source Extensions on by default
+
+[Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) is now on by default after a month behind an experimental flag ([#9673](https://github.com/LadybirdBrowser/ladybird/pull/9673)). MSE is how streaming sites feed media to the player in chunks, so turning it on lets a lot more video sites work, and unlocks adaptive streaming on YouTube: higher resolutions, higher frame rates, and quality switching. The same PR added `SourceBuffer` capacity limits, so the engine now evicts buffered media data under memory pressure instead of holding onto everything, which was the main thing keeping MSE experimental.
+
+<img
+  src="/assets/img/newsletter-may-2026-youtube-4k.png"
+  style="max-width: 100%;"
+  alt="A YouTube video playing in Ladybird with the quality menu open and 2160p (4K) selected"
+/>
+
+Under the hood, LibMedia's pipeline was rewritten so seeks move through the pipeline instead of being special-cased at each stage ([#9288](https://github.com/LadybirdBrowser/ladybird/pull/9288)). Demuxers now report accurate buffered ranges for MP3, FLAC, Ogg, WAV, Matroska, and the FFmpeg-backed formats ([#9705](https://github.com/LadybirdBrowser/ladybird/pull/9705)), CBR seeking works, playback starts after loading less data, and [`HTMLMediaElement.getStartDate()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/getStartDate) is implemented ([#9218](https://github.com/LadybirdBrowser/ladybird/pull/9218)).
+
+### On-disk JavaScript bytecode cache
+
+JavaScript bytecode is now cached on disk ([#9259](https://github.com/LadybirdBrowser/ladybird/pull/9259)). After the initial off-thread compile, a background job fully compiles the remaining lazy functions and serializes the result as a bytecode cache blob, which RequestServer stores as sidecar data alongside the script's HTTP disk cache entry. On a warm cache hit, a later fetch can map the bytecode from disk instead of keeping it in anonymous heap memory, saving hundreds of megabytes on large modern websites while also avoiding recompilation.
+
+Follow-up work made the mapped cache lazily decoded, so warm hits only pay to decode functions, source text, and instruction streams as they're actually used ([#9433](https://github.com/LadybirdBrowser/ladybird/pull/9433), [#9453](https://github.com/LadybirdBrowser/ladybird/pull/9453), [#9466](https://github.com/LadybirdBrowser/ladybird/pull/9466), [#9472](https://github.com/LadybirdBrowser/ladybird/pull/9472), [#9486](https://github.com/LadybirdBrowser/ladybird/pull/9486), [#9540](https://github.com/LadybirdBrowser/ladybird/pull/9540)).
+
+### A WebAssembly JIT
+
+LibWasm gained a [Cranelift](https://cranelift.dev/)-based just-in-time compiler ([#8866](https://github.com/LadybirdBrowser/ladybird/pull/8866)). Instead of interpreting WebAssembly bytecode, hot modules are compiled to native code. That shows up in benchmarks: roughly 8x on CoreMark, and 3-4x on function-call microbenchmarks. macOS support followed shortly after ([#9356](https://github.com/LadybirdBrowser/ladybird/pull/9356)), and by the end of the month the JIT was enabled by default ([#9758](https://github.com/LadybirdBrowser/ladybird/pull/9758)).
+
+### Content blocking
+
+We rebuilt Ladybird's content blocker. The old one was a simple URL substring matcher; the new one is backed by [brave/adblock-rust](https://github.com/brave/adblock-rust), Brave's mature open-source content-filtering library ([#9538](https://github.com/LadybirdBrowser/ladybird/pull/9538), [#9587](https://github.com/LadybirdBrowser/ladybird/pull/9587)). It reads standard Adblock Plus / EasyList-style filter lists, and beyond network request filtering it now does cosmetic filtering, hiding page elements with CSS, including generic class and id selectors gathered from shadow-including descendants. Block lists are configurable and can be loaded from settings ([#9601](https://github.com/LadybirdBrowser/ladybird/pull/9601)).
+
+### The HTML parser is now written in Rust
+
+Continuing our push to handle untrusted data from the web in memory-safe languages, the HTML parser fully migrated to Rust this month. The tokenizer was replaced with a Rust implementation first ([#9429](https://github.com/LadybirdBrowser/ladybird/pull/9429)), followed by the rest of the tree-construction parser ([#9457](https://github.com/LadybirdBrowser/ladybird/pull/9457)) and the speculative preload scanner that runs ahead of it ([#9462](https://github.com/LadybirdBrowser/ladybird/pull/9462)). The Rust parser is also about 10% faster than the C++ version it replaced, and was checked against a corpus of around 7,000 websites for DOM parity with the old parser.
+
+The URL parser and `URLPattern` implementation moved to Rust as well ([#9460](https://github.com/LadybirdBrowser/ladybird/pull/9460)).
+
+### Incremental GC sweeping
+
+The GC now sweeps incrementally instead of doing all the work in one stop-the-world pass ([#7663](https://github.com/LadybirdBrowser/ladybird/pull/7663)). Long sweeps are cut into small slices, one heap block at a time, interleaved with normal program execution and driven by both a background timer and allocation pressure. That means fewer long pauses you can actually feel while browsing.
+
+Supporting changes make that pacing work better: heap blocks now come from 2 MiB chunks with decommit deferred to a worker thread ([#9299](https://github.com/LadybirdBrowser/ladybird/pull/9299)), the collector runs when JavaScript execution goes idle ([#9423](https://github.com/LadybirdBrowser/ladybird/pull/9423)), and thresholds account for memory held outside the GC heap ([#9286](https://github.com/LadybirdBrowser/ladybird/pull/9286)). A new family of GC-aware container types also landed, fixing long-standing bugs from keeping GC objects in plain containers ([#9494](https://github.com/LadybirdBrowser/ladybird/pull/9494), [#9650](https://github.com/LadybirdBrowser/ladybird/pull/9650), [#9694](https://github.com/LadybirdBrowser/ladybird/pull/9694)).
+
+### CSS features
+
+- **[`@container`](https://developer.mozilla.org/en-US/docs/Web/CSS/@container) queries**: Container queries now work, with the `container`/`container-name` properties parsed and propagated ([#9298](https://github.com/LadybirdBrowser/ladybird/pull/9298)), name-only queries ([#9319](https://github.com/LadybirdBrowser/ladybird/pull/9319)), and size queries ([#9405](https://github.com/LadybirdBrowser/ladybird/pull/9405)).
+- **[`@scope`](https://developer.mozilla.org/en-US/docs/Web/CSS/@scope)**: We implemented `@scope`, including implicit element scope ([#9534](https://github.com/LadybirdBrowser/ladybird/pull/9534), [#9677](https://github.com/LadybirdBrowser/ladybird/pull/9677)), and made `@supports at-rule(@foo)` work so pages can feature-detect it ([#9536](https://github.com/LadybirdBrowser/ladybird/pull/9536)).
+- **[Subgrid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Subgrid)**: Initial CSS grid subgrid support landed ([#9620](https://github.com/LadybirdBrowser/ladybird/pull/9620), [#9628](https://github.com/LadybirdBrowser/ladybird/pull/9628)).
+- **Transitions and animations on all pseudo-elements**: CSS transitions and animations now apply to every pseudo-element, not just a handful ([#9519](https://github.com/LadybirdBrowser/ladybird/pull/9519)).
+- **Scroll APIs**: [`scrollIntoView`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) is implemented for boxes ([#9225](https://github.com/LadybirdBrowser/ladybird/pull/9225)), and we added [`scroll-margin`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin) and [`scroll-padding`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding) ([#9367](https://github.com/LadybirdBrowser/ladybird/pull/9367)).
+- **[`::first-letter`](https://developer.mozilla.org/en-US/docs/Web/CSS/::first-letter)**: First-letter pseudo-element styles are now applied ([#8885](https://github.com/LadybirdBrowser/ladybird/pull/8885)).
+- **Gradient fixes**: Conic gradients are now painted with Skia's sweep shader ([#9665](https://github.com/LadybirdBrowser/ladybird/pull/9665)), `-webkit-linear-gradient` numeric angles are converted correctly ([#9528](https://github.com/LadybirdBrowser/ladybird/pull/9528)), and gradient color stops interpolate using premultiplied alpha ([#9765](https://github.com/LadybirdBrowser/ladybird/pull/9765)).
+
+### DevTools layout inspection
+
+The DevTools inspector can now inspect grid layouts, showing line numbers, named areas, infinitely-extended lines, recoloring, and subgrid hierarchies ([#9672](https://github.com/LadybirdBrowser/ladybird/pull/9672)):
+
+<img
+  src="/assets/img/newsletter-may-2026-devtools-grid.png"
+  style="max-width: 100%;"
+  alt="DevTools grid layout inspection"
+/>
+
+Flexbox inspection landed too ([#9707](https://github.com/LadybirdBrowser/ladybird/pull/9707)):
+
+<img
+  src="/assets/img/newsletter-may-2026-devtools-flexbox.png"
+  style="max-width: 100%;"
+  alt="DevTools flexbox inspection"
+/>
+
+There's now a "pick element" button that lets you click an element in the page to select it in the inspector ([#9735](https://github.com/LadybirdBrowser/ladybird/pull/9735)), implemented for the Qt, AppKit, and GTK frontends. DevTools can also drive page navigation now ([#9801](https://github.com/LadybirdBrowser/ladybird/pull/9801)).
+
+### Browser UI
+
+Tabs can now run down the side of the window instead of across the top, in the Qt frontend ([#9795](https://github.com/LadybirdBrowser/ladybird/pull/9795), [#9797](https://github.com/LadybirdBrowser/ladybird/pull/9797)). Switch them on and the sidebar shows each tab's favicon and title, the window controls fold into the navigation toolbar, and the separate titlebar row disappears. It works in both light and dark themes, and you can collapse the sidebar when you want the space.
+
+<img
+  src="/assets/img/newsletter-may-2026-vertical-tabs-dark.png"
+  style="max-width: 100%;"
+  alt="Vertical tabs in dark mode"
+/>
+
+The Qt chrome was refreshed as well ([#9631](https://github.com/LadybirdBrowser/ladybird/pull/9631)). The stock Qt look is replaced with an integrated custom chrome surface for the tab strip, toolbar, omnibox, and window controls, with better light and dark theming, browser-like tab dragging (reorder, detach, and reparent between windows), and resize cursors on frameless windows. Theme changes now refresh the whole chrome immediately.
+
+A later pass added a quieter, more neutral palette in both themes, generated chrome icons in place of the old TinyVG assets, and an omnibox that shows a shortened URL while you're not editing, with contextual leading indicators (a "Not secure" pill for HTTP, a globe for URL-like typed input, a search icon for search input) ([#9788](https://github.com/LadybirdBrowser/ladybird/pull/9788)).
+
+<img
+  src="/assets/img/newsletter-may-2026-chrome-dark.png"
+  style="max-width: 100%;"
+  alt="Compact Qt chrome in dark mode"
+/>
+
+Other UI improvements this month:
+
+- Page loading state is now shown in the browser chrome, so you can tell a page is loading even when the tab bar is hidden ([#9500](https://github.com/LadybirdBrowser/ladybird/pull/9500))
+- Reopen recently closed tabs and windows ([#9284](https://github.com/LadybirdBrowser/ladybird/pull/9284))
+- Detach a dragged tab into a new window by dropping it outside any tab bar ([#9636](https://github.com/LadybirdBrowser/ladybird/pull/9636))
+- Zoom level is persisted and restored per host ([#9255](https://github.com/LadybirdBrowser/ladybird/pull/9255)), with a zoom indicator in the location bar ([#9790](https://github.com/LadybirdBrowser/ladybird/pull/9790))
+- Middle-mouse primary paste, integrated with the X11 selection clipboard ([#9421](https://github.com/LadybirdBrowser/ladybird/pull/9421), [#9686](https://github.com/LadybirdBrowser/ladybird/pull/9686))
+- Sharper icons on high-DPI displays ([#9698](https://github.com/LadybirdBrowser/ladybird/pull/9698))
+
+### Networking and privacy
+
+- **[HSTS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)**: HTTP Strict Transport Security is now implemented, so sites that send the header are upgraded to HTTPS on subsequent visits ([#9475](https://github.com/LadybirdBrowser/ladybird/pull/9475)).
+- **[Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API) and geolocation**: We added the Permissions API along with the geolocation permission ([#8874](https://github.com/LadybirdBrowser/ladybird/pull/8874)).
+- **Encoding detection**: A [`chardetng`](https://github.com/hsivonen/chardetng)-based detector now guesses the character encoding of pages that don't declare one ([#9375](https://github.com/LadybirdBrowser/ladybird/pull/9375)).
+
+### Sites that work better
+
+[**TradingView**](https://www.tradingview.com) charts render now. Implementing [`ServiceWorkerContainer.getRegistrations()`](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/getRegistrations) lets the site past its startup feature checks, and a canvas compositing fix stops translucent chart pixels from accumulating as you move the mouse ([#9581](https://github.com/LadybirdBrowser/ladybird/pull/9581)).
+
+| Before                                                                                                     | After                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-may-2026-tradingview-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-may-2026-tradingview-after.png" style="max-width: 100%;" alt="After" /> |
+
+[**Discord**](https://discord.com) got several rendering and interaction fixes ([#9764](https://github.com/LadybirdBrowser/ladybird/pull/9764)). `foreignObject` descendants now participate in hit testing, CSS mask image layers and avatars paint correctly, and drag-selection in the chat layout is much more forgiving, so a selection can start from gutters, avatar-adjacent areas, author names, and the space below message text instead of silently doing nothing.
+
+[**Shopify**](https://www.shopify.com) no longer crashes on same-document navigation ([#9391](https://github.com/LadybirdBrowser/ladybird/pull/9391)). The same batch of fixes removes visible jank during Shopify's hydration by preserving imported binding names in the module bytecode cache, and clears up spurious horizontal scrolling on both Shopify and [**Reddit**](https://reddit.com).
+
+[**Hacker News**](https://news.ycombinator.com) threads got lighter ([#9753](https://github.com/LadybirdBrowser/ladybird/pull/9753)). Large pages full of nested tables and inline text were doing a lot of avoidable work in the style and layout hot paths. Simple tables now skip redundant row intrinsic sizing, inline layout reuses cached text chunk lists instead of copying them, and scoped rule matching reuses its scratch storage between elements.
+
+A few more:
+
+- [**wheelofnames.com**](https://wheelofnames.com): The new Skia-backed conic gradient painting cleans up the rendering of the wheel edge ([#9665](https://github.com/LadybirdBrowser/ladybird/pull/9665)).
+- **blt.se**: Fixed unwanted horizontal and vertical scrolling in the top navigation bar, caused by async wheel hit testing treating hidden overflow axes as scrollable ([#9455](https://github.com/LadybirdBrowser/ladybird/pull/9455)).
+
+### Web Platform Tests (WPT)
+
+Our [WPT](https://web-platform-tests.org) score went from 2,067,263 to 2,075,546 this month, a gain of 8,283 subtests.
+
+### Other notable changes
+
+- **Themed text selection colors**: Selection highlights now use the system theme's colors ([#9704](https://github.com/LadybirdBrowser/ladybird/pull/9704)).
+- **No more white flash**: Dark-mode pages no longer flash white while loading ([#9690](https://github.com/LadybirdBrowser/ladybird/pull/9690)).
+- **Animated images pause in inactive tabs**, saving CPU on background tabs ([#9675](https://github.com/LadybirdBrowser/ladybird/pull/9675)).
+- **Largest favicon wins**: We now select the largest decoded favicon as the active page favicon ([#9713](https://github.com/LadybirdBrowser/ladybird/pull/9713)).
+
+That's it for May. Thanks for reading, and we'll see you next month.

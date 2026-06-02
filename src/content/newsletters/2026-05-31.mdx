@@ -47,7 +47,7 @@ Here's IMDb being scrolled while it loads, without and with async scrolling:
 
 ### Media Source Extensions on by default
 
-[Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) is now on by default after a month behind an experimental flag ([#9673](https://github.com/LadybirdBrowser/ladybird/pull/9673)). MSE is how streaming sites feed media to the player in chunks, so turning it on lets a lot more video sites work, and unlocks adaptive streaming on YouTube: higher resolutions, higher frame rates, and quality switching. The same PR added `SourceBuffer` capacity limits, so the engine now evicts buffered media data under memory pressure instead of holding onto everything, which was the main thing keeping MSE experimental.
+With [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API)' SourceBuffer capacity limits implemented to prevent us holding onto media data indefinitely, the API is now on by default after a month behind an experimental flag ([#9673](https://github.com/LadybirdBrowser/ladybird/pull/9673)). MSE is how streaming sites feed media to the player in chunks, so turning it on lets a lot more video sites work, and unlocks adaptive streaming on YouTube: higher resolutions, higher frame rates, and quality switching.
 
 <img
   src="/assets/img/newsletter-may-2026-youtube-4k.png"
@@ -55,7 +55,11 @@ Here's IMDb being scrolled while it loads, without and with async scrolling:
   alt="A YouTube video playing in Ladybird with the quality menu open and 2160p (4K) selected"
 />
 
-Under the hood, LibMedia's pipeline was rewritten so seeks move through the pipeline instead of being special-cased at each stage ([#9288](https://github.com/LadybirdBrowser/ladybird/pull/9288)). Demuxers now report accurate buffered ranges for MP3, FLAC, Ogg, WAV, Matroska, and the FFmpeg-backed formats ([#9705](https://github.com/LadybirdBrowser/ladybird/pull/9705)), CBR seeking works, playback starts after loading less data, and [`HTMLMediaElement.getStartDate()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/getStartDate) is implemented ([#9218](https://github.com/LadybirdBrowser/ladybird/pull/9218)).
+Under the hood, LibMedia's pipeline was rewritten to allow media data processing to be inserted easily, and seeks are now handled as part of that flow instead of being tracked separately ([#9288](https://github.com/LadybirdBrowser/ladybird/pull/9288)).
+
+The built-in media controls now display buffered ranges, and they are now accurately reported for MP3, FLAC, Ogg, WAV, Matroska, and MP4 ([#9705](https://github.com/LadybirdBrowser/ladybird/pull/9705)).
+
+[`HTMLMediaElement.getStartDate()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/getStartDate) is implemented ([#9218](https://github.com/LadybirdBrowser/ladybird/pull/9218)).
 
 ### On-disk JavaScript bytecode cache
 

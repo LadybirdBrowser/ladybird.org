@@ -7,23 +7,46 @@
    =========================================== */
 
 :root {
-  --color-accent: #8a64e5;
-  --color-accent-hover: #9d7cf2;
-  --color-slate: #6d98cc;
-  --color-indigo: #2a1373;
-  --text-primary: #e6e6e6;
-  --text-secondary: #999;
-  --text-muted: #666;
-  --bg-page: #000;
-  --bg-subtle: #111;
-  --border: #222;
-  --border-light: #1a1a1a;
-  --font-sans: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: "Berkeley Mono", ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+  /* Typography */
+  --font-sans:
+    "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono:
+    "Berkeley Mono", ui-monospace, "SF Mono", "Cascadia Mono", monospace;
   --weight-light: 300;
   --weight-normal: 420;
   --weight-medium: 460;
   --weight-bold: 520;
+
+  /* Light mode colors */
+  --color-accent: #5c39b6;
+  --color-accent-hover: #a284ec;
+  --color-slate: #355a86;
+  --color-indigo: #a59dbf;
+  --text-primary: #111;
+  --text-secondary: #222;
+  --text-muted: #888;
+  --bg-page: #fafafa;
+  --bg-subtle: #ecebef;
+  --border: #ddd;
+  --border-light: #e0e0e0;
+}
+
+/* Dark mode colors */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #8a64e5;
+    --color-accent-hover: #9d7cf2;
+    --color-slate: #6d98cc;
+    --color-indigo: #2a1373;
+    --text-primary: #e6e6e6;
+    --text-secondary: #999;
+    --text-muted: #666;
+    --bg-page: #000;
+    --bg-subtle: #111;
+    --border: #222;
+    --border-light: #1a1a1a;
+  }
 }
 
 *,
@@ -48,7 +71,8 @@ body {
   background: var(--bg-page);
 }
 
-b, strong {
+b,
+strong {
   font-weight: var(--weight-bold);
 }
 
@@ -94,20 +118,40 @@ section[id] {
 
 /* ---- Typography ---- */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-primary);
   font-weight: var(--weight-light);
   line-height: 1.25;
   margin: 0;
 }
 
-h1 { font-size: 32px; }
-h2 { font-size: 24px; font-weight: var(--weight-medium); }
-h3 { font-size: 18px; font-weight: var(--weight-medium); }
-h4 { font-size: 16px; font-weight: var(--weight-medium); }
+h1 {
+  font-size: 32px;
+}
+h2 {
+  font-size: 24px;
+  font-weight: var(--weight-medium);
+}
+h3 {
+  font-size: 18px;
+  font-weight: var(--weight-medium);
+}
+h4 {
+  font-size: 16px;
+  font-weight: var(--weight-medium);
+}
 
-p { margin: 0 0 16px; }
-p:last-child { margin-bottom: 0; }
+p {
+  margin: 0 0 16px;
+}
+p:last-child {
+  margin-bottom: 0;
+}
 
 hr {
   border: none;
@@ -115,7 +159,9 @@ hr {
   margin: 48px 0;
 }
 
-ul { padding-left: 24px; }
+ul {
+  padding-left: 24px;
+}
 
 blockquote {
   border-left: 3px solid var(--color-accent);
@@ -125,7 +171,8 @@ blockquote {
   font-style: italic;
 }
 
-pre, code {
+pre,
+code {
   font-family: var(--font-mono);
 }
 
@@ -161,7 +208,8 @@ table {
   margin: 0 0 16px;
 }
 
-th, td {
+th,
+td {
   text-align: left;
   padding: 8px 24px 8px 0;
   vertical-align: top;
@@ -202,12 +250,21 @@ th {
   text-decoration: none;
   background:
     linear-gradient(var(--bg-page), var(--bg-page)) padding-box,
-    conic-gradient(from var(--gradient-angle), #8a64e5, #6d98cc, #2a1373, #8a64e5) border-box;
+    conic-gradient(
+        from var(--gradient-angle),
+        #8a64e5,
+        #6d98cc,
+        #2a1373,
+        #8a64e5
+      )
+      border-box;
   animation: spin-border 3s linear infinite;
 }
 
 @keyframes spin-border {
-  to { --gradient-angle: 360deg; }
+  to {
+    --gradient-angle: 360deg;
+  }
 }
 
 .btn--outline {
@@ -381,7 +438,9 @@ table.backer-tiers td:first-child {
   object-fit: cover;
 }
 
-.headshot p { margin: 0; }
+.headshot p {
+  margin: 0;
+}
 
 .headshots-grid {
   display: grid;
@@ -516,9 +575,15 @@ div.newsletter-image-caption a {
     padding: 36px 0;
   }
 
-  h1 { font-size: 26px; }
-  h2 { font-size: 20px; }
-  h3 { font-size: 16px; }
+  h1 {
+    font-size: 26px;
+  }
+  h2 {
+    font-size: 20px;
+  }
+  h3 {
+    font-size: 16px;
+  }
 
   body {
     font-size: 15px;
@@ -556,7 +621,7 @@ div.newsletter-image-caption a {
     font-size: 18px;
   }
 
-/* News grid */
+  /* News grid */
   .news__grid {
     gap: 24px;
   }

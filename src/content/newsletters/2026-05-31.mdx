@@ -55,7 +55,7 @@ With [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/
   alt="A YouTube video playing in Ladybird with the quality menu open and 2160p (4K) selected"
 />
 
-Under the hood, LibMedia's pipeline was rewritten to allow media data processing to be inserted easily, and seeks are now handled as part of that flow instead of being tracked separately ([#9288](https://github.com/LadybirdBrowser/ladybird/pull/9288)).
+Under the hood, LibMedia's pipeline was rewritten to allow media data processing to be inserted easily, and seeks are now handled as part of that flow instead of being tracked separately ([#9288](https://github.com/LadybirdBrowser/ladybird/pull/9288)). Forward video seeks are now aware of already-decoded data in the pipeline, making forward frame skipping on YouTube instant ([#9495](https://github.com/LadybirdBrowser/ladybird/pull/9495)).
 
 The built-in media controls now display buffered ranges, and they are now accurately reported for MP3, FLAC, Ogg, WAV, Matroska, and MP4 ([#9705](https://github.com/LadybirdBrowser/ladybird/pull/9705)).
 

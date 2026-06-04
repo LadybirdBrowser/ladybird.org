@@ -44,7 +44,6 @@ export const currentSponsors: SponsorTier[] = [
         href: "https://protonvpn.com/",
         logo: "/assets/img/sponsors/protonvpn.svg",
       },
-      { name: "Guillermo Rauch", href: "https://rauchg.com/" },
       {
         name: "ohne-makler.net",
         href: "https://www.ohne-makler.net/",
@@ -121,15 +120,6 @@ export const currentSponsors: SponsorTier[] = [
   {
     name: "Copper",
     sponsors: [
-      {
-        name: "Optimising.com.au",
-        href: "https://www.optimising.com.au/?utm_source=ladybird&utm_medium=website&utm_campaign=sponsor",
-      },
-      { name: "Guillaume Knispel" },
-      { name: "Broadband Map", href: "https://broadbandmap.com" },
-      { name: "Jonathan Lahijani", href: "https://jonathanlahijani.com" },
-      { name: "Puter", href: "https://puter.com" },
-      { name: "Follower24.de", href: "https://www.follower24.de" },
       { name: "Travis Heinström", href: "https://heinstrom.com" },
       { name: "Sjors Witteveen", href: "https://kabutops.com" },
       {
@@ -178,6 +168,7 @@ export const previousSponsors: SponsorTier[] = [
         href: "https://ahrefs.com/",
         logo: "/assets/img/sponsor-ahrefs.svg",
       },
+      { name: "Guillermo Rauch", href: "https://rauchg.com/" },
     ],
   },
   {
@@ -226,6 +217,15 @@ export const previousSponsors: SponsorTier[] = [
     sponsors: [
       { name: "Mark Goetz", href: "https://markandrewgoetz.com" },
       { name: "SimonBitwise", href: "https://nomis.dk" },
+      {
+        name: "Optimising.com.au",
+        href: "https://www.optimising.com.au/?utm_source=ladybird&utm_medium=website&utm_campaign=sponsor",
+      },
+      { name: "Guillaume Knispel" },
+      { name: "Broadband Map", href: "https://broadbandmap.com" },
+      { name: "Jonathan Lahijani", href: "https://jonathanlahijani.com" },
+      { name: "Puter", href: "https://puter.com" },
+      { name: "Follower24.de", href: "https://www.follower24.de" },
     ],
   },
 ];

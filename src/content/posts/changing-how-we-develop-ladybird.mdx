@@ -1,0 +1,34 @@
+---
+title: Changing How We Develop Ladybird
+author: Andreas Kling
+description: Ladybird is changing how code enters the project as we prepare to ship a browser to real users.
+image: /assets/img/logo-new.webp
+type: Announcement
+date: 2026-06-05
+---
+
+Today we're changing how code enters the Ladybird project.
+
+We will no longer accept public pull requests. From now on, code changes to the Ladybird codebase will only be introduced by project maintainers.
+
+Ladybird is moving into a new phase. As we work toward our first alpha release, the project needs a tighter development process, a clearer security model, and a smaller set of people responsible for the code that enters the browser.
+
+This is not a change we make lightly. Many valuable contributions have come from outside the maintainer group over the years, and we are grateful for them. Many of us also came up through open source by sending patches to projects we cared about.
+
+For decades, code contributions have been how open source projects learned who to trust. People would show up, do the work, take responsibility for their changes, and stick around. Over time, trust emerged from the work itself.
+
+AI tools have changed the economics of this very quickly. We use them ourselves every day, but a pull request no longer tells us as much as it used to about the person submitting it. A substantial patch used to imply substantial effort, and that effort was a reasonable proxy for good faith. That assumption no longer holds.
+
+For a browser, this matters. A browser runs untrusted input from the entire internet on the user's machine, and one well-disguised vulnerability is all an attacker needs. We have already seen patient, well-resourced campaigns in open source to earn maintainer trust and abuse it. What has changed is how much faster and cheaper it has become to produce work that looks like a serious contribution.
+
+At the same time, every change that enters Ladybird becomes our responsibility. It has to fit the architecture, survive future refactoring, interact correctly with the rest of the browser, and be understood by the people maintaining it.
+
+Whether code was typed by hand is beside the point. What matters is who is responsible for it once it enters the browser. Ladybird is becoming a browser for real users. The people introducing changes to it must be the people who decide those changes belong in the project, and who will answer for the consequences.
+
+As part of this change, we will close all currently open public pull requests. We are grateful for the work people put into them, but keeping the existing queue open would keep that contribution path open in practice. There is no perfect time to make this change, so we are making it now. Going forward, pull requests will only be available to project maintainers.
+
+There will not be a separate process for submitting patches by other means. We do not want to create a shadow contribution system through issues, comments, email, or forks. External code can of course exist under the terms of the license, but we will not treat forks or patch dumps as a review queue for upstream Ladybird.
+
+Ladybird remains open source. The source code will continue to be publicly available under an open source license. Outside involvement still matters: clear bug reports, reductions, website testing, standards discussion, design discussion, security reports, and technical feedback all help move the project forward.
+
+This is the right change for Ladybird now. We are preparing to ship a browser to real users, and our development process has to match that responsibility.

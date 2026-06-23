@@ -115,6 +115,11 @@ export const currentSponsors: SponsorTier[] = [
         logo: "/assets/img/sponsors/gravwell.png",
       },
       { name: "Anonymous Chromium Developer" },
+      {
+        name: "Kinde Australia Pty Ltd",
+        href: "https://kinde.com/?utm_source=ladybird&utm_medium=sponsor&utm_campaign=ladybirdsponsor",
+        logo: "/assets/img/sponsors/kinde.svg",
+      },
     ],
   },
   {

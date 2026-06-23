@@ -141,6 +141,7 @@ export const currentSponsors: SponsorTier[] = [
       { name: "Jakub Stęplowski", href: "https://jakubsteplow.ski" },
       { name: "wheelofnames.com", href: "https://wheelofnames.com" },
       { name: "All Things Secured", href: "https://www.allthingssecured.com" },
+      { name: "publicqi", href: "https://x.com/publicqi" },
     ],
   },
   {

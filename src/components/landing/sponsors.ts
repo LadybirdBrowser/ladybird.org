@@ -131,7 +131,6 @@ export const currentSponsors: SponsorTier[] = [
         name: "Philip Lonsing",
         href: "https://www.linkedin.com/in/philiplonsing/",
       },
-      { name: "Clément Sibille", href: "https://lisible.xyz/" },
       { name: "b1ack0wl", href: "http://www.b1ack0wl.com/" },
       { name: "Gian Giovani", href: "https://wejick.wordpress.com" },
       { name: "Timely Learning", href: "https://www.timely-learning.com" },
@@ -233,6 +232,7 @@ export const previousSponsors: SponsorTier[] = [
       { name: "Jonathan Lahijani", href: "https://jonathanlahijani.com" },
       { name: "Puter", href: "https://puter.com" },
       { name: "Follower24.de", href: "https://www.follower24.de" },
+      { name: "Clément Sibille", href: "https://lisible.xyz/" },
     ],
   },
 ];

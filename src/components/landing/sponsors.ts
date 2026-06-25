@@ -120,6 +120,11 @@ export const currentSponsors: SponsorTier[] = [
         href: "https://kinde.com/?utm_source=ladybird&utm_medium=sponsor&utm_campaign=ladybirdsponsor",
         logo: "/assets/img/sponsors/kinde.svg",
       },
+      {
+        name: "Zeroramp",
+        href: "https://zeroramp.com",
+        logo: "/assets/img/sponsors/zeroramp.svg",
+      },
     ],
   },
   {

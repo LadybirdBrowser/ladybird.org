@@ -1,15 +1,15 @@
 ---
 title: This Month in Ladybird - June 2026
-description: A download manager, browsing history, DevTools storage inspection, media playback speed, sandboxed services on Linux and macOS, GPU access isolated in the compositor, WebAssembly GC, and more.
+description: Download management, sandboxing, browsing history, DevTools storage inspection, media playback speed, GPU isolation, WebAssembly GC, and more.
 date: 2026-06-30
-draft: true
+draft: false
 ---
 
 Hello friends! In June, Ladybird gained several things it couldn't do before: you can now download files, browse and search your history, inspect cookies and storage in DevTools, and change video playback speed. Under the hood, our services started running inside real security sandboxes on Linux and macOS. Here's what we've been up to.
 
 ### Welcoming new sponsors
 
-Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following sponsors:
 
 - [Paul Copplestone](https://paul.copplest.one) with $10,000 (renewed sponsorship!)
 - [SerpApi](https://serpapi.com) with $5,000 (renewed sponsorship!)
@@ -23,7 +23,7 @@ We're incredibly grateful for their support. If you're interested in sponsoring 
 
 ### Downloads
 
-Ladybird can now download files. There's a toolbar indicator with a popover showing active downloads and progress, an `about:downloads` page, cancellation, and a confirmation prompt if you try to quit with downloads in flight ([#10335](https://github.com/LadybirdBrowser/ladybird/pull/10335)).
+Ladybird can now download files! There's a toolbar indicator with a popover showing active downloads and progress, an `about:downloads` page, cancellation, and a confirmation prompt if you try to quit with downloads in flight ([#10335](https://github.com/LadybirdBrowser/ladybird/pull/10335)).
 
 <img
   src="/assets/img/newsletter-june-2026-downloads-popover.png"
@@ -51,11 +51,11 @@ There's now an `about:history` page that lists your local browsing history with 
   ></source>
 </video>
 
-Right-clicking or long-pressing the back and forward buttons now shows a native history menu, with saved titles and favicons where available ([#10128](https://github.com/LadybirdBrowser/ladybird/pull/10128)). There's also a keyboard shortcut to clear browsing data, along with deep links into the relevant settings dialogs ([#10262](https://github.com/LadybirdBrowser/ladybird/pull/10262)).
+Right-clicking or long-pressing the back and forward buttons now shows a native history menu, with saved titles and favicons ([#10128](https://github.com/LadybirdBrowser/ladybird/pull/10128)). There's also a keyboard shortcut to clear browsing data, along with deep links into the relevant settings dialogs ([#10262](https://github.com/LadybirdBrowser/ladybird/pull/10262)).
 
 ### DevTools: storage, styles, and scripts
 
-DevTools gained a Storage tab this month: you can inspect and modify cookies ([#10035](https://github.com/LadybirdBrowser/ladybird/pull/10035)), browse and edit `localStorage` and `sessionStorage` ([#10055](https://github.com/LadybirdBrowser/ladybird/pull/10055)), and inspect IndexedDB databases ([#10143](https://github.com/LadybirdBrowser/ladybird/pull/10143)). CSS rule inspection also landed, showing the individual declarations behind a computed value, with overridden ones struck through, invalid ones flagged, and working jump-to-source links including for user-agent styles ([#9869](https://github.com/LadybirdBrowser/ladybird/pull/9869)):
+Our DevTools gained a Storage tab this month: you can inspect and modify cookies ([#10035](https://github.com/LadybirdBrowser/ladybird/pull/10035)), browse and edit `localStorage` and `sessionStorage` ([#10055](https://github.com/LadybirdBrowser/ladybird/pull/10055)), and inspect IndexedDB databases ([#10143](https://github.com/LadybirdBrowser/ladybird/pull/10143)). CSS rule inspection also landed, showing the individual declarations behind a computed value, with overridden ones struck through, invalid ones flagged, and working jump-to-source links including for user-agent styles ([#9869](https://github.com/LadybirdBrowser/ladybird/pull/9869)):
 
 <img
   src="/assets/img/newsletter-june-2026-devtools-css-rules.png"
@@ -84,23 +84,23 @@ Muted media can now autoplay by default ([#10014](https://github.com/LadybirdBro
 
 ### Security and hardening
 
-A lot of June went into making Ladybird harder to attack.
+We spent a bunch of time in June making Ladybird harder to attack.
 
 - **Sandboxed services**: Helper processes now run inside real sandboxes on Linux and macOS, using seccomp/Landlock on Linux and Seatbelt profiles on macOS ([#10001](https://github.com/LadybirdBrowser/ladybird/pull/10001), [#10042](https://github.com/LadybirdBrowser/ladybird/pull/10042)). Sandboxing is now on by default ([#10132](https://github.com/LadybirdBrowser/ladybird/pull/10132)).
 - **Heap partitioning**: String data, ArrayBuffer backing stores, and JS object property storage now live in dedicated heap partitions, keeping unrelated data away from security-sensitive state ([#10041](https://github.com/LadybirdBrowser/ladybird/pull/10041), [#10025](https://github.com/LadybirdBrowser/ladybird/pull/10025), [#10033](https://github.com/LadybirdBrowser/ladybird/pull/10033)).
 - **Fuzzing fixes**: We fixed a batch of fuzzer-found crashes and undefined-behavior issues across DOM, layout, image decoding, and CSS pixel math ([#9959](https://github.com/LadybirdBrowser/ladybird/pull/9959), [#10100](https://github.com/LadybirdBrowser/ladybird/pull/10100), [#10110](https://github.com/LadybirdBrowser/ladybird/pull/10110), [#10217](https://github.com/LadybirdBrowser/ladybird/pull/10217), [#10249](https://github.com/LadybirdBrowser/ladybird/pull/10249)).
-- **Memory-safe decoding**: Text encoding/decoding moved to Firefox's Rust-based `encoding_rs`, and GIF decoding moved to Wuffs ([#10204](https://github.com/LadybirdBrowser/ladybird/pull/10204), [#10031](https://github.com/LadybirdBrowser/ladybird/pull/10031)).
+- **Memory-safe decoding**: Text encoding/decoding moved to Firefox's Rust-based [encoding\_rs](https://docs.rs/encoding_rs/latest/encoding_rs/), and GIF decoding moved to [Wuffs](https://github.com/google/wuffs) ([#10204](https://github.com/LadybirdBrowser/ladybird/pull/10204), [#10031](https://github.com/LadybirdBrowser/ladybird/pull/10031)).
 - **Canvas isolation**: Cross-origin image data is now tracked for canvas tainting, and `toDataURL()`/`toBlob()` are rejected on tainted canvases ([#10094](https://github.com/LadybirdBrowser/ladybird/pull/10094), [#10013](https://github.com/LadybirdBrowser/ladybird/pull/10013)).
 
 ### GPU access moves into the sandboxed compositor
 
 Last month we moved the compositor, the part of the browser that assembles and paints the final pixels you see on screen, into its own process. This month, canvas and WebGL rendering moved across the same boundary. 2D canvas command lists are now replayed and rasterized in the compositor ([#10086](https://github.com/LadybirdBrowser/ladybird/pull/10086), [#10133](https://github.com/LadybirdBrowser/ladybird/pull/10133)), nested contexts rasterize during replay ([#10194](https://github.com/LadybirdBrowser/ladybird/pull/10194)), and WebGL commands are streamed over shared memory ([#10269](https://github.com/LadybirdBrowser/ladybird/pull/10269)).
 
-The payoff is security as much as architecture: WebContent no longer needs direct GPU access ([#10154](https://github.com/LadybirdBrowser/ladybird/pull/10154), [#10156](https://github.com/LadybirdBrowser/ladybird/pull/10156)). Pinch-zoom is also handled asynchronously on the compositor, so zooming stays responsive even when the main thread is busy ([#10120](https://github.com/LadybirdBrowser/ladybird/pull/10120)).
+The payoff is security as much as architecture: WebContent processes no longer need direct GPU access ([#10154](https://github.com/LadybirdBrowser/ladybird/pull/10154), [#10156](https://github.com/LadybirdBrowser/ladybird/pull/10156)). Pinch-zoom is also handled asynchronously on the compositor, so zooming stays responsive even when the main thread is busy ([#10120](https://github.com/LadybirdBrowser/ladybird/pull/10120)).
 
 ### Down to a single JavaScript interpreter
 
-LibJS now runs its optimized assembly interpreter on every platform, after enabling it on Windows ([#10093](https://github.com/LadybirdBrowser/ladybird/pull/10093)). That let us delete the older generic bytecode interpreter entirely and consolidate on a single one ([#10099](https://github.com/LadybirdBrowser/ladybird/pull/10099)), leaving one code path to optimize and maintain from here on. JavaScript strings also moved to UTF-16 throughout, matching how the language defines strings and removing a lot of conversion work ([#10231](https://github.com/LadybirdBrowser/ladybird/pull/10231)).
+LibJS now runs its optimized assembly interpreter on every platform, after enabling it on Windows ([#10093](https://github.com/LadybirdBrowser/ladybird/pull/10093)). That let us delete the older generic bytecode interpreter entirely and consolidate on a single one ([#10099](https://github.com/LadybirdBrowser/ladybird/pull/10099)), leaving one code path to optimize and maintain from here on. JavaScript strings also moved to UTF-16 throughout, matching how the language defines strings and removing a lot of conversion churn ([#10231](https://github.com/LadybirdBrowser/ladybird/pull/10231)).
 
 ### WebAssembly GC
 
@@ -121,7 +121,7 @@ LibWasm gained support for [WebAssembly GC](https://github.com/WebAssembly/gc), 
 - **Autocomplete and window behavior**: A cluster of fixes around the location editor and macOS window handling, including better autocomplete dismissal and frameless-window resizing ([#10220](https://github.com/LadybirdBrowser/ladybird/pull/10220)).
 - **Vertical tabs**: The vertical tab strip can now be positioned on the right ([#10198](https://github.com/LadybirdBrowser/ladybird/pull/10198)), and shows audio and close icons on collapsed tabs ([#9829](https://github.com/LadybirdBrowser/ladybird/pull/9829)).
 
-### Sites that work better
+### Some sites that work better
 
 [**tweakers.net**](https://tweakers.net): Implementing `contrast-color()` fixes the unreadable text in the orange banner ([#9920](https://github.com/LadybirdBrowser/ladybird/pull/9920)).
 
@@ -168,4 +168,4 @@ Our [WPT](https://web-platform-tests.org) score went from 2,075,546 to 2,078,912
 
 In June we also changed how code enters Ladybird: it's now maintainers-only, and we are no longer accepting public code contributions. Ladybird remains open source, and outside involvement still matters through bug reports, reductions, website testing, standards discussion, and security reports. We laid out the full reasoning at the time in [Changing How We Develop Ladybird](/posts/changing-how-we-develop-ladybird).
 
-That's it for June. Step by step, we're getting closer to our first alpha. Thanks for reading, and we'll see you next month.
+That's it for June. Step by step, we're getting closer to our first alpha. Thanks for reading, and we'll see you next month!

@@ -1,6 +1,6 @@
 ---
 title: This Month in Ladybird - June 2026
-description: A download manager, browsing history, DevTools storage inspection, media playback speed, sandboxed services on Linux and macOS, canvas and WebGL rasterization in the compositor, WebAssembly GC, and more.
+description: A download manager, browsing history, DevTools storage inspection, media playback speed, sandboxed services on Linux and macOS, GPU access isolated in the compositor, WebAssembly GC, and more.
 date: 2026-06-30
 draft: true
 ---
@@ -53,7 +53,7 @@ There's now an `about:history` page that lists your local browsing history with 
 
 Right-clicking or long-pressing the back and forward buttons now shows a native history menu, with saved titles and favicons where available ([#10128](https://github.com/LadybirdBrowser/ladybird/pull/10128)). There's also a keyboard shortcut to clear browsing data, along with deep links into the relevant settings dialogs ([#10262](https://github.com/LadybirdBrowser/ladybird/pull/10262)).
 
-### DevTools: storage inspection and more
+### DevTools: storage, styles, and scripts
 
 DevTools gained a Storage tab this month: you can inspect and modify cookies ([#10035](https://github.com/LadybirdBrowser/ladybird/pull/10035)), browse and edit `localStorage` and `sessionStorage` ([#10055](https://github.com/LadybirdBrowser/ladybird/pull/10055)), and inspect IndexedDB databases ([#10143](https://github.com/LadybirdBrowser/ladybird/pull/10143)). CSS rule inspection also landed, showing the individual declarations behind a computed value, with overridden ones struck through, invalid ones flagged, and working jump-to-source links including for user-agent styles ([#9869](https://github.com/LadybirdBrowser/ladybird/pull/9869)):
 
@@ -63,7 +63,7 @@ DevTools gained a Storage tab this month: you can inspect and modify cookies ([#
   alt="DevTools Rules panel showing the cascade of CSS declarations for a button"
 />
 
-There's also a new script sources view with pretty-printing, folding, search, and jump-to-definition ([#10195](https://github.com/LadybirdBrowser/ladybird/pull/10195)), and DevTools can now drive page navigation ([#9801](https://github.com/LadybirdBrowser/ladybird/pull/9801)).
+There's also a new script sources view with pretty-printing, folding, search, and jump-to-definition ([#10195](https://github.com/LadybirdBrowser/ladybird/pull/10195)).
 
 ### Media: playback speed and muted autoplay
 
@@ -86,19 +86,19 @@ Muted media can now autoplay by default ([#10014](https://github.com/LadybirdBro
 
 A lot of June went into making Ladybird harder to attack.
 
-- **Sandboxed services**: Ladybird's helper processes now run inside real sandboxes, confined with seccomp syscall filtering and Landlock filesystem restrictions on Linux ([#10001](https://github.com/LadybirdBrowser/ladybird/pull/10001)) and Seatbelt sandbox profiles on macOS ([#10042](https://github.com/LadybirdBrowser/ladybird/pull/10042)). A process that only needs to decode an image or parse a page can no longer open arbitrary files, make network connections, or issue syscalls outside a tight whitelist, so a bug in one service is much harder to turn into a compromise of your machine. Sandboxing is now on by default ([#10132](https://github.com/LadybirdBrowser/ladybird/pull/10132)).
-- **Heap partitioning**: Several heap regions are isolated into dedicated partitions so unrelated data isn't laid out next to security-sensitive state: string data ([#10041](https://github.com/LadybirdBrowser/ladybird/pull/10041)), ArrayBuffer backing stores ([#10025](https://github.com/LadybirdBrowser/ladybird/pull/10025)), and JS object property storage ([#10033](https://github.com/LadybirdBrowser/ladybird/pull/10033)).
-- **Fuzzing fixes**: A large batch of fuzzer-found crashes was fixed, including DOM and layout edge cases from [domato](https://github.com/googleprojectzero/domato) ([#9959](https://github.com/LadybirdBrowser/ladybird/pull/9959)), along with integer-overflow and undefined-behavior issues in the image decoders ([#10100](https://github.com/LadybirdBrowser/ladybird/pull/10100), [#10110](https://github.com/LadybirdBrowser/ladybird/pull/10110)) and CSS pixel math ([#10217](https://github.com/LadybirdBrowser/ladybird/pull/10217), [#10249](https://github.com/LadybirdBrowser/ladybird/pull/10249)).
-- **Memory-safe decoding**: Text encoding and decoding moved to [`encoding_rs`](https://github.com/hsivonen/encoding_rs), the Rust character-encoding library Firefox uses ([#10204](https://github.com/LadybirdBrowser/ladybird/pull/10204)), and GIF decoding moved to [Wuffs](https://github.com/google/wuffs) ([#10031](https://github.com/LadybirdBrowser/ladybird/pull/10031)), continuing the push to handle untrusted data from the web in memory-safe code.
-- **Canvas isolation**: Cross-origin image data is now tracked for canvas tainting, and `toDataURL()`/`toBlob()` are rejected on tainted canvases, so cross-origin pixels can't be read out ([#10094](https://github.com/LadybirdBrowser/ladybird/pull/10094), [#10013](https://github.com/LadybirdBrowser/ladybird/pull/10013)).
+- **Sandboxed services**: Helper processes now run inside real sandboxes on Linux and macOS, using seccomp/Landlock on Linux and Seatbelt profiles on macOS ([#10001](https://github.com/LadybirdBrowser/ladybird/pull/10001), [#10042](https://github.com/LadybirdBrowser/ladybird/pull/10042)). Sandboxing is now on by default ([#10132](https://github.com/LadybirdBrowser/ladybird/pull/10132)).
+- **Heap partitioning**: String data, ArrayBuffer backing stores, and JS object property storage now live in dedicated heap partitions, keeping unrelated data away from security-sensitive state ([#10041](https://github.com/LadybirdBrowser/ladybird/pull/10041), [#10025](https://github.com/LadybirdBrowser/ladybird/pull/10025), [#10033](https://github.com/LadybirdBrowser/ladybird/pull/10033)).
+- **Fuzzing fixes**: We fixed a batch of fuzzer-found crashes and undefined-behavior issues across DOM, layout, image decoding, and CSS pixel math ([#9959](https://github.com/LadybirdBrowser/ladybird/pull/9959), [#10100](https://github.com/LadybirdBrowser/ladybird/pull/10100), [#10110](https://github.com/LadybirdBrowser/ladybird/pull/10110), [#10217](https://github.com/LadybirdBrowser/ladybird/pull/10217), [#10249](https://github.com/LadybirdBrowser/ladybird/pull/10249)).
+- **Memory-safe decoding**: Text encoding/decoding moved to Firefox's Rust-based `encoding_rs`, and GIF decoding moved to Wuffs ([#10204](https://github.com/LadybirdBrowser/ladybird/pull/10204), [#10031](https://github.com/LadybirdBrowser/ladybird/pull/10031)).
+- **Canvas isolation**: Cross-origin image data is now tracked for canvas tainting, and `toDataURL()`/`toBlob()` are rejected on tainted canvases ([#10094](https://github.com/LadybirdBrowser/ladybird/pull/10094), [#10013](https://github.com/LadybirdBrowser/ladybird/pull/10013)).
 
-### Canvas and WebGL rasterization in the compositor
+### GPU access moves into the sandboxed compositor
 
-Last month we moved the compositor into its own process and put scrolling on it. This month, canvas and WebGL rendering moved across the same boundary. 2D canvas command lists are now replayed and rasterized in the compositor ([#10086](https://github.com/LadybirdBrowser/ladybird/pull/10086), [#10133](https://github.com/LadybirdBrowser/ladybird/pull/10133)), nested contexts rasterize during replay ([#10194](https://github.com/LadybirdBrowser/ladybird/pull/10194)), and WebGL commands are streamed to the compositor over shared memory ([#10269](https://github.com/LadybirdBrowser/ladybird/pull/10269)).
+Last month we moved the compositor, the part of the browser that assembles and paints the final pixels you see on screen, into its own process. This month, canvas and WebGL rendering moved across the same boundary. 2D canvas command lists are now replayed and rasterized in the compositor ([#10086](https://github.com/LadybirdBrowser/ladybird/pull/10086), [#10133](https://github.com/LadybirdBrowser/ladybird/pull/10133)), nested contexts rasterize during replay ([#10194](https://github.com/LadybirdBrowser/ladybird/pull/10194)), and WebGL commands are streamed over shared memory ([#10269](https://github.com/LadybirdBrowser/ladybird/pull/10269)).
 
-A nice consequence: the WebContent process no longer needs direct GPU access at all. GPU access moved to the compositor ([#10154](https://github.com/LadybirdBrowser/ladybird/pull/10154)), and WebContent now runs with GPU operations denied entirely ([#10156](https://github.com/LadybirdBrowser/ladybird/pull/10156)), which, together with the sandboxing above, further limits what a compromised renderer can reach. Pinch-zoom is now handled asynchronously on the compositor too, so zooming stays responsive even when the main thread is busy ([#10120](https://github.com/LadybirdBrowser/ladybird/pull/10120)).
+The payoff is security as much as architecture: WebContent no longer needs direct GPU access ([#10154](https://github.com/LadybirdBrowser/ladybird/pull/10154), [#10156](https://github.com/LadybirdBrowser/ladybird/pull/10156)). Pinch-zoom is also handled asynchronously on the compositor, so zooming stays responsive even when the main thread is busy ([#10120](https://github.com/LadybirdBrowser/ladybird/pull/10120)).
 
-### JavaScript engine
+### Down to a single JavaScript interpreter
 
 LibJS now runs its optimized assembly interpreter on every platform, after enabling it on Windows ([#10093](https://github.com/LadybirdBrowser/ladybird/pull/10093)). That let us delete the older generic bytecode interpreter entirely and consolidate on a single one ([#10099](https://github.com/LadybirdBrowser/ladybird/pull/10099)), leaving one code path to optimize and maintain from here on. JavaScript strings also moved to UTF-16 throughout, matching how the language defines strings and removing a lot of conversion work ([#10231](https://github.com/LadybirdBrowser/ladybird/pull/10231)).
 
@@ -157,7 +157,7 @@ A few more:
 
 ### Web Platform Tests (WPT)
 
-Our [WPT](https://web-platform-tests.org) score went from 2,075,546 to 2,078,792 this month, a gain of 3,246 subtests.
+Our [WPT](https://web-platform-tests.org) score went from 2,075,546 to 2,078,912 this month, a gain of 3,366 subtests.
 
 ### Other notable changes
 

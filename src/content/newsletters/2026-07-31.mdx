@@ -1,0 +1,277 @@
+---
+title: This Month in Ladybird - July 2026
+description: Private browsing, browser profiles, undo/redo, geolocation, WebAudio, a faster compositor, and moving style and layout to Rust.
+date: 2026-07-31
+draft: true
+---
+
+Hello friends! In July Ladybird gained private browsing, browser profiles, undo/redo, geolocation, and working WebAudio. Under the hood, we moved our style system and layout engine over to Rust.
+
+### Sponsors
+
+Ladybird is entirely funded by companies and individuals who believe in the open web. You can see everyone currently supporting the project on our [sponsors page](/#sponsors), and we're grateful to all of them. If you're interested in sponsoring, please [contact us](mailto:contact@ladybird.org).
+
+### Private browsing
+
+Ladybird now has private browsing windows ([#10469](https://github.com/LadybirdBrowser/ladybird/pull/10469), [#10564](https://github.com/LadybirdBrowser/ladybird/pull/10564)). Cookies, storage, history, caches, downloads and address bar suggestions are all routed by privacy, and a page process is only ever wholly private or wholly normal.
+
+<img
+  src="/assets/img/newsletter-july-2026-private-browsing.png"
+  style="max-width: 100%;"
+  alt="A Ladybird private browsing window, marked with a Private badge in the toolbar"
+/>
+
+### Browser profiles
+
+Everything Ladybird stores now lives inside a profile ([#10663](https://github.com/LadybirdBrowser/ladybird/pull/10663)). A profile owns its own settings, bookmarks, history, cookies and site storage, HTTP cache, and even the shader caches, so two profiles share nothing except downloaded files.
+
+There's a `default` profile that we use unless you specify otherwise:
+
+```
+ladybird                          # uses the `default` profile
+ladybird --profile work           # a named profile, kept between runs
+ladybird --temporary-profile      # a fresh one, deleted on exit
+```
+
+Profiles can run side by side, and the sandbox rules for helper processes are generated per profile so each one can only reach its own files. Launching a profile that's already running hands the URL to the existing window instead of starting a second copy. On macOS they get distinct Dock badges so you can tell them apart ([#10665](https://github.com/LadybirdBrowser/ladybird/pull/10665)).
+
+### Undo, redo, and rich text
+
+Undo/redo now works for editing in `contenteditable` and text controls, wired up to the Edit menu with the usual shortcuts ([#10758](https://github.com/LadybirdBrowser/ladybird/pull/10758)). Copy and paste preserves styled text, images, lists and paragraphs ([#10770](https://github.com/LadybirdBrowser/ladybird/pull/10770)), and the clipboard shortcuts now fire real `copy`, `cut` and `paste` events, which is how editor frameworks implement clipboard support ([#10632](https://github.com/LadybirdBrowser/ladybird/pull/10632)). Cursor movement also follows visual lines, so the arrow keys behave in wrapped text ([#10517](https://github.com/LadybirdBrowser/ladybird/pull/10517)).
+
+Editing is one of the least specified corners of the web platform. Nothing written down tells you how many keystrokes should collapse into a single undo step, so the only way to be interoperable is to match what shipping engines already do. We built our expectations by running a giant editing test through other browsers and recording the DOM and cursor positions they ended up with. Fuzzing editing sequences against it turned up several divergences plus a crash of our own.
+
+### Geolocation
+
+Ladybird can answer geolocation requests, using CoreLocation on macOS and Qt Positioning on Linux ([#9737](https://github.com/LadybirdBrowser/ladybird/pull/9737)). It denies location by default until we have a real permissions system, so for now it's opt-in from settings.
+
+### WebAudio
+
+WebAudio gained offline and real-time rendering ([#10823](https://github.com/LadybirdBrowser/ladybird/pull/10823), [#10780](https://github.com/LadybirdBrowser/ladybird/pull/10780)), which is enough to make audio work on [Slow Roads](https://staged.slowroads.io/), Faster Than Light, and a WebAssembly build of Doom 3.
+
+### WebAssembly
+
+WebAssembly got a lot faster this month. Calls went first: the common cases now happen directly instead of going out to a helper, which is worth 20x to 50x on call microbenchmarks ([#10719](https://github.com/LadybirdBrowser/ladybird/pull/10719)). More operations moved inline for the same reason ([#10783](https://github.com/LadybirdBrowser/ladybird/pull/10783)).
+
+Memory accesses then got their bounds checks removed. The cage that `ArrayBuffer` and Wasm memory live in was grown to 4 TiB, which is large enough that a 32-bit Wasm access has nowhere to land outside it, so the checks weren't buying anything and the speed came back ([#10756](https://github.com/LadybirdBrowser/ladybird/pull/10756)). Between them, CoreMark went from around 11,000 to around 17,500.
+
+Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) running in Ladybird. The engine, the music, and the sparks when I scrape along a wall are all WebAudio.
+
+<video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
+  <source
+    src="/assets/img/newsletter-july-2026-shopify-drive.mp4"
+    type="video/mp4"
+  ></source>
+</video>
+
+### Browser UI
+
+- **Omnibox**: when history suggestions changed while you were typing, Enter would sometimes submit the prefix you had typed instead of the completion shown in the bar. Location bar editing is now a single state machine, so Enter always acts on the text being displayed ([#10409](https://github.com/LadybirdBrowser/ladybird/pull/10409), [#10633](https://github.com/LadybirdBrowser/ladybird/pull/10633)). It also learns which result you pick for a given input ([#10742](https://github.com/LadybirdBrowser/ladybird/pull/10742)), and there's a "Paste and Go" menu item ([#10853](https://github.com/LadybirdBrowser/ladybird/pull/10853)).
+- **<kbd>Esc</kbd> stops loading** ([#10615](https://github.com/LadybirdBrowser/ladybird/pull/10615)).
+- **Right-clicking URL-like text** gives you the link menu, selecting the URL for you the way Safari does ([#10523](https://github.com/LadybirdBrowser/ladybird/pull/10523)).
+- **Downloads**: `download` links now download instead of navigating, using the filename they ask for ([#10777](https://github.com/LadybirdBrowser/ladybird/pull/10777)), clearer progress counters ([#10820](https://github.com/LadybirdBrowser/ladybird/pull/10820)), and a downloads popover on macOS ([#10454](https://github.com/LadybirdBrowser/ladybird/pull/10454)).
+- **New tabs** open next to the tab that spawned them ([#10528](https://github.com/LadybirdBrowser/ladybird/pull/10528)).
+- **The screen stays awake** while a video plays, on macOS for now ([#10066](https://github.com/LadybirdBrowser/ladybird/pull/10066)).
+- **macOS dictionary lookup**, from the context menu or Force Touch ([#10541](https://github.com/LadybirdBrowser/ladybird/pull/10541)).
+
+<img
+  src="/assets/img/newsletter-july-2026-dictionary.png"
+  style="max-width: 100%;"
+  alt="The macOS dictionary popover showing a definition for a word selected in a web page"
+/>
+
+### DevTools
+
+You can now launch the Firefox DevTools client straight from Ladybird, instead of starting our server and connecting by hand ([#10707](https://github.com/LadybirdBrowser/ladybird/pull/10707)). Network request details got filled in too ([#10704](https://github.com/LadybirdBrowser/ladybird/pull/10704)).
+
+<video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
+  <source
+    src="/assets/img/newsletter-july-2026-devtools.mp4"
+    type="video/mp4"
+  ></source>
+</video>
+
+### CSS
+
+- **[Relative colors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors)** from CSS Color 5, for `rgb()`, `hsl()`, `hwb()`, `lab()`, `oklab()`, `lch()`, `oklch()` and `color()` ([#10389](https://github.com/LadybirdBrowser/ladybird/pull/10389)). This is what Discourse-based forums were checking for when they reported Ladybird as unsupported ([#10280](https://github.com/LadybirdBrowser/ladybird/issues/10280)).
+- **Custom functions**: [`@function`](https://developer.mozilla.org/en-US/docs/Web/CSS/@function) evaluation ([#10512](https://github.com/LadybirdBrowser/ladybird/pull/10512), [#10801](https://github.com/LadybirdBrowser/ladybird/pull/10801)).
+- **Style queries**: `if(style())` ([#10383](https://github.com/LadybirdBrowser/ladybird/pull/10383)), `<style-range>` conditions ([#10405](https://github.com/LadybirdBrowser/ladybird/pull/10405)) and `@container style()` ([#10701](https://github.com/LadybirdBrowser/ladybird/pull/10701)).
+- **Dashed and dotted rounded borders** are drawn around the curve instead of giving up at the corners ([#10898](https://github.com/LadybirdBrowser/ladybird/pull/10898)).
+
+| Before                                                                                                  | After                                                                                                 |
+| ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-july-2026-borders-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-borders-after.png" style="max-width: 100%;" alt="After" /> |
+
+### Text rendering
+
+Text on Linux had uneven letter spacing because we ignored fontconfig's hinting settings. We now follow them ([#10579](https://github.com/LadybirdBrowser/ladybird/pull/10579), [#10344](https://github.com/LadybirdBrowser/ladybird/issues/10344)).
+
+| Before                                                                         | After                                                                        |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-july-2026-hinting-before.png" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-hinting-after.png" alt="After" /> |
+
+The `system-ui` font family also resolved to generic sans-serif outside macOS, rather than the font your desktop actually uses for its own interface. We now ask the toolkit ([#10604](https://github.com/LadybirdBrowser/ladybird/pull/10604)).
+
+### Sites that work better
+
+[**streets.gl**](https://streets.gl) renders a 3D city from OpenStreetMap data, and it had been a white page for us since July 2024 ([#697](https://github.com/LadybirdBrowser/ladybird/issues/697)). Fixing it took 3D texture uploads from images, a couple of WebGL extension queries that were answering with the wrong shape of value, and mostly not falling over when a page hands us more textures at once than we have file descriptors to ship them with ([#10411](https://github.com/LadybirdBrowser/ladybird/pull/10411)).
+
+| Before                                                                                                    | After                                                                                                   |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-july-2026-streetsgl-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-streetsgl-after.png" style="max-width: 100%;" alt="After" /> |
+
+**GitHub's code review page**: several table layout fixes cleaned up the diff view ([#10561](https://github.com/LadybirdBrowser/ladybird/pull/10561), [#6598](https://github.com/LadybirdBrowser/ladybird/issues/6598)).
+
+| Before                                                                                                        | After                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-july-2026-github-review-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-github-review-after.png" style="max-width: 100%;" alt="After" /> |
+
+**Fragonard**: 2 layout fixes for the search page ([#10673](https://github.com/LadybirdBrowser/ladybird/pull/10673)).
+
+| Before                                                                                                    | After                                                                                                   |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-july-2026-fragonard-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-fragonard-after.png" style="max-width: 100%;" alt="After" /> |
+
+A few more:
+
+- **X.com**: a cluster of `contenteditable` fixes for problems the composer exposed ([#10513](https://github.com/LadybirdBrowser/ladybird/pull/10513)).
+- **chatgpt.com**: a lot less redundant style work, which makes streaming responses smoother ([#10596](https://github.com/LadybirdBrowser/ladybird/pull/10596)).
+- **kronansapotek.se**: three engine bugs around CSS animations and the top layer, found while investigating this site ([#10595](https://github.com/LadybirdBrowser/ladybird/pull/10595)).
+- **rituals.com**: a crash and a lot of load-time jank, both triggered by the site throwing away its server-rendered DOM ([#10723](https://github.com/LadybirdBrowser/ladybird/pull/10723)).
+
+### A faster compositor
+
+- Choosing which video frame to show moved into the compositor, and media timing now goes through shared memory so any process can read the clock without waiting on another ([#10509](https://github.com/LadybirdBrowser/ladybird/pull/10509)). That buys playback a handful of frames of slack when the page gets busy. It's not the whole fix: video still depends on the main thread's event loop, so sustained jank will still stall it.
+- We now repaint only the parts of the screen that changed, instead of the whole viewport ([#10617](https://github.com/LadybirdBrowser/ladybird/pull/10617)).
+- WebGL commands go through shared memory instead of being copied on every flush. On texture-heavy pages that used to eat up to 40% of the page process's main thread. It's now around 6% ([#10720](https://github.com/LadybirdBrowser/ladybird/pull/10720)).
+- Smooth scrolling runs on the compositor, so scrolling stays smooth while the page is busy ([#10794](https://github.com/LadybirdBrowser/ladybird/pull/10794)).
+
+### A typed language for our JavaScript interpreter
+
+The hot loop of our JavaScript engine is an assembly interpreter, with one handler per bytecode instruction, 183 of them before this work. Here's `BitwiseXor` in the assembly dialect we used before, with the macro it shares with the other bitwise operators expanded. Even then, most of what's left is shorthand: `load_binary_operands` and `coerce_to_int32s` are macros of their own, and the rest are the dialect's own operations, not machine instructions.
+
+```
+handler BitwiseXor
+    temp lhs, rhs, lhs_int, rhs_int, dst
+    load_binary_operands lhs, rhs
+    coerce_to_int32s lhs, rhs, lhs_int, rhs_int, .slow
+    xor lhs_int, rhs_int
+    box_int32 dst, lhs_int
+    store_operand m_dst, dst
+    dispatch_next
+.slow: @cold
+    call_slow_path asm_slow_path_bitwise_xor
+end
+```
+
+It works, and those names are symbolic, not real machine registers, since the old generator assigned those for us. But nothing knew that `lhs_int` holds an integer, nothing checked that a value was written before it was read, and the interesting decisions were buried inside macros like `coerce_to_int32s`. The generator also did no optimization, so every redundant load in the source became a redundant load in the interpreter.
+
+So we built a typed language to write the interpreter in, along with a compiler that turns it into x86-64 and AArch64 at build time ([#10867](https://github.com/LadybirdBrowser/ladybird/pull/10867)). It's called "flap", after the sound of a ladybird's wings. :^) The same handler, with its shared helper expanded the same way:
+
+```
+handler BitwiseXor(dst: out Operand, lhs: in Operand, rhs: in Operand) {
+    let lhs = load(lhs);
+    let rhs = load(rhs);
+
+    let slow = || @cold {
+        call_binary_slow_path(bitwise_xor_values, dst, lhs, rhs);
+    };
+
+    let non_int32 = || @cold {
+        guard let lhs_integer = numeric_value_to_i32(lhs) else slow;
+        guard let rhs_integer = numeric_value_to_i32(rhs) else slow;
+        xor(lhs_integer, rhs_integer);
+        store(dst, box_i32(lhs_integer));
+        dispatch_next;
+    };
+
+    guard let Value<i32>(lhs_integer) = lhs else non_int32;
+    guard let Value<i32>(rhs_integer) = rhs else non_int32;
+
+    xor(lhs_integer, rhs_integer);
+    store(dst, box_i32(lhs_integer));
+    dispatch_next;
+}
+```
+
+Now the types are checked, the compiler proves every value is written before it's read, and it optimizes what it emits, while we still get to say exactly what the machine code should look like.
+
+The interpreter is laid out in two halves. Everything typical goes in a hot section: Int32 arithmetic, no exceptions. Anything unusual is lifted out into a cold section far away in the binary, and the hot path jumps over there only when it has to. Those `@cold` closures above are the two ways this handler can leave the fast path, and neither costs anything on the fast path itself. `BitwiseXor`'s hot path is 19 instructions, while its cold half is another 57. Every handler is split this way, so running ordinary JavaScript only touches the hot fraction of the interpreter, and that fraction is small enough to stay in instruction cache.
+
+Switching over was performance-neutral, which is what we wanted from it. The gains came afterwards, from things the old dialect had no way to express. This one line is a complete description of a new instruction, specialized for when the right-hand side is a known 32-bit integer ([#10923](https://github.com/LadybirdBrowser/ladybird/pull/10923)):
+
+```
+specialize BitwiseXor(rhs: Int32);
+```
+
+The compiler works out the specialized handler and the code that selects it, and the `BitwiseXor` above stays the only place describing what xor means. Here's what it does to the generated code. The generic hot path again, 19 instructions:
+
+```
+    mov ecx, DWORD PTR [r14 + r13 + 8]   # read lhs slot number from the bytecode
+    mov eax, DWORD PTR [r14 + r13 + 12]  # read rhs slot number from the bytecode
+    mov rsi, QWORD PTR [rbx + rcx * 8]   # load the lhs value
+    mov rdx, QWORD PTR [rbx + rax * 8]   # load the rhs value
+    mov rax, rsi                         # \
+    shr rax, 48                          #  | is lhs an Int32?
+    cmp ax, 32762                        # /
+    jne .Lasm_BitwiseXor.ssa_block_2     # no: off to the cold section
+    mov r11, rdx                         # \
+    shr r11, 48                          #  | is rhs an Int32?
+    cmp r11w, 32762                      # /
+    jne .Lasm_BitwiseXor.ssa_block_2     # no: off to the cold section
+    xor esi, edx                         # xor them
+    or rsi, r15                          # tag the result as an Int32
+    mov r11d, DWORD PTR [r14 + r13 + 4]  # read dst slot number from the bytecode
+    mov QWORD PTR [rbx + r11 * 8], rsi   # store the result
+    add r13d, 16                         # advance past this instruction
+    movzx eax, BYTE PTR [r14 + r13]      # read the next opcode
+    jmp [r12 + rax * 8]                  # jump to its handler
+```
+
+And the specialized one, 14:
+
+```
+    mov eax, DWORD PTR [r14 + r13 + 8]        # read lhs slot number from the bytecode
+    mov rdx, QWORD PTR [rbx + rax * 8]        # load the lhs value
+    mov eax, DWORD PTR [r14 + r13 + 12]       # read the constant from the bytecode
+    mov r11, rdx                              # \
+    shr r11, 48                               #  | is lhs an Int32?
+    cmp r11w, 32762                           # /
+    jne .Lasm_BitwiseXorRhsInt32.ssa_block_2  # no: off to the cold section
+    xor edx, eax                              # xor them
+    or rdx, r15                               # tag the result as an Int32
+    mov r11d, DWORD PTR [r14 + r13 + 4]       # read dst slot number from the bytecode
+    mov QWORD PTR [rbx + r11 * 8], rdx        # store the result
+    add r13d, 16                              # advance past this instruction
+    movzx eax, BYTE PTR [r14 + r13]           # read the next opcode
+    jmp [r12 + rax * 8]                       # jump to its handler
+```
+
+The right-hand side never comes out of the register file, and the type check for it is gone completely, because the number is sitting right there in the bytecode. We use the same mechanism for the Int32 arithmetic, the shifts and the comparisons, and to fuse common instruction pairs into one. So far it's worth about 5-10% on the more compute-heavy JS benchmarks.
+
+### Moving style and layout to Rust
+
+This month we moved much of LibWeb's style and layout pipeline to Rust. This is progress on our goals for using safe languages in the codebase, and it also unlocks some very tasty opportunities for parallelism. Style and layout both do a lot of repeated work over large trees, and it's work that could be spread across cores, but that's the kind of change that's a lot more comfortable to wrangle when the language can stop you from two threads stepping on each other. Style is now stored as immutable, shared values that Rust owns, which is the substrate parallel restyling needs, and layout can read it directly rather than pulling it back out of C++.
+
+A big chunk of it landed in July. Selector matching went first ([#10731](https://github.com/LadybirdBrowser/ladybird/pull/10731), [#10795](https://github.com/LadybirdBrowser/ladybird/pull/10795)), followed by computed style, the cascade, animations and `calc()` ([#10772](https://github.com/LadybirdBrowser/ladybird/pull/10772), [#10861](https://github.com/LadybirdBrowser/ladybird/pull/10861), [#10787](https://github.com/LadybirdBrowser/ladybird/pull/10787)), then layout tree construction ([#10838](https://github.com/LadybirdBrowser/ladybird/pull/10838)) and every formatting context we have, block through SVG ([#10901](https://github.com/LadybirdBrowser/ladybird/pull/10901)).
+
+This isn't finished yet. Parts of style and layout still call back into C++, and CSS parsing, the DOM and painting haven't moved at all. But the bulk of the move is behind us.
+
+### Caging ArrayBuffers and Wasm memory
+
+Almost every exploit anyone has demonstrated against Ladybird to date has used `ArrayBuffer`. Once you got control of its data pointer, you could use it to read/write all memory in the process. It was an amazingly convenient exploit primitive!
+
+This month we've made it a lot less convenient: `ArrayBuffer` contents and WebAssembly memories now live inside one reserved 4 TiB region of address space, and every access is forced to land inside it ([#10391](https://github.com/LadybirdBrowser/ladybird/pull/10391)). An out-of-bounds access is still a bug, and it can still reach other buffers inside the cage, but it can no longer reach the objects, stacks and code outside it.
+
+### Web Platform Tests (WPT)
+
+Our [WPT](https://web-platform-tests.org) score went from 2,078,912 to 2,079,020 this month, a gain of 108 subtests.
+
+### Other notable changes
+
+- **UTF-16 in LibWeb**: DOM attributes, names and Web platform strings moved to UTF-16, following last month's move in LibJS ([#10535](https://github.com/LadybirdBrowser/ladybird/pull/10535), [#10581](https://github.com/LadybirdBrowser/ladybird/pull/10581), [#10656](https://github.com/LadybirdBrowser/ladybird/pull/10656)).
+- **Windows**: we stopped pretending Windows is POSIX ([#10489](https://github.com/LadybirdBrowser/ladybird/pull/10489)), and rendered frames now reach the GPU without a copy, matching macOS and Linux ([#10834](https://github.com/LadybirdBrowser/ladybird/pull/10834)).
+- **Brotli** is supported for `CompressionStream` and `DecompressionStream` ([#10355](https://github.com/LadybirdBrowser/ladybird/pull/10355)).
+- **The Gtk port is gone**. We're focusing our efforts on making the Qt port look solid everywhere instead ([#10536](https://github.com/LadybirdBrowser/ladybird/pull/10536)).
+
+That's it for July. Step by step, we're getting closer to our first alpha. Thanks for reading, and we'll see you next month!

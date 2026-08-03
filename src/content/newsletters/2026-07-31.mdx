@@ -23,7 +23,7 @@ Ladybird now has private browsing windows ([#10469](https://github.com/LadybirdB
 
 ### Browser profiles
 
-Everything Ladybird stores now lives inside a profile ([#10663](https://github.com/LadybirdBrowser/ladybird/pull/10663)). A profile owns its own settings, bookmarks, history, cookies and site storage, HTTP cache, and even the shader caches, so two profiles share nothing except downloaded files.
+Everything Ladybird stores now lives inside a profile ([#10663](https://github.com/LadybirdBrowser/ladybird/pull/10663)). A profile owns its own settings, bookmarks, history, cookies and site storage, HTTP caches, etc.
 
 There's a `default` profile that we use unless you specify otherwise:
 
@@ -53,9 +53,7 @@ WebAudio gained offline and real-time rendering ([#10823](https://github.com/Lad
 
 WebAssembly got substantially faster this month. The common cases for calls now happen directly instead of going out to a helper, which is worth 20x to 50x on call microbenchmarks ([#10719](https://github.com/LadybirdBrowser/ladybird/pull/10719)). More operations moved inline for the same reason ([#10783](https://github.com/LadybirdBrowser/ladybird/pull/10783)).
 
-Memory accesses then got their bounds checks removed. The cage that `ArrayBuffer` and Wasm memory live in was grown to 4 TiB, which is large enough that a 32-bit Wasm access has nowhere to land outside it, The checks weren't buying anything, so they came out ([#10756](https://github.com/LadybirdBrowser/ladybird/pull/10756)). Between them, CoreMark went from roughly 11,000 to 17,500.
-
-Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) running in Ladybird. The engine, the music, and the sparks when I scrape along a wall are all WebAudio.
+Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) running in Ladybird. The engine, the music, and the sparks when I scrape along a wall are all WebAudio. :^)
 
 <video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
   <source
@@ -66,10 +64,10 @@ Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) 
 
 ### Browser UI
 
-- **Omnibox**: when history suggestions changed while you were typing, Enter would sometimes submit the prefix you had typed instead of the completion shown in the bar. Location bar editing is now a single state machine, so Enter always acts on the text being displayed ([#10409](https://github.com/LadybirdBrowser/ladybird/pull/10409), [#10633](https://github.com/LadybirdBrowser/ladybird/pull/10633)). It also learns which result you pick for a given input ([#10742](https://github.com/LadybirdBrowser/ladybird/pull/10742)), and there's a "Paste and Go" menu item ([#10853](https://github.com/LadybirdBrowser/ladybird/pull/10853)).
-- **<kbd>Esc</kbd> stops loading** ([#10615](https://github.com/LadybirdBrowser/ladybird/pull/10615)).
+- **Omnibox**: when history suggestions changed while you were typing, pressing <kbd>Enter</kbd> would sometimes submit the prefix you had typed instead of the completion shown in the bar. Location bar editing is now a single state machine, so pressing <kbd>Enter</kbd> always acts on the text being displayed ([#10409](https://github.com/LadybirdBrowser/ladybird/pull/10409), [#10633](https://github.com/LadybirdBrowser/ladybird/pull/10633)). It also learns which result you pick for a given input ([#10742](https://github.com/LadybirdBrowser/ladybird/pull/10742)), and there's a "Paste and Go" menu item ([#10853](https://github.com/LadybirdBrowser/ladybird/pull/10853)).
+- You can now **press <kbd>Esc</kbd> to stop an ongoing page load** ([#10615](https://github.com/LadybirdBrowser/ladybird/pull/10615)).
 - **Right-clicking URL-like text** gives you the link menu, selecting the URL for you the way Safari does ([#10523](https://github.com/LadybirdBrowser/ladybird/pull/10523)).
-- **Downloads**: `download` links now download instead of navigating, using the filename they ask for ([#10777](https://github.com/LadybirdBrowser/ladybird/pull/10777)), clearer progress counters ([#10820](https://github.com/LadybirdBrowser/ladybird/pull/10820)), and a downloads popover on macOS ([#10454](https://github.com/LadybirdBrowser/ladybird/pull/10454)).
+- **Downloads**: Links with the `download` attribute now download instead of navigating, using the filename they ask for ([#10777](https://github.com/LadybirdBrowser/ladybird/pull/10777)), clearer progress counters ([#10820](https://github.com/LadybirdBrowser/ladybird/pull/10820)), and a downloads popover on macOS ([#10454](https://github.com/LadybirdBrowser/ladybird/pull/10454)).
 - **New tabs** open next to the tab that spawned them ([#10528](https://github.com/LadybirdBrowser/ladybird/pull/10528)).
 - **The screen stays awake** while a video plays, on macOS for now ([#10066](https://github.com/LadybirdBrowser/ladybird/pull/10066)).
 - **macOS dictionary lookup**, from the context menu or Force Touch ([#10541](https://github.com/LadybirdBrowser/ladybird/pull/10541)).
@@ -82,7 +80,7 @@ Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) 
 
 ### DevTools
 
-You can now launch the Firefox DevTools client straight from Ladybird, instead of starting our server and connecting by hand ([#10707](https://github.com/LadybirdBrowser/ladybird/pull/10707)). Network request details got filled in too ([#10704](https://github.com/LadybirdBrowser/ladybird/pull/10704)).
+You can now launch the Firefox DevTools client straight from Ladybird, instead of starting our server and connecting by hand ([#10707](https://github.com/LadybirdBrowser/ladybird/pull/10707)). Network request details got filled in too ([#10704](https://github.com/LadybirdBrowser/ladybird/pull/10704)). (Note: we're using the Firefox DevTools and their protocol as a stopgap until we have our own.)
 
 <video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
   <source
@@ -135,14 +133,14 @@ A few more:
 
 ### A faster compositor
 
-- Choosing which video frame to show moved into the compositor, and media timing now goes through shared memory so any process can read the clock without waiting on another ([#10509](https://github.com/LadybirdBrowser/ladybird/pull/10509)). That buys playback a handful of frames of slack when the page gets busy. It's not the whole fix: video still depends on the main thread's event loop, so sustained jank will still stall it.
+- Choosing which video frame to show moved into the compositor, which buys playback a few frames of slack when the page is busy ([#10509](https://github.com/LadybirdBrowser/ladybird/pull/10509)). Sustained jank will still stall it.
 - We now repaint only the parts of the screen that changed, instead of the whole viewport ([#10617](https://github.com/LadybirdBrowser/ladybird/pull/10617)).
-- WebGL commands go through shared memory instead of being copied on every flush. On texture-heavy pages that used to eat up to 40% of the page process's main thread. It's now around 6% ([#10720](https://github.com/LadybirdBrowser/ladybird/pull/10720)).
+- WebGL commands are passed via shared memory instead of being copied on every flush, which on texture-heavy pages used to eat up to 40% of the page process's main thread. It's now around 6% ([#10720](https://github.com/LadybirdBrowser/ladybird/pull/10720)).
 - Smooth scrolling runs on the compositor, so scrolling stays smooth while the page is busy ([#10794](https://github.com/LadybirdBrowser/ladybird/pull/10794)).
 
 ### A typed language for our JavaScript interpreter
 
-The hot loop of our JavaScript engine is an assembly interpreter, with one handler per bytecode instruction, 183 of them before this work. Here's `BitwiseXor` in the assembly dialect we used before. Most of it is shorthand: `load_binary_operands` and `coerce_to_int32s` are macros of their own, and the rest are the dialect's own operations, not machine instructions.
+The inner loop of our JavaScript engine is a low-level interpreter, with one handler per bytecode instruction, 183 of them before this work. Here's `BitwiseXor` (the `^` operator) in the assembly dialect we used before. Most of it is shorthand: `load_binary_operands` and `coerce_to_int32s` are macros of their own, and the rest are language built-ins, not machine instructions.
 
 ```
 handler BitwiseXor
@@ -158,9 +156,9 @@ handler BitwiseXor
 end
 ```
 
-It works, and those names are symbolic, not real machine registers, since the old generator assigned those for us. But nothing knew that `lhs_int` holds an integer, nothing checked that a value was written before it was read, and the interesting decisions were buried inside macros like `coerce_to_int32s`. The generator also did no optimization, so every redundant load in the source became a redundant load in the interpreter.
+That approach works, and those names are symbolic, not real machine registers, since the old generator assigned those for us. But nothing knew that `lhs_int` holds an integer, nothing checked that a value was written before it was read, and the interesting decisions were buried inside macros like `coerce_to_int32s`. The generator also did no optimization, so every redundant load in the source became a redundant load in the interpreter.
 
-So we built a typed language to write the interpreter in, along with a compiler that turns it into x86-64 and AArch64 at build time ([#10867](https://github.com/LadybirdBrowser/ladybird/pull/10867)). It's called "flap", after the sound of a ladybird's wings. :^) The same handler:
+So we built a typed language to write the interpreter in, along with a compiler that turns it into x86-64 and AArch64 at build time ([#10867](https://github.com/LadybirdBrowser/ladybird/pull/10867)). It's called "flap", after the sound of a ladybird's wings. :^) The same handler now:
 
 ```
 handler BitwiseXor(dst: out Operand, lhs: in Operand, rhs: in Operand) {
@@ -188,11 +186,11 @@ handler BitwiseXor(dst: out Operand, lhs: in Operand, rhs: in Operand) {
 }
 ```
 
-Now the types are checked, the compiler proves every value is written before it's read, and it optimizes what it emits, while we still get to say exactly what the machine code should look like.
+Now the types are checked, the compiler proves every value is written before it's read, and it optimizes what it emits, while we still get to say exactly what the machine code should look like. (Making sure the right values are in CPU registers at the right time is absolutely essential here!)
 
-The interpreter is laid out in two halves. Everything typical goes in a hot section: Int32 arithmetic, no exceptions. Anything unusual is lifted out into a cold section far away in the binary, and the hot path jumps over there only when it has to. Those `@cold` closures above are the two ways this handler can leave the fast path, and neither costs anything on the fast path itself. `BitwiseXor`'s hot path is 19 instructions, while its cold half is another 57. Every handler is split this way, so running ordinary JavaScript only touches the hot fraction of the interpreter, and that fraction is small enough to stay in instruction cache.
+The interpreter is laid out in two halves. The typical execution path goes in a "hot" section: Int32 arithmetic, no exceptions. Anything unusual is lifted out into a "cold" section far away in the binary, and the hot path jumps over there only when it has to. Those `@cold` closures above are the two ways this handler can leave the fast path, and neither costs anything on the fast path itself. `BitwiseXor`'s hot path is 19 instructions, while its cold half is another 57. Every handler is split this way, so running ordinary JavaScript only touches the hot fraction of the interpreter, and that fraction is small enough to stay in instruction cache.
 
-Switching over was performance-neutral, which is what we wanted from it. The gains came afterwards, from things the old dialect had no way to express. This one line is a complete description of a new instruction, specialized for when the right-hand side is a known 32-bit integer ([#10923](https://github.com/LadybirdBrowser/ladybird/pull/10923)):
+Switching over was performance-neutral, which is what we wanted from it. The gains came afterwards, some from things the old dialect had no way to express. This one line is a complete description of a new instruction, specialized for when the right-hand side is a known 32-bit integer ([#10923](https://github.com/LadybirdBrowser/ladybird/pull/10923)):
 
 ```
 specialize BitwiseXor(rhs: Int32);
@@ -222,7 +220,7 @@ The compiler works out the specialized handler and the code that selects it, and
     jmp [r12 + rax * 8]                  # jump to its handler
 ```
 
-And the specialized one, 14:
+And the specialized one, 14 instructions:
 
 ```
     mov eax, DWORD PTR [r14 + r13 + 8]        # read lhs slot number from the bytecode
@@ -241,11 +239,11 @@ And the specialized one, 14:
     jmp [r12 + rax * 8]                       # jump to its handler
 ```
 
-The right-hand side never comes out of the register file, and the type check for it is gone completely, because the number is sitting right there in the bytecode. We use the same mechanism for the Int32 arithmetic, the shifts and the comparisons, and to fuse common instruction pairs into one. So far it's worth about 5-10% on the more compute-heavy JS benchmarks.
+The right-hand side never comes out of the register file, and the type check for it is gone completely, because the number is sitting right there in the bytecode. We use the same mechanism for the Int32 arithmetic, the shifts and the comparisons, and to fuse common instruction pairs into one. So far it's worth around 5% on some of the more compute-heavy JS benchmarks.
 
 ### Moving style and layout to Rust
 
-This month we moved much of LibWeb's style and layout pipeline to Rust. This is progress on our goals for using safe languages in the codebase, and it also unlocks some very tasty opportunities for parallelism. Style and layout both do a lot of repeated work over large trees, and it's work that could be spread across cores, but that's the kind of change that's a lot more comfortable to wrangle when the language can stop you from two threads stepping on each other. Style is now stored as immutable, shared values that Rust owns, which is the substrate parallel restyling needs, and layout can read it directly rather than pulling it back out of C++.
+This month we moved much of LibWeb's style and layout pipeline to Rust. This is progress on our goals for using safe languages in the codebase, and it also unlocks some very tasty opportunities for parallelism. Style and layout both do a lot of repeated work over large trees, and it's work that could be spread across cores, but that's the kind of change that's a lot more comfortable to wrangle when the language can stop two threads from stepping on each other. Style is now stored as immutable, shared values that Rust owns, which is the substrate parallel restyling needs, and layout can read it directly rather than pulling it back out of C++.
 
 A big chunk of it landed in July. Selector matching went first ([#10731](https://github.com/LadybirdBrowser/ladybird/pull/10731), [#10795](https://github.com/LadybirdBrowser/ladybird/pull/10795)), followed by computed style, the cascade, animations and `calc()` ([#10772](https://github.com/LadybirdBrowser/ladybird/pull/10772), [#10861](https://github.com/LadybirdBrowser/ladybird/pull/10861), [#10787](https://github.com/LadybirdBrowser/ladybird/pull/10787)), then layout tree construction ([#10838](https://github.com/LadybirdBrowser/ladybird/pull/10838)) and every formatting context we have, block through SVG ([#10901](https://github.com/LadybirdBrowser/ladybird/pull/10901)).
 
@@ -259,7 +257,7 @@ This month we've made it a lot less convenient: `ArrayBuffer` contents and WebAs
 
 ### Web Platform Tests (WPT)
 
-Our [WPT](https://web-platform-tests.org) score went from 2,078,912 to 2,079,020 this month, a gain of 108 subtests.
+Our [WPT](https://web-platform-tests.org) score went from 2,078,912 to 2,079,020 this month, a gain of 108 subtests. No major movement here, as expected given the nature of most of this month's work.
 
 ### Other notable changes
 

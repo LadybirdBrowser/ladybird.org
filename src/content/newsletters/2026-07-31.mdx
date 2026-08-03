@@ -35,7 +35,7 @@ ladybird --temporary-profile      # a fresh one, deleted on exit
 
 Profiles can run side by side, and the sandbox rules for helper processes are generated per profile so each one can only reach its own files. Launching a profile that's already running hands the URL to the existing window instead of starting a second copy. On macOS they get distinct Dock badges so you can tell them apart ([#10665](https://github.com/LadybirdBrowser/ladybird/pull/10665)).
 
-### Undo, redo, and rich text
+### Undo/redo and rich text
 
 Undo/redo now works for editing in `contenteditable` and text controls, wired up to the Edit menu with the usual shortcuts ([#10758](https://github.com/LadybirdBrowser/ladybird/pull/10758)). Copy and paste preserves styled text, images, lists and paragraphs ([#10770](https://github.com/LadybirdBrowser/ladybird/pull/10770)), and the clipboard shortcuts now fire real `copy`, `cut` and `paste` events, which is how editor frameworks implement clipboard support ([#10632](https://github.com/LadybirdBrowser/ladybird/pull/10632)). Cursor movement also follows visual lines, so the arrow keys behave in wrapped text ([#10517](https://github.com/LadybirdBrowser/ladybird/pull/10517)).
 
@@ -51,9 +51,9 @@ WebAudio gained offline and real-time rendering ([#10823](https://github.com/Lad
 
 ### WebAssembly
 
-WebAssembly got a lot faster this month. Calls went first: the common cases now happen directly instead of going out to a helper, which is worth 20x to 50x on call microbenchmarks ([#10719](https://github.com/LadybirdBrowser/ladybird/pull/10719)). More operations moved inline for the same reason ([#10783](https://github.com/LadybirdBrowser/ladybird/pull/10783)).
+WebAssembly got substantially faster this month. The common cases for calls now happen directly instead of going out to a helper, which is worth 20x to 50x on call microbenchmarks ([#10719](https://github.com/LadybirdBrowser/ladybird/pull/10719)). More operations moved inline for the same reason ([#10783](https://github.com/LadybirdBrowser/ladybird/pull/10783)).
 
-Memory accesses then got their bounds checks removed. The cage that `ArrayBuffer` and Wasm memory live in was grown to 4 TiB, which is large enough that a 32-bit Wasm access has nowhere to land outside it, so the checks weren't buying anything and the speed came back ([#10756](https://github.com/LadybirdBrowser/ladybird/pull/10756)). Between them, CoreMark went from around 11,000 to around 17,500.
+Memory accesses then got their bounds checks removed. The cage that `ArrayBuffer` and Wasm memory live in was grown to 4 TiB, which is large enough that a 32-bit Wasm access has nowhere to land outside it, The checks weren't buying anything, so they came out ([#10756](https://github.com/LadybirdBrowser/ladybird/pull/10756)). Between them, CoreMark went from roughly 11,000 to 17,500.
 
 Here's Shopify's [Horizon Drive](https://shopify.com/editions/summer2025/drive) running in Ladybird. The engine, the music, and the sparks when I scrape along a wall are all WebAudio.
 
@@ -126,16 +126,10 @@ The `system-ui` font family also resolved to generic sans-serif outside macOS, r
 | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | <img src="/assets/img/newsletter-july-2026-github-review-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-github-review-after.png" style="max-width: 100%;" alt="After" /> |
 
-**Fragonard**: 2 layout fixes for the search page ([#10673](https://github.com/LadybirdBrowser/ladybird/pull/10673)).
-
-| Before                                                                                                    | After                                                                                                   |
-| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| <img src="/assets/img/newsletter-july-2026-fragonard-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-july-2026-fragonard-after.png" style="max-width: 100%;" alt="After" /> |
-
 A few more:
 
 - **X.com**: a cluster of `contenteditable` fixes for problems the composer exposed ([#10513](https://github.com/LadybirdBrowser/ladybird/pull/10513)).
-- **chatgpt.com**: a lot less redundant style work, which makes streaming responses smoother ([#10596](https://github.com/LadybirdBrowser/ladybird/pull/10596)).
+- **chatgpt.com**: much less redundant style work, which makes streaming responses smoother ([#10596](https://github.com/LadybirdBrowser/ladybird/pull/10596)).
 - **kronansapotek.se**: three engine bugs around CSS animations and the top layer, found while investigating this site ([#10595](https://github.com/LadybirdBrowser/ladybird/pull/10595)).
 - **rituals.com**: a crash and a lot of load-time jank, both triggered by the site throwing away its server-rendered DOM ([#10723](https://github.com/LadybirdBrowser/ladybird/pull/10723)).
 
@@ -148,7 +142,7 @@ A few more:
 
 ### A typed language for our JavaScript interpreter
 
-The hot loop of our JavaScript engine is an assembly interpreter, with one handler per bytecode instruction, 183 of them before this work. Here's `BitwiseXor` in the assembly dialect we used before, with the macro it shares with the other bitwise operators expanded. Even then, most of what's left is shorthand: `load_binary_operands` and `coerce_to_int32s` are macros of their own, and the rest are the dialect's own operations, not machine instructions.
+The hot loop of our JavaScript engine is an assembly interpreter, with one handler per bytecode instruction, 183 of them before this work. Here's `BitwiseXor` in the assembly dialect we used before. Most of it is shorthand: `load_binary_operands` and `coerce_to_int32s` are macros of their own, and the rest are the dialect's own operations, not machine instructions.
 
 ```
 handler BitwiseXor
@@ -166,7 +160,7 @@ end
 
 It works, and those names are symbolic, not real machine registers, since the old generator assigned those for us. But nothing knew that `lhs_int` holds an integer, nothing checked that a value was written before it was read, and the interesting decisions were buried inside macros like `coerce_to_int32s`. The generator also did no optimization, so every redundant load in the source became a redundant load in the interpreter.
 
-So we built a typed language to write the interpreter in, along with a compiler that turns it into x86-64 and AArch64 at build time ([#10867](https://github.com/LadybirdBrowser/ladybird/pull/10867)). It's called "flap", after the sound of a ladybird's wings. :^) The same handler, with its shared helper expanded the same way:
+So we built a typed language to write the interpreter in, along with a compiler that turns it into x86-64 and AArch64 at build time ([#10867](https://github.com/LadybirdBrowser/ladybird/pull/10867)). It's called "flap", after the sound of a ladybird's wings. :^) The same handler:
 
 ```
 handler BitwiseXor(dst: out Operand, lhs: in Operand, rhs: in Operand) {
@@ -269,7 +263,6 @@ Our [WPT](https://web-platform-tests.org) score went from 2,078,912 to 2,079,020
 
 ### Other notable changes
 
-- **UTF-16 in LibWeb**: DOM attributes, names and Web platform strings moved to UTF-16, following last month's move in LibJS ([#10535](https://github.com/LadybirdBrowser/ladybird/pull/10535), [#10581](https://github.com/LadybirdBrowser/ladybird/pull/10581), [#10656](https://github.com/LadybirdBrowser/ladybird/pull/10656)).
 - **Windows**: we stopped pretending Windows is POSIX ([#10489](https://github.com/LadybirdBrowser/ladybird/pull/10489)), and rendered frames now reach the GPU without a copy, matching macOS and Linux ([#10834](https://github.com/LadybirdBrowser/ladybird/pull/10834)).
 - **Brotli** is supported for `CompressionStream` and `DecompressionStream` ([#10355](https://github.com/LadybirdBrowser/ladybird/pull/10355)).
 - **The Gtk port is gone**. We're focusing our efforts on making the Qt port look solid everywhere instead ([#10536](https://github.com/LadybirdBrowser/ladybird/pull/10536)).

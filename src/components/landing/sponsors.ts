@@ -44,11 +44,6 @@ export const currentSponsors: SponsorTier[] = [
         href: "https://protonvpn.com/",
         logo: "/assets/img/sponsors/protonvpn.svg",
       },
-      {
-        name: "ohne-makler.net",
-        href: "https://www.ohne-makler.net/",
-        logo: "/assets/img/sponsors/ohne-makler.svg",
-      },
     ],
   },
   {
@@ -174,6 +169,11 @@ export const previousSponsors: SponsorTier[] = [
   {
     name: "Gold",
     sponsors: [
+      {
+        name: "ohne-makler.net",
+        href: "https://www.ohne-makler.net/",
+        logo: "/assets/img/sponsors/ohne-makler.svg",
+      },
       {
         name: "Ahrefs",
         href: "https://ahrefs.com/",

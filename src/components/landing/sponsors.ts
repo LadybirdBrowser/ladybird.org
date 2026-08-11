@@ -120,6 +120,9 @@ export const currentSponsors: SponsorTier[] = [
         href: "https://zeroramp.com",
         logo: "/assets/img/sponsors/zeroramp.svg",
       },
+      {
+        name: "Arnav Guleria",
+      },
     ],
   },
   {

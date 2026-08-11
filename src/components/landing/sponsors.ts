@@ -90,11 +90,6 @@ export const currentSponsors: SponsorTier[] = [
       },
       { name: "The Primeagen", href: "https://terminal.shop/" },
       {
-        name: "Scraping Fish",
-        href: "https://scrapingfish.com/",
-        logo: "/assets/img/sponsors/scraping-fish.svg",
-      },
-      {
         name: "K15t",
         href: "https://www.k15t.com",
         logo: "/assets/img/sponsors/k15t.svg",
@@ -130,10 +125,6 @@ export const currentSponsors: SponsorTier[] = [
     sponsors: [
       { name: "Travis Heinström", href: "https://heinstrom.com" },
       { name: "Sjors Witteveen", href: "https://kabutops.com" },
-      {
-        name: "Philip Lonsing",
-        href: "https://www.linkedin.com/in/philiplonsing/",
-      },
       { name: "b1ack0wl", href: "http://www.b1ack0wl.com/" },
       { name: "Gian Giovani", href: "https://wejick.wordpress.com" },
       { name: "Timely Learning", href: "https://www.timely-learning.com" },
@@ -220,6 +211,11 @@ export const previousSponsors: SponsorTier[] = [
     name: "Bronze",
     sponsors: [
       {
+        name: "Scraping Fish",
+        href: "https://scrapingfish.com/",
+        logo: "/assets/img/sponsors/scraping-fish.svg",
+      },
+      {
         name: "Tuple",
         href: "https://www.tuple.app/",
         logo: "/assets/img/sponsor-tuple.svg",
@@ -241,6 +237,10 @@ export const previousSponsors: SponsorTier[] = [
       { name: "Puter", href: "https://puter.com" },
       { name: "Follower24.de", href: "https://www.follower24.de" },
       { name: "Clément Sibille", href: "https://lisible.xyz/" },
+      {
+        name: "Philip Lonsing",
+        href: "https://www.linkedin.com/in/philiplonsing/",
+      },
     ],
   },
 ];

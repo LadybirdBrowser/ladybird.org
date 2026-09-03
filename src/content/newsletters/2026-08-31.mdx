@@ -1,0 +1,169 @@
+---
+title: This Month in Ladybird - August 2026
+description: Video on Twitch and YouTube, CSS scroll snap, JavaScript debugging, session restore, and a serious push on engine performance with a new style engine.
+date: 2026-08-31
+draft: true
+---
+
+Hello friends! In August Ladybird gained video playback on Twitch, more video formats on YouTube, CSS scroll snap, JavaScript debugging in DevTools, downloads you can pause and resume, and session restore. It's also the month engine performance went from occasional attention to a sustained focus, with a new style engine, layout caching, and CSS animations on the compositor. The exploit cage grew to cover the JavaScript heap, and CSS parsing and the painting pipeline moved to Rust.
+
+### Welcoming new sponsors
+
+Ladybird is entirely funded by the generous support of companies and individuals who believe in the open web. This month, we're excited to welcome the following new sponsors:
+
+- Arnav Guleria with $5,000
+
+You can see everyone currently supporting the project on our [sponsors page](/#sponsors), and we're grateful to all of them. If you're interested in sponsoring, please [contact us](mailto:contact@ladybird.org).
+
+### Video on Twitch, and more formats on YouTube
+
+Media Source Extensions now understands fragmented MP4, which opens up H.264, HEVC and AV1 video the way most streaming sites deliver it ([#11251](https://github.com/LadybirdBrowser/ladybird/pull/11251)). Twitch streams now play, and Plex videos start playing (with a first-load quirk we're still working on). YouTube already worked via VP8/VP9; it can now also play the videos that are only available in H.264, and AV1 where offered.
+
+We also fixed a batch of playback bugs: hovering YouTube's video-card previews no longer crashes ([#10992](https://github.com/LadybirdBrowser/ladybird/pull/10992)), players using `preload="none"` no longer hang ([#11454](https://github.com/LadybirdBrowser/ladybird/pull/11454)), and HLS.js-based players start playing ([#11480](https://github.com/LadybirdBrowser/ladybird/pull/11480)).
+
+{/* TODO: video of Twitch or YouTube playback (there's a Twitch demo in #11251) */}
+
+### CSS scroll snap
+
+Scroll snap landed ([#10944](https://github.com/LadybirdBrowser/ladybird/pull/10944)): `scroll-snap-type`, `scroll-snap-align` and `scroll-snap-stop`. Wheel, keyboard, scrollbar dragging, touchpad flings and programmatic `scrollTo()` all snap, and content re-snaps when layout changes. (`scrollIntoView()` doesn't snap yet.) Carousels and full-page scrollers are built on this.
+
+{/* TODO: short video of a snap carousel */}
+
+### JavaScript debugging in DevTools
+
+You can now debug JavaScript in Ladybird: set breakpoints, step through code line by line, and evaluate watch expressions ([#11128](https://github.com/LadybirdBrowser/ladybird/pull/11128)), built on new breakpoint support in our JavaScript engine ([#10936](https://github.com/LadybirdBrowser/ladybird/pull/10936)). Wasm debugging and DOM mutation breakpoints are still missing, but the core workflow works. (As before, the Firefox DevTools frontend is a stopgap until we build our own.)
+
+{/* TODO: screenshot of the debugger paused on a breakpoint (one in #11128) */}
+
+### Downloads that pause and resume
+
+Downloads can now be paused and resumed, and survive a browser restart, when the server supports it ([#10932](https://github.com/LadybirdBrowser/ladybird/pull/10932)). We also download over four parallel connections where possible.
+
+{/* TODO: screenshot of the new download UI */}
+
+### Session restore
+
+Reopening a closed tab with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> used to restore just the URL. It now restores the tab's full session history, including back/forward state, and this persists across browser restarts ([#11178](https://github.com/LadybirdBrowser/ladybird/pull/11178)). "Duplicate Tab" duplicates the session history too ([#11286](https://github.com/LadybirdBrowser/ladybird/pull/11286)). We deliberately don't persist form submission data yet; that needs careful handling first.
+
+### Browser UI
+
+- **`mailto:` links** open your mail client, and other external URL schemes prompt for confirmation, with protections against dangerous schemes and recursive launches ([#10846](https://github.com/LadybirdBrowser/ladybird/pull/10846)).
+- **JavaScript dialogs no longer block the whole browser**: `alert()`, `confirm()` and `prompt()` are now in-page overlays in the Qt UI, instead of modal system dialogs, so `while (true) alert("lol")` can't lock you out. You can switch tabs, or just close the tab ([#11264](https://github.com/LadybirdBrowser/ladybird/pull/11264)).
+- **Crash recovery** no longer injects a fake page into your session history; you get a crash screen and your real history entry is kept. Reload picks up where the crash interrupted ([#11402](https://github.com/LadybirdBrowser/ladybird/pull/11402)).
+- **Typing `localhost:8000` or `127.0.0.1` in the URL bar** now navigates there over `http` instead of failing ([#11007](https://github.com/LadybirdBrowser/ladybird/pull/11007)), and error pages name the URL that failed after redirects ([#11016](https://github.com/LadybirdBrowser/ladybird/pull/11016)).
+- **A pile of Wayland fixes**: the omnibox stays put ([#10862](https://github.com/LadybirdBrowser/ladybird/pull/10862), [#11149](https://github.com/LadybirdBrowser/ladybird/pull/11149)), <kbd>Tab</kbd> cycles page focus correctly ([#10868](https://github.com/LadybirdBrowser/ladybird/pull/10868)), and scrollbar drags that leave the window no longer drop the mouse release (this one fixed on all of Linux, [#11343](https://github.com/LadybirdBrowser/ladybird/pull/11343)).
+
+### Site compatibility rules
+
+Some sites serve Ladybird broken content based on User-Agent sniffing. We now handle this with declarative site-compatibility rules loaded at runtime, instead of hardcoding per-site policy into the browser ([#11327](https://github.com/LadybirdBrowser/ladybird/pull/11327)). The rules are plain JSON, so anyone can see exactly what we do for which site. The first users are nytimes.com and cnn.com, which both render properly when we hide "Ladybird" from the User-Agent string ([#11333](https://github.com/LadybirdBrowser/ladybird/pull/11333)).
+
+{/* TODO: nytimes or CNN before/after (screenshots in #11327 and #11333) */}
+
+### Sites that work better
+
+- **chatgpt.com**: a crash on the logged-in page plus three layout fixes ([#11398](https://github.com/LadybirdBrowser/ladybird/pull/11398)).
+- **vscode.dev**: crashed seconds after opening a new file. Hit testing read `pointer-events` from the wrong element, and VS Code's empty-editor hint triggers it ([#11342](https://github.com/LadybirdBrowser/ladybird/pull/11342)).
+- **discord.com**: dead-key composition works in `contenteditable` now, so you can type characters like ü ([#11249](https://github.com/LadybirdBrowser/ladybird/pull/11249)).
+- **icloud.com**: sites that declare their character encoding more than 1KB into the page no longer render as mojibake ([#11219](https://github.com/LadybirdBrowser/ladybird/pull/11219)).
+- **strava.com**: two separate fixes each cut activity map load time roughly in half ([#11133](https://github.com/LadybirdBrowser/ladybird/pull/11133), [#11114](https://github.com/LadybirdBrowser/ladybird/pull/11114)), chart popups follow your mouse now that `svg.getScreenCTM()` is implemented ([#11177](https://github.com/LadybirdBrowser/ladybird/pull/11177)), and one activity page that used to grow until it ran out of memory no longer does; the memory it held onto dropped from 17.8 GiB to 61 MiB ([#11055](https://github.com/LadybirdBrowser/ladybird/pull/11055)).
+- **outlook.com and Word**: an Outlook crash fixed, and signing in to Word works ([#11216](https://github.com/LadybirdBrowser/ladybird/pull/11216)).
+- **milliondollarhomepage.com and xkcd**: `<area>` image-map links are clickable ([#10863](https://github.com/LadybirdBrowser/ladybird/pull/10863)).
+
+### CSS
+
+- **3D transforms**: a run of fixes filled in big missing pieces of 3D rendering: flattening at `transform-style: flat` boundaries ([#11009](https://github.com/LadybirdBrowser/ladybird/pull/11009)), `backface-visibility` ([#10960](https://github.com/LadybirdBrowser/ladybird/pull/10960)), and correct depth sorting of intersecting 3D planes using a BSP tree ([#11045](https://github.com/LadybirdBrowser/ladybird/pull/11045)). The depth sorting was tested against [cssDOOM](https://cssdoom.wtf), a DOOM renderer built out of pure CSS 3D transforms: walls now draw in the right order, and surfaces no longer flicker ([#11466](https://github.com/LadybirdBrowser/ladybird/pull/11466)).
+- **`overflow-wrap`**: long unbreakable words now emergency-break at grapheme boundaries instead of overflowing their container (RTL text doesn't emergency-break yet) ([#11416](https://github.com/LadybirdBrowser/ladybird/pull/11416)). Noticeably better on Google Translate.
+- **`word-spacing`** was parsed but never reached the space glyphs themselves. Now it does ([#11066](https://github.com/LadybirdBrowser/ladybird/pull/11066)).
+- **Right-to-left scroll containers** scroll in the correct direction; previously some RTL content was simply unreachable ([#11023](https://github.com/LadybirdBrowser/ladybird/pull/11023)).
+- **Text decorations** are painted from the decorating box with its color, thickness and font geometry, which fixed the unconditional underlines on BBC Weather ([#10744](https://github.com/LadybirdBrowser/ladybird/pull/10744)).
+
+{/* TODO: cssDOOM before/after video (clips in #11045), and/or Google Translate overflow-wrap before/after (screenshots in #11416) */}
+
+### Taking performance seriously
+
+We now run the browser benchmarks continuously against master and track the results at [linegodown.lol](https://linegodown.lol), so regressions and wins show up as they land. Over August, our Speedometer 2 score went from about 48 to about 65, Speedometer 3 from about 2.5 to about 3.9, and StyleBench from about 3 to about 85. These are still modest numbers next to the mature engines, but the movement is real.
+
+{/* TODO: Speedometer 2/3 and StyleBench charts for August (from linegodown.lol). Also: confirm the endpoint numbers above against the data. */}
+
+Part of the push is systematic: we benchmark individual operations against other browsers, find the ones where we're drastically slower, and track down why. A DOM operation that's 100x slower than Chromium's usually isn't 100x slower for a deep reason; something is simply wrong, and finding it helps real pages. A month of this turned many such ratios into single digits: canvas `fillStyle` parsing went from 89x slower than Chromium to 1.9x ([#11300](https://github.com/LadybirdBrowser/ladybird/pull/11300)), `replaceChildren()` from 13x to 3.7x ([#11306](https://github.com/LadybirdBrowser/ladybird/pull/11306)), and list insertion and removal from 127x to 17.5x ([#11389](https://github.com/LadybirdBrowser/ladybird/pull/11389)). (These comparisons are against Chromium running without its JIT, and we're still slower in most of them, but the ratios are much less awful than they were. :^))
+
+The JavaScript engine got its own batch of fast paths, for property access ([#11175](https://github.com/LadybirdBrowser/ladybird/pull/11175)), spread ([#11383](https://github.com/LadybirdBrowser/ladybird/pull/11383)), promise combinators ([#11374](https://github.com/LadybirdBrowser/ladybird/pull/11374)), and `JSON.stringify`, which is now within roughly 13% of V8 on our benchmark ([#11329](https://github.com/LadybirdBrowser/ladybird/pull/11329)). The most satisfying fix: arrays that temporarily went sparse used to stay in slow hash-table storage forever. 30 lines later, Minecraft4k went from 10.2 to 14.5 FPS ([#11423](https://github.com/LadybirdBrowser/ladybird/pull/11423)).
+
+The next three sections are part of the same push.
+
+### A new style engine
+
+We replaced our selector matching, style invalidation, cascade and computed-style retention with a new engine ([#11088](https://github.com/LadybirdBrowser/ladybird/pull/11088)). It's built on one idea: style work should be proportional to what changed, not to what might have changed.
+
+A conventional restyle marks everything a mutation might affect, then re-matches and re-cascades all of it; on a real page, opening a menu can invalidate thousands of elements to change the style of a few dozen. The new engine instead treats styling as an incremental computation over a change stream: DOM mutations, state changes and CSSOM edits enter as typed deltas, each delta is routed to the selectors that depend on it, and evaluation stops as soon as an output is unchanged. In database terms, it's an incremental view maintenance engine: selectors are standing queries, mutations are the change stream, and computed styles are materialized views.
+
+The hard part is correctness, so the engine carries its own verification machinery. A plain, cache-free evaluator serves as the reference implementation, and every fast path is checked against it. The engine's entire input stream can also be recorded from a real browsing session and replayed deterministically, with digests over all outputs turning any divergence into a hard failure. Twelve recordings of real sites, millions of events each, replay clean and serve as a permanent regression corpus.
+
+This design doesn't win everywhere: on many workloads it's still slower than a traditional style engine, and there's a lot of tuning ahead. But on StyleBench, which measures the kind of incremental restyling the design is built for, we've nearly caught up with the major engines.
+
+{/* TODO: current StyleBench numbers vs the major engines would land well here if you have them handy */}
+
+### Caching layout results
+
+Until this month, almost any change meant laying out the whole document again, from the viewport down. We had partial relayout in a few cases around `position: absolute` and SVG, and that was it. Full relayout is the easy way to stay correct in a young engine, but on big pages it repeats a lot of work that produces the same answer every time.
+
+Layout results are now cached and reused based on their input constraints ([#11113](https://github.com/LadybirdBrowser/ladybird/pull/11113)). A formatting context run is keyed on everything its parent hands it: the type of context, the sizing constraints, and the state of its root. When nothing in a subtree changed, the whole run replays from the cache, nested runs included, and since fragment offsets are relative to the containing block, a cached subtree can replay at a new position. A shadow mode re-runs real layout on every cache hit and panics on any divergence.
+
+The rest of the work went into making cache hits more likely. The cache originally keyed on every block-axis input, so an ancestor resolving its height threw away every cached result below it, even though most content never looks at those values; on nested flex pages, one leaf could get measured 29 times in a single layout. We now record whether a box actually observed those inputs and ignore the ones it didn't ([#11346](https://github.com/LadybirdBrowser/ladybird/pull/11346)). And DOM mutations stopped rebuilding entire layout subtrees, backed by tests comparing incrementally updated trees against from-scratch rebuilds ([#11126](https://github.com/LadybirdBrowser/ladybird/pull/11126)).
+
+Together with the new style engine, this work is where most of the benchmark movement above came from.
+
+### Running CSS animations on the compositor
+
+Until this month, every running CSS animation woke the page process at 60Hz to recompute style, rebuild paint state and record a new display list, even though the animation's whole timeline is known from its keyframes.
+
+Now, eligible opacity and transform animations are described once, as their resolved keyframes, timing and easing, and handed to the compositor, which advances them on its own vsync ([#11470](https://github.com/LadybirdBrowser/ladybird/pull/11470)). The page process no longer wakes up for the animation itself while it runs. When script asks about an animation, via `getComputedStyle`, `currentTime` or `playState`, we sample it on demand, so answers are never stale. A finite animation gets exactly one wake-up timer, at its end, to fire `animationend`.
+
+There are a lot of edge cases. Content that starts at `opacity: 0` stays in the display list so the compositor has something to reveal. When an IntersectionObserver is watching, an animation is only handed off if its motion provably can't change what the observer would see. And offscreen animations don't run anywhere.
+
+The result: animations stay smooth while the page is busy, and a page full of animation should cost less power. Custom properties inside keyframes also animate properly now ([#11477](https://github.com/LadybirdBrowser/ladybird/pull/11477)).
+
+### More of LibWeb in Rust
+
+July's newsletter covered moving style and layout to Rust. In August, Rust became the sole owner of several more pieces:
+
+- **CSS parsing** moved over ([#11318](https://github.com/LadybirdBrowser/ladybird/pull/11318), [#11334](https://github.com/LadybirdBrowser/ladybird/pull/11334), [#11240](https://github.com/LadybirdBrowser/ladybird/pull/11240), [#11360](https://github.com/LadybirdBrowser/ladybird/pull/11360)). Each grammar family landed behind an A/B mode that ran both the Rust and C++ parsers and compared serialized output across the full test suite, and C++ was only deleted at zero mismatches. It came out faster than the C++ it replaced, too.
+- **Computed style storage and computation** are Rust-owned; complete style updates now stay in the Rust pipeline without calling back into C++ ([#11155](https://github.com/LadybirdBrowser/ladybird/pull/11155)).
+- **The painting pipeline**, including display list recording and hit testing, was ported ([#11222](https://github.com/LadybirdBrowser/ladybird/pull/11222)), and the old C++ paintable objects were deleted ([#11273](https://github.com/LadybirdBrowser/ladybird/pull/11273)).
+- **Strings** now share one representation between the two languages, so text crosses the boundary without copying ([#11278](https://github.com/LadybirdBrowser/ladybird/pull/11278)).
+
+### WebAssembly compiles in its own process
+
+Compiling Wasm used to happen by forking inside each page process, which collided with sandbox restrictions, so on many systems we silently fell back to the interpreter. There's now a dedicated WasmCompiler process with its own minimal sandbox ([#11133](https://github.com/LadybirdBrowser/ladybird/pull/11133)). Page renderers talk to it over IPC and lose their fork permission entirely, so this tightened the sandbox and sped things up at the same time. It's why those Strava maps load in about half the time on a cold visit.
+
+### Caging JavaScript values
+
+Last month we caged `ArrayBuffer` contents and Wasm memories. This month we extended the cage to the JavaScript heap. Previously, corrupting one NaN-boxed value in the GC heap was enough to point the engine at arbitrary process memory. Now all GC heap blocks live in a single reserved region, and cell payloads are stored as offsets into it, masked on decode, so a forged value can only land inside the region ([#11086](https://github.com/LadybirdBrowser/ladybird/pull/11086), [#11316](https://github.com/LadybirdBrowser/ladybird/pull/11316)).
+
+In the interpreter's generated code the cage base is pinned in a CPU register, so unboxing a value there is a mask and an add, with no memory loads. Freshly generated bytecode is also stored in read-only mappings now, so heap corruption can't rewrite instruction streams directly.
+
+### Networking
+
+- **Incomplete certificate chains** no longer break sites on Linux: we fetch missing intermediate certificates the way other browsers do, and chains must still validate to a trusted root ([#10661](https://github.com/LadybirdBrowser/ladybird/pull/10661)).
+- **Permanent redirects are cached**, so revisiting a site that 301s you saves the redirect round trip ([#11460](https://github.com/LadybirdBrowser/ladybird/pull/11460)).
+- **Reload actually revalidates**: reloading a cached page previously never contacted the server at all, even if the server was down. Investigating this also uncovered a bug in the HTML spec ([#11004](https://github.com/LadybirdBrowser/ladybird/pull/11004), [whatwg/html#12760](https://github.com/whatwg/html/issues/12760)).
+
+### Web Platform Tests (WPT)
+
+Our [WPT](https://web-platform-tests.org) score went from 2,079,020 to 2,088,677 this month, a gain of 9,657 subtests.
+
+### Other notable changes
+
+- **WebGL works on Windows**, through ANGLE's Direct3D 11 backend. It was previously compiled out entirely ([#11312](https://github.com/LadybirdBrowser/ladybird/pull/11312)).
+- **JPEG XL decoding** switched to [jxl-rs](https://github.com/libjxl/jxl-rs), the Rust decoder that Chrome and Firefox are adopting for their announced JPEG XL support ([#11386](https://github.com/LadybirdBrowser/ladybird/pull/11386)).
+- **Hidden and occluded windows stop doing work**: no rasterization, no smooth-scrolling ticks, no frame presents for pages you can't see ([#11365](https://github.com/LadybirdBrowser/ladybird/pull/11365)). Together with compositor animations, this should help battery life.
+- **Session history and navigation moved to the browser process** ([#11116](https://github.com/LadybirdBrowser/ladybird/pull/11116), [#11270](https://github.com/LadybirdBrowser/ladybird/pull/11270)), a prerequisite for site isolation.
+- **The DOM was split from its JavaScript wrappers** ([#9973](https://github.com/LadybirdBrowser/ladybird/pull/9973)). A DOM node now carries no JavaScript object state until script actually touches it, which reduces memory usage. It also lets the same DOM have separate wrappers per "world", the isolation that browser extension content scripts require, so this is a step toward extension support.
+- **System fonts are discovered once** and handed to helper processes as a read-only catalog, so those processes no longer need sandbox access to font directories ([#11465](https://github.com/LadybirdBrowser/ladybird/pull/11465)).
+- **Pasting via the context menu or middle-click now fires the `paste` event**, so verification-code forms that split a pasted code across fields work however you paste ([#11020](https://github.com/LadybirdBrowser/ladybird/pull/11020)).
+
+### The road to alpha
+
+We've said the first alpha starts in 2026, and that's still the plan. What's left before it can start is mostly not engine work: crash reporting that doesn't require launching from a terminal, signed installable builds for macOS and Linux, an auto-update mechanism so alpha users get improvements as fast as we make them, a small first-run experience (including an optional adblock subscription), and a place to download it. The engine will not be finished when the alpha starts. That's what the alpha is for.
+
+That's it for August. Thanks for reading, and we'll see you next month!

@@ -85,7 +85,6 @@ Some sites serve Ladybird broken content based on User-Agent sniffing. We now ha
 
 - **chatgpt.com**: a crash on the logged-in page plus three layout fixes ([#11398](https://github.com/LadybirdBrowser/ladybird/pull/11398)).
 - **vscode.dev**: crashed seconds after opening a new file. Hit testing read `pointer-events` from the wrong element, and VS Code's empty-editor hint triggers it ([#11342](https://github.com/LadybirdBrowser/ladybird/pull/11342)).
-- **discord.com**: dead-key composition works in `contenteditable` now, so you can type characters like ü ([#11249](https://github.com/LadybirdBrowser/ladybird/pull/11249)).
 - **icloud.com**: sites that declare their character encoding more than 1KB into the page no longer render as mojibake ([#11219](https://github.com/LadybirdBrowser/ladybird/pull/11219)).
 - **strava.com**: two separate fixes each cut activity map load time roughly in half ([#11133](https://github.com/LadybirdBrowser/ladybird/pull/11133), [#11114](https://github.com/LadybirdBrowser/ladybird/pull/11114)), chart popups follow your mouse now that `svg.getScreenCTM()` is implemented ([#11177](https://github.com/LadybirdBrowser/ladybird/pull/11177)), and one activity page that used to grow until it ran out of memory no longer does; the memory it held onto dropped from 17.8 GiB to 61 MiB ([#11055](https://github.com/LadybirdBrowser/ladybird/pull/11055)).
 - **outlook.com and Word**: an Outlook crash fixed, and signing in to Word works ([#11216](https://github.com/LadybirdBrowser/ladybird/pull/11216)).
@@ -203,6 +202,6 @@ The biggest chunk in the diff: about 2,500 referrer-policy subtests covering how
 
 ### The road to alpha
 
-We've said the first alpha starts in 2026, and that's still the plan. What's left before it can start is mostly not engine work: crash reporting that doesn't require launching from a terminal, signed installable builds for macOS and Linux, an auto-update mechanism so alpha users get improvements as fast as we make them, a small first-run experience (including an optional adblock subscription), and a place to download it. The engine will not be finished when the alpha starts. That's what the alpha is for.
+We've said the first alpha starts in 2026, and that's still the plan. What's left before it can start is mostly not engine work: crash reporting that doesn't require launching from a terminal, signed installable builds for macOS and Linux, an auto-update mechanism so alpha users get improvements as fast as we make them, a small first-run experience (including optional adblock filter lists, like EasyList, that update automatically), and a place to download it. The engine will not be finished when the alpha starts. That's what the alpha is for.
 
 That's it for August. Thanks for reading, and we'll see you next month!

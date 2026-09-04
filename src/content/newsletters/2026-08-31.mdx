@@ -21,25 +21,45 @@ Media Source Extensions now understands fragmented MP4, which opens up H.264, HE
 
 We also fixed a batch of playback bugs: hovering YouTube's video-card previews no longer crashes ([#10992](https://github.com/LadybirdBrowser/ladybird/pull/10992)), players using `preload="none"` no longer hang ([#11454](https://github.com/LadybirdBrowser/ladybird/pull/11454)), and HLS.js-based players start playing ([#11480](https://github.com/LadybirdBrowser/ladybird/pull/11480)).
 
-{/* TODO: video of Twitch or YouTube playback (there's a Twitch demo in #11251) */}
+<video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
+  <source src="/assets/img/newsletter-aug-2026-twitch.mp4" type="video/mp4" />
+</video>
 
 ### CSS scroll snap
 
 Scroll snap landed ([#10944](https://github.com/LadybirdBrowser/ladybird/pull/10944)): `scroll-snap-type`, `scroll-snap-align` and `scroll-snap-stop`. Wheel, keyboard, scrollbar dragging, touchpad flings and programmatic `scrollTo()` all snap, and content re-snaps when layout changes. (`scrollIntoView()` doesn't snap yet.) Carousels and full-page scrollers are built on this.
 
-{/* TODO: short video of a snap carousel */}
+<video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
+  <source
+    src="/assets/img/newsletter-aug-2026-scroll-snap.mp4"
+    type="video/mp4"
+  />
+</video>
 
 ### JavaScript debugging in DevTools
 
 You can now debug JavaScript in Ladybird: set breakpoints, step through code line by line, and evaluate watch expressions ([#11128](https://github.com/LadybirdBrowser/ladybird/pull/11128)), built on new breakpoint support in our JavaScript engine ([#10936](https://github.com/LadybirdBrowser/ladybird/pull/10936)). Wasm debugging and DOM mutation breakpoints are still missing, but the core workflow works. (As before, the Firefox DevTools frontend is a stopgap until we build our own.)
 
-{/* TODO: screenshot of the debugger paused on a breakpoint (one in #11128) */}
+<img
+  src="/assets/img/newsletter-aug-2026-debugger.png"
+  style="max-width: 100%;"
+  alt="Ladybird paused in the debugger, with the Firefox DevTools frontend showing breakpoints, a call stack and watch expressions"
+/>
 
 ### Downloads that pause and resume
 
 Downloads can now be paused and resumed, and survive a browser restart, when the server supports it ([#10932](https://github.com/LadybirdBrowser/ladybird/pull/10932)). We also download over four parallel connections where possible.
 
-{/* TODO: screenshot of the new download UI */}
+<img
+  src="/assets/img/newsletter-aug-2026-downloads-active.png"
+  style="max-width: 100%;"
+  alt="The downloads UI with an active download showing progress, speed, connections and a Pause button"
+/>
+<img
+  src="/assets/img/newsletter-aug-2026-downloads-paused.png"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="The same download paused, with a Resume button"
+/>
 
 ### Session restore
 
@@ -50,14 +70,16 @@ Reopening a closed tab with <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> used t
 - **`mailto:` links** open your mail client, and other external URL schemes prompt for confirmation, with protections against dangerous schemes and recursive launches ([#10846](https://github.com/LadybirdBrowser/ladybird/pull/10846)).
 - **JavaScript dialogs no longer block the whole browser**: `alert()`, `confirm()` and `prompt()` are now in-page overlays in the Qt UI, instead of modal system dialogs, so `while (true) alert("lol")` can't lock you out. You can switch tabs, or just close the tab ([#11264](https://github.com/LadybirdBrowser/ladybird/pull/11264)).
 - **Crash recovery** no longer injects a fake page into your session history; you get a crash screen and your real history entry is kept. Reload picks up where the crash interrupted ([#11402](https://github.com/LadybirdBrowser/ladybird/pull/11402)).
-- **Typing `localhost:8000` or `127.0.0.1` in the URL bar** now navigates there over `http` instead of failing ([#11007](https://github.com/LadybirdBrowser/ladybird/pull/11007)), and error pages name the URL that failed after redirects ([#11016](https://github.com/LadybirdBrowser/ladybird/pull/11016)).
+- **Typing `localhost:8000` or `127.0.0.1` in the URL bar** now navigates there over `http` instead of failing ([#11007](https://github.com/LadybirdBrowser/ladybird/pull/11007)).
 - **A pile of Wayland fixes**: the omnibox stays put ([#10862](https://github.com/LadybirdBrowser/ladybird/pull/10862), [#11149](https://github.com/LadybirdBrowser/ladybird/pull/11149)), <kbd>Tab</kbd> cycles page focus correctly ([#10868](https://github.com/LadybirdBrowser/ladybird/pull/10868)), and scrollbar drags that leave the window no longer drop the mouse release (this one fixed on all of Linux, [#11343](https://github.com/LadybirdBrowser/ladybird/pull/11343)).
 
 ### Site compatibility rules
 
-Some sites serve Ladybird broken content based on User-Agent sniffing. We now handle this with declarative site-compatibility rules loaded at runtime, instead of hardcoding per-site policy into the browser ([#11327](https://github.com/LadybirdBrowser/ladybird/pull/11327)). The rules are plain JSON, so anyone can see exactly what we do for which site. The first users are nytimes.com and cnn.com, which both render properly when we hide "Ladybird" from the User-Agent string ([#11333](https://github.com/LadybirdBrowser/ladybird/pull/11333)).
+Some sites serve Ladybird broken content based on User-Agent sniffing. We now handle this with declarative site-compatibility rules loaded at runtime, instead of hardcoding per-site policy into the browser ([#11327](https://github.com/LadybirdBrowser/ladybird/pull/11327)). The rules are plain JSON, so anyone can see what we do for which site. The first users are nytimes.com and cnn.com, which both render properly when we hide "Ladybird" from the User-Agent string ([#11333](https://github.com/LadybirdBrowser/ladybird/pull/11333)).
 
-{/* TODO: nytimes or CNN before/after (screenshots in #11327 and #11333) */}
+| Before                                                                                                 | After                                                                                                |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-aug-2026-nytimes-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-aug-2026-nytimes-after.png" style="max-width: 100%;" alt="After" /> |
 
 ### Sites that work better
 
@@ -73,35 +95,54 @@ Some sites serve Ladybird broken content based on User-Agent sniffing. We now ha
 
 - **3D transforms**: a run of fixes filled in big missing pieces of 3D rendering: flattening at `transform-style: flat` boundaries ([#11009](https://github.com/LadybirdBrowser/ladybird/pull/11009)), `backface-visibility` ([#10960](https://github.com/LadybirdBrowser/ladybird/pull/10960)), and correct depth sorting of intersecting 3D planes using a BSP tree ([#11045](https://github.com/LadybirdBrowser/ladybird/pull/11045)). The depth sorting was tested against [cssDOOM](https://cssdoom.wtf), a DOOM renderer built out of pure CSS 3D transforms: walls now draw in the right order, and surfaces no longer flicker ([#11466](https://github.com/LadybirdBrowser/ladybird/pull/11466)).
 - **`overflow-wrap`**: long unbreakable words now emergency-break at grapheme boundaries instead of overflowing their container (RTL text doesn't emergency-break yet) ([#11416](https://github.com/LadybirdBrowser/ladybird/pull/11416)). Noticeably better on Google Translate.
-- **`word-spacing`** was parsed but never reached the space glyphs themselves. Now it does ([#11066](https://github.com/LadybirdBrowser/ladybird/pull/11066)).
-- **Right-to-left scroll containers** scroll in the correct direction; previously some RTL content was simply unreachable ([#11023](https://github.com/LadybirdBrowser/ladybird/pull/11023)).
+- **Right-to-left scroll containers** scroll in the correct direction; previously some RTL content was unreachable ([#11023](https://github.com/LadybirdBrowser/ladybird/pull/11023)).
 - **Text decorations** are painted from the decorating box with its color, thickness and font geometry, which fixed the unconditional underlines on BBC Weather ([#10744](https://github.com/LadybirdBrowser/ladybird/pull/10744)).
 
-{/* TODO: cssDOOM before/after video (clips in #11045), and/or Google Translate overflow-wrap before/after (screenshots in #11416) */}
+Here's a run through the first level of cssDOOM in Ladybird:
+
+<video controls playsinline style="max-width: 100%; margin-bottom: 1em;">
+  <source src="/assets/img/newsletter-aug-2026-cssdoom.mp4" type="video/mp4" />
+</video>
+
+And Google Translate before and after `overflow-wrap`:
+
+| Before                                                                                                       | After                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| <img src="/assets/img/newsletter-aug-2026-overflow-wrap-before.png" style="max-width: 100%;" alt="Before" /> | <img src="/assets/img/newsletter-aug-2026-overflow-wrap-after.png" style="max-width: 100%;" alt="After" /> |
 
 ### Taking performance seriously
 
-We now run the browser benchmarks continuously against master and track the results at [linegodown.lol](https://linegodown.lol), so regressions and wins show up as they land. Over August, our Speedometer 2 score went from about 48 to about 65, Speedometer 3 from about 2.5 to about 3.9, and StyleBench from about 3 to about 85. These are still modest numbers next to the mature engines, but the movement is real.
+We now run the browser benchmarks continuously against master and track the results at [linegodown.lol](https://linegodown.lol), so regressions and wins show up as they land. Over August, our Speedometer 2 score went from about 47 to about 64, Speedometer 3 from about 2.5 to about 3.9, and StyleBench from about 3.5 to about 83. These are still modest numbers next to the mature engines, but the movement is real.
 
-{/* TODO: Speedometer 2/3 and StyleBench charts for August (from linegodown.lol). Also: confirm the endpoint numbers above against the data. */}
+<img
+  src="/assets/img/newsletter-aug-2026-benchmarks.png"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Three charts of Ladybird's August 2026 benchmark scores on Linux: Speedometer 2 rising from 47 to 64, Speedometer 3 from 2.5 to 3.9, and StyleBench from 3.5 to 83"
+/>
 
-Part of the push is systematic: we benchmark individual operations against other browsers, find the ones where we're drastically slower, and track down why. A DOM operation that's 100x slower than Chromium's usually isn't 100x slower for a deep reason; something is simply wrong, and finding it helps real pages. A month of this turned many such ratios into single digits: canvas `fillStyle` parsing went from 89x slower than Chromium to 1.9x ([#11300](https://github.com/LadybirdBrowser/ladybird/pull/11300)), `replaceChildren()` from 13x to 3.7x ([#11306](https://github.com/LadybirdBrowser/ladybird/pull/11306)), and list insertion and removal from 127x to 17.5x ([#11389](https://github.com/LadybirdBrowser/ladybird/pull/11389)). (These comparisons are against Chromium running without its JIT, and we're still slower in most of them, but the ratios are much less awful than they were. :^))
+Part of the push is systematic: we benchmark individual operations against other browsers, find the ones where we're drastically slower, and track down why. A DOM operation that's 100x slower than Chromium's usually isn't 100x slower for a deep reason; something is simply wrong, and finding it helps real pages. A month of this cut many such ratios by an order of magnitude: canvas `fillStyle` parsing went from about 90x slower than Chromium to about 2x ([#11300](https://github.com/LadybirdBrowser/ladybird/pull/11300)), `replaceChildren()` from 13x to under 4x ([#11306](https://github.com/LadybirdBrowser/ladybird/pull/11306)), and list insertion and removal from over 120x to under 20x ([#11389](https://github.com/LadybirdBrowser/ladybird/pull/11389)). (These comparisons are against Chromium running without its JIT, and we're still slower in most of them, but the ratios are much less awful than they were. :^))
 
-The JavaScript engine got its own batch of fast paths, for property access ([#11175](https://github.com/LadybirdBrowser/ladybird/pull/11175)), spread ([#11383](https://github.com/LadybirdBrowser/ladybird/pull/11383)), promise combinators ([#11374](https://github.com/LadybirdBrowser/ladybird/pull/11374)), and `JSON.stringify`, which is now within roughly 13% of V8 on our benchmark ([#11329](https://github.com/LadybirdBrowser/ladybird/pull/11329)). The most satisfying fix: arrays that temporarily went sparse used to stay in slow hash-table storage forever. 30 lines later, Minecraft4k went from 10.2 to 14.5 FPS ([#11423](https://github.com/LadybirdBrowser/ladybird/pull/11423)).
+The JavaScript engine got its own batch of fast paths, for property access ([#11175](https://github.com/LadybirdBrowser/ladybird/pull/11175)), spread ([#11383](https://github.com/LadybirdBrowser/ladybird/pull/11383)), promise combinators ([#11374](https://github.com/LadybirdBrowser/ladybird/pull/11374)), and `JSON.stringify`, which is now within about 15% of V8 on our benchmark ([#11329](https://github.com/LadybirdBrowser/ladybird/pull/11329)). The most satisfying fix: arrays that temporarily went sparse used to stay in slow hash-table storage forever. 30 lines later, Minecraft4k went from 10.2 to 14.5 FPS ([#11423](https://github.com/LadybirdBrowser/ladybird/pull/11423)).
 
 The next three sections are part of the same push.
 
 ### A new style engine
 
-We replaced our selector matching, style invalidation, cascade and computed-style retention with a new engine ([#11088](https://github.com/LadybirdBrowser/ladybird/pull/11088)). It's built on one idea: style work should be proportional to what changed, not to what might have changed.
+We replaced our selector matching, style invalidation, cascade and computed-style retention with a new engine ([#11088](https://github.com/LadybirdBrowser/ladybird/pull/11088)). The goal: style work proportional to what changed, not to what might have changed.
 
-A conventional restyle marks everything a mutation might affect, then re-matches and re-cascades all of it; on a real page, opening a menu can invalidate thousands of elements to change the style of a few dozen. The new engine instead treats styling as an incremental computation over a change stream: DOM mutations, state changes and CSSOM edits enter as typed deltas, each delta is routed to the selectors that depend on it, and evaluation stops as soon as an output is unchanged. In database terms, it's an incremental view maintenance engine: selectors are standing queries, mutations are the change stream, and computed styles are materialized views.
+Historically, when something changes, browser engines have marked everything the change might affect, then re-matched and re-cascaded all of it. Modern engines narrow that set with techniques like invalidation sets and style sharing, but the pattern is the same, and opening a menu can still invalidate thousands of elements to change the style of a few dozen. The new engine treats DOM mutations, state changes and CSSOM edits as a stream of typed deltas, routes each delta to the selectors that depend on it, and stops as soon as an output is unchanged. In database terms: selectors are standing queries, and computed styles are materialized views kept up to date incrementally.
 
-The hard part is correctness, so the engine carries its own verification machinery. A plain, cache-free evaluator serves as the reference implementation, and every fast path is checked against it. The engine's entire input stream can also be recorded from a real browsing session and replayed deterministically, with digests over all outputs turning any divergence into a hard failure. Twelve recordings of real sites, millions of events each, replay clean and serve as a permanent regression corpus.
+Correctness is the hard part. A plain, cache-free evaluator serves as the reference implementation, and every fast path is checked against it. The engine's input stream can also be recorded from a real browsing session and replayed deterministically; during development we replayed recordings of real sites, millions of events each, and treated any output divergence as a failure.
 
-This design doesn't win everywhere: on many workloads it's still slower than a traditional style engine, and there's a lot of tuning ahead. But on StyleBench, which measures the kind of incremental restyling the design is built for, we've nearly caught up with the major engines.
+On many workloads the new engine is still slower than that approach, and there's a lot of tuning ahead. But on StyleBench, which measures exactly this kind of incremental restyling, we're now in the same range as the major engines. Here's where the month ended, on an M3 MacBook Pro (a different machine than the benchmark runner behind the charts above, hence the different Ladybird score):
 
-{/* TODO: current StyleBench numbers vs the major engines would land well here if you have them handy */}
+<img
+  src="/assets/img/newsletter-aug-2026-stylebench.png"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Bar chart of StyleBench scores on an M3 MacBook Pro at the end of August 2026: Firefox 232.8, Safari 129.5, Ladybird 116.3, Chrome 103.8"
+/>
+
+Firefox is still well ahead. But this engine is a month old, and there are plenty of optimizations left to find.
 
 ### Caching layout results
 
@@ -115,7 +156,7 @@ Together with the new style engine, this work is where most of the benchmark mov
 
 ### Running CSS animations on the compositor
 
-Until this month, every running CSS animation woke the page process at 60Hz to recompute style, rebuild paint state and record a new display list, even though the animation's whole timeline is known from its keyframes.
+A running CSS animation used to wake the page process at 60Hz to recompute style, rebuild paint state and record a new display list, even though the animation's whole timeline is known from its keyframes.
 
 Now, eligible opacity and transform animations are described once, as their resolved keyframes, timing and easing, and handed to the compositor, which advances them on its own vsync ([#11470](https://github.com/LadybirdBrowser/ladybird/pull/11470)). The page process no longer wakes up for the animation itself while it runs. When script asks about an animation, via `getComputedStyle`, `currentTime` or `playState`, we sample it on demand, so answers are never stale. A finite animation gets exactly one wake-up timer, at its end, to fire `animationend`.
 
@@ -150,7 +191,9 @@ In the interpreter's generated code the cage base is pinned in a CPU register, s
 
 ### Web Platform Tests (WPT)
 
-Our [WPT](https://web-platform-tests.org) score went from 2,079,020 to 2,088,677 this month, a gain of 9,657 subtests.
+Our [WPT](https://web-platform-tests.org) score went from 2,079,020 to 2,088,677 this month, a gain of 9,657 subtests. For scale, July's gain was 108.
+
+The biggest chunk in the diff: about 2,500 referrer-policy subtests covering how the referrer propagates through navigations, iframes and `srcdoc` documents began passing late in the month, and we now pass 99% of that suite. The rest tracks the month's feature work: 3D transforms, scroll snap and Media Source Extensions all show up in the diff.
 
 ### Other notable changes
 

@@ -2,10 +2,10 @@
 title: This Month in Ladybird - August 2026
 description: Video on Twitch and YouTube, CSS scroll snap, JavaScript debugging, session restore, and a serious push on engine performance with a new style engine.
 date: 2026-08-31
-draft: true
+draft: false
 ---
 
-Hello friends! In August Ladybird gained video playback on Twitch, more video formats on YouTube, CSS scroll snap, JavaScript debugging in DevTools, downloads you can pause and resume, and session restore. It's also the month engine performance went from occasional attention to a sustained focus, with a new style engine, layout caching, and CSS animations on the compositor. The exploit cage grew to cover the JavaScript heap, and CSS parsing and the painting pipeline moved to Rust.
+Hello friends! In August Ladybird gained video playback on Twitch, more video formats on YouTube, CSS scroll snap, JavaScript debugging in DevTools, downloads you can pause and resume, and session restore. It's also the month engine performance went from occasional attention to a sustained focus, with a new style engine, layout caching, and CSS animations moving off the main thread. The exploit cage grew to cover the JavaScript heap, and CSS parsing and the painting pipeline moved to Rust.
 
 ### Welcoming new sponsors
 
@@ -112,7 +112,7 @@ And Google Translate before and after `overflow-wrap`:
 
 ### Taking performance seriously
 
-We now run the browser benchmarks continuously against master and track the results at [linegodown.lol](https://linegodown.lol), so regressions and wins show up as they land. Over August, our Speedometer 2 score went from about 47 to about 64, Speedometer 3 from about 2.5 to about 3.9, and StyleBench from about 3.5 to about 83. These are still modest numbers next to the mature engines, but the movement is real.
+We run the browser benchmarks continuously against master and track the results at [linegodown.lol](https://linegodown.lol). Over August, our Speedometer 2 score went from about 47 to about 64, Speedometer 3 from about 2.5 to about 3.9, and StyleBench from about 3.5 to about 83. These are still modest numbers next to the mature engines, but the movement is real.
 
 <img
   src="/assets/img/newsletter-aug-2026-benchmarks.png"
@@ -120,11 +120,9 @@ We now run the browser benchmarks continuously against master and track the resu
   alt="Three charts of Ladybird's August 2026 benchmark scores on Linux: Speedometer 2 rising from 47 to 64, Speedometer 3 from 2.5 to 3.9, and StyleBench from 3.5 to 83"
 />
 
-Part of the push is systematic: we benchmark individual operations against other browsers, find the ones where we're drastically slower, and track down why. A DOM operation that's 100x slower than Chromium's usually isn't 100x slower for a deep reason; something is simply wrong, and finding it helps real pages. A month of this cut many such ratios by an order of magnitude: canvas `fillStyle` parsing went from about 90x slower than Chromium to about 2x ([#11300](https://github.com/LadybirdBrowser/ladybird/pull/11300)), `replaceChildren()` from 13x to under 4x ([#11306](https://github.com/LadybirdBrowser/ladybird/pull/11306)), and list insertion and removal from over 120x to under 20x ([#11389](https://github.com/LadybirdBrowser/ladybird/pull/11389)). (These comparisons are against Chromium running without its JIT, and we're still slower in most of them, but the ratios are much less awful than they were. :^))
+Part of the push is systematic: we benchmark individual operations against other browsers, find the ones where we're drastically slower, and track down why. A DOM operation that's 100x slower than Chromium's usually isn't 100x slower for a deep reason; something is simply wrong, and finding it helps real pages. A month of this cut many such ratios by an order of magnitude: canvas `fillStyle` parsing went from about 90x slower than Chromium to about 2x ([#11300](https://github.com/LadybirdBrowser/ladybird/pull/11300)), `replaceChildren()` from 13x to under 4x ([#11306](https://github.com/LadybirdBrowser/ladybird/pull/11306)), and list insertion and removal from over 120x to under 20x ([#11389](https://github.com/LadybirdBrowser/ladybird/pull/11389)).
 
 The JavaScript engine got its own batch of fast paths, for property access ([#11175](https://github.com/LadybirdBrowser/ladybird/pull/11175)), spread ([#11383](https://github.com/LadybirdBrowser/ladybird/pull/11383)), promise combinators ([#11374](https://github.com/LadybirdBrowser/ladybird/pull/11374)), and `JSON.stringify`, which is now within about 15% of V8 on our benchmark ([#11329](https://github.com/LadybirdBrowser/ladybird/pull/11329)). The most satisfying fix: arrays that temporarily went sparse used to stay in slow hash-table storage forever. 30 lines later, Minecraft4k went from 10.2 to 14.5 FPS ([#11423](https://github.com/LadybirdBrowser/ladybird/pull/11423)).
-
-The next three sections are part of the same push.
 
 ### A new style engine
 
@@ -134,7 +132,7 @@ Historically, when something changes, browser engines have marked everything the
 
 Correctness is the hard part. A plain, cache-free evaluator serves as the reference implementation, and every fast path is checked against it. The engine's input stream can also be recorded from a real browsing session and replayed deterministically; during development we replayed recordings of real sites, millions of events each, and treated any output divergence as a failure.
 
-On many workloads the new engine is still slower than that approach, and there's a lot of tuning ahead. But on StyleBench, which measures exactly this kind of incremental restyling, we're now in the same range as the major engines. Here's where the month ended, on an M3 MacBook Pro (a different machine than the benchmark runner behind the charts above, hence the different Ladybird score):
+On many workloads the new engine is still slower than that approach, and there's a lot of tuning ahead. But on StyleBench, which measures exactly this kind of incremental restyling, we're now in the same range as the major engines. Here's where the month ended, on an M3 MacBook Pro:
 
 <img
   src="/assets/img/newsletter-aug-2026-stylebench.png"
@@ -142,7 +140,7 @@ On many workloads the new engine is still slower than that approach, and there's
   alt="Bar chart of StyleBench scores on an M3 MacBook Pro at the end of August 2026: Firefox 232.8, Safari 129.5, Ladybird 116.3, Chrome 103.8"
 />
 
-Firefox is still well ahead. But this engine is a month old, and there are plenty of optimizations left to find.
+Firefox is still well ahead. But this engine is a month old, and there are plenty of optimizations left to find. :^)
 
 ### Caching layout results
 
@@ -154,15 +152,13 @@ The rest of the work went into making cache hits more likely. The cache original
 
 Together with the new style engine, this work is where most of the benchmark movement above came from.
 
-### Running CSS animations on the compositor
+### Running CSS animations off the main thread
 
-A running CSS animation used to wake the page process at 60Hz to recompute style, rebuild paint state and record a new display list, even though the animation's whole timeline is known from its keyframes.
+A running CSS animation used to wake the main thread at 60Hz to recompute style, rebuild paint state and record a new display list, competing with JavaScript for the same thread, even though the animation's whole timeline is known from its keyframes.
 
-Now, eligible opacity and transform animations are described once, as their resolved keyframes, timing and easing, and handed to the compositor, which advances them on its own vsync ([#11470](https://github.com/LadybirdBrowser/ladybird/pull/11470)). The page process no longer wakes up for the animation itself while it runs. When script asks about an animation, via `getComputedStyle`, `currentTime` or `playState`, we sample it on demand, so answers are never stale. A finite animation gets exactly one wake-up timer, at its end, to fire `animationend`.
+Now, eligible opacity and transform animations are described once, as their resolved keyframes, timing and easing, and handed to the compositor, which advances them on its own vsync ([#11470](https://github.com/LadybirdBrowser/ladybird/pull/11470)). The main thread isn't involved while the animation runs. When script asks about an animation, via `getComputedStyle`, `currentTime` or `playState`, we sample it on demand, so answers are never stale. A finite animation gets exactly one wake-up timer, at its end, to fire `animationend`.
 
-There are a lot of edge cases. Content that starts at `opacity: 0` stays in the display list so the compositor has something to reveal. When an IntersectionObserver is watching, an animation is only handed off if its motion provably can't change what the observer would see. And offscreen animations don't run anywhere.
-
-The result: animations stay smooth while the page is busy, and a page full of animation should cost less power. Custom properties inside keyframes also animate properly now ([#11477](https://github.com/LadybirdBrowser/ladybird/pull/11477)).
+The result: animations stay smooth even while the main thread is busy running JavaScript, and a page full of animation should cost less power. Custom properties inside keyframes also animate properly now ([#11477](https://github.com/LadybirdBrowser/ladybird/pull/11477)).
 
 ### More of LibWeb in Rust
 
@@ -173,9 +169,9 @@ July's newsletter covered moving style and layout to Rust. In August, Rust becam
 - **The painting pipeline**, including display list recording and hit testing, was ported ([#11222](https://github.com/LadybirdBrowser/ladybird/pull/11222)), and the old C++ paintable objects were deleted ([#11273](https://github.com/LadybirdBrowser/ladybird/pull/11273)).
 - **Strings** now share one representation between the two languages, so text crosses the boundary without copying ([#11278](https://github.com/LadybirdBrowser/ladybird/pull/11278)).
 
-### WebAssembly compiles in its own process
+### A dedicated WebAssembly compiler service
 
-Compiling Wasm used to happen by forking inside each page process, which collided with sandbox restrictions, so on many systems we silently fell back to the interpreter. There's now a dedicated WasmCompiler process with its own minimal sandbox ([#11133](https://github.com/LadybirdBrowser/ladybird/pull/11133)). Page renderers talk to it over IPC and lose their fork permission entirely, so this tightened the sandbox and sped things up at the same time. It's why those Strava maps load in about half the time on a cold visit.
+Wasm compilation already ran outside the page process, but each page process forked its own compiler, and that forking collided with sandbox restrictions; on many systems we silently fell back to the interpreter. The browser process now launches a single WasmCompiler service with its own minimal sandbox, and page processes reach it over IPC and lose their fork permission entirely ([#11133](https://github.com/LadybirdBrowser/ladybird/pull/11133)). This tightened the sandbox and sped things up at the same time: it's why those Strava maps load in about half the time on a cold visit.
 
 ### Caging JavaScript values
 
@@ -199,7 +195,7 @@ The biggest chunk in the diff: about 2,500 referrer-policy subtests covering how
 
 - **WebGL works on Windows**, through ANGLE's Direct3D 11 backend. It was previously compiled out entirely ([#11312](https://github.com/LadybirdBrowser/ladybird/pull/11312)).
 - **JPEG XL decoding** switched to [jxl-rs](https://github.com/libjxl/jxl-rs), the Rust decoder that Chrome and Firefox are adopting for their announced JPEG XL support ([#11386](https://github.com/LadybirdBrowser/ladybird/pull/11386)).
-- **Hidden and occluded windows stop doing work**: no rasterization, no smooth-scrolling ticks, no frame presents for pages you can't see ([#11365](https://github.com/LadybirdBrowser/ladybird/pull/11365)). Together with compositor animations, this should help battery life.
+- **Hidden and occluded windows stop doing work**: no rasterization, no smooth-scrolling ticks, no frame presents for pages you can't see ([#11365](https://github.com/LadybirdBrowser/ladybird/pull/11365)). Together with off-the-main-thread animations, this should help battery life.
 - **Session history and navigation moved to the browser process** ([#11116](https://github.com/LadybirdBrowser/ladybird/pull/11116), [#11270](https://github.com/LadybirdBrowser/ladybird/pull/11270)), a prerequisite for site isolation.
 - **The DOM was split from its JavaScript wrappers** ([#9973](https://github.com/LadybirdBrowser/ladybird/pull/9973)). A DOM node now carries no JavaScript object state until script actually touches it, which reduces memory usage. It also lets the same DOM have separate wrappers per "world", the isolation that browser extension content scripts require, so this is a step toward extension support.
 - **System fonts are discovered once** and handed to helper processes as a read-only catalog, so those processes no longer need sandbox access to font directories ([#11465](https://github.com/LadybirdBrowser/ladybird/pull/11465)).

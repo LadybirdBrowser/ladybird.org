@@ -17,7 +17,7 @@ You can see everyone currently supporting the project on our [sponsors page](/#s
 
 ### Video on Twitch, and more formats on YouTube
 
-Media Source Extensions now understands fragmented MP4, which opens up H.264, HEVC and AV1 video the way most streaming sites deliver it ([#11251](https://github.com/LadybirdBrowser/ladybird/pull/11251)). Twitch streams now play, and Plex videos start playing (with a first-load quirk we're still working on). YouTube already worked via VP8/VP9; it can now also play the videos that are only available in H.264, and AV1 where offered.
+Our implementation of Media Source Extensions gained support for fragmented MP4, as well as the AVC (H.264), HEVC (H.265), AV1, and AAC codecs, with support queries now communicating our real capabilities ([#11251](https://github.com/LadybirdBrowser/ladybird/pull/11251)). This allows us to play adaptive-bitrate video on many more sites, including Twitch and Plex. YouTube already worked in Ladybird since all videos are available as VP9/Opus in WebM, but some older/less popular videos only have multiple quality levels in AVC, and higher qualities (especially 8K) are often only served as AV1.
 
 We also fixed a batch of playback bugs: hovering YouTube's video-card previews no longer crashes ([#10992](https://github.com/LadybirdBrowser/ladybird/pull/10992)), players using `preload="none"` no longer hang ([#11454](https://github.com/LadybirdBrowser/ladybird/pull/11454)), and HLS.js-based players start playing ([#11480](https://github.com/LadybirdBrowser/ladybird/pull/11480)).
 

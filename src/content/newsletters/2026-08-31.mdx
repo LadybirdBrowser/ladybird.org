@@ -5,7 +5,7 @@ date: 2026-08-31
 draft: false
 ---
 
-Hello friends! In August Ladybird gained video playback on Twitch, more video formats on YouTube, CSS scroll snap, JavaScript debugging in DevTools, downloads you can pause and resume, and session restore. It's also the month engine performance went from occasional attention to a sustained focus, with a new style engine, layout caching, and CSS animations moving off the main thread. The exploit cage grew to cover the JavaScript heap, and CSS parsing and the painting pipeline moved to Rust.
+Hello friends! In August Ladybird gained video playback on Twitch, more video formats on YouTube, CSS scroll snap, JavaScript debugging in DevTools, downloads you can pause and resume, and session restore. It's also the month engine performance went from occasional attention to a sustained focus, with a new style engine, layout caching, and CSS animations moving off the main thread. We added caging for cell pointers stored in JavaScript values, and CSS parsing and the painting pipeline moved to Rust.
 
 ### Welcoming new sponsors
 
@@ -125,7 +125,7 @@ The JavaScript engine got its own batch of fast paths, for property access ([#11
 
 ### A new style engine
 
-We replaced our selector matching, style invalidation, cascade and computed-style retention with a new engine ([#11088](https://github.com/LadybirdBrowser/ladybird/pull/11088)). The goal: style work proportional to what changed, not to what might have changed.
+We replaced our selector matching, style invalidation, cascade and computed-style retention with a new engine ([#11088](https://github.com/LadybirdBrowser/ladybird/pull/11088)). We want style work to be proportional to what changed, not to what might have changed.
 
 Historically, when something changes, browser engines have marked everything the change might affect, then re-matched and re-cascaded all of it. Modern engines narrow that set with techniques like invalidation sets and style sharing, but the pattern is the same, and opening a menu can still invalidate thousands of elements to change the style of a few dozen. The new engine treats DOM mutations, state changes and CSSOM edits as a stream of typed deltas, routes each delta to the selectors that depend on it, and stops as soon as an output is unchanged. In database terms: selectors are standing queries, and computed styles are materialized views kept up to date incrementally.
 
@@ -157,7 +157,7 @@ A running CSS animation used to wake the main thread at 60Hz to recompute style,
 
 Now, eligible opacity and transform animations are described once, as their resolved keyframes, timing and easing, and handed to the compositor, which advances them on its own vsync ([#11470](https://github.com/LadybirdBrowser/ladybird/pull/11470)). The main thread isn't involved while the animation runs. When script asks about an animation, via `getComputedStyle`, `currentTime` or `playState`, we sample it on demand, so answers are never stale. A finite animation gets exactly one wake-up timer, at its end, to fire `animationend`.
 
-The result: animations stay smooth even while the main thread is busy running JavaScript, and a page full of animation should cost less power. Custom properties inside keyframes also animate properly now ([#11477](https://github.com/LadybirdBrowser/ladybird/pull/11477)).
+Animations now stay smooth even while the main thread is busy running JavaScript, and a page full of animation should use less power. Custom properties inside keyframes also animate properly now ([#11477](https://github.com/LadybirdBrowser/ladybird/pull/11477)).
 
 ### More of LibWeb in Rust
 
@@ -174,7 +174,7 @@ Wasm compilation already ran outside the page process, but each page process for
 
 ### Caging JavaScript values
 
-Last month we caged `ArrayBuffer` contents and Wasm memories. This month we extended the cage to the JavaScript heap. Previously, corrupting one NaN-boxed value in the GC heap was enough to point the engine at arbitrary process memory. Now all GC heap blocks live in a single reserved region, and cell payloads are stored as offsets into it, masked on decode, so a forged value can only land inside the region ([#11086](https://github.com/LadybirdBrowser/ladybird/pull/11086), [#11316](https://github.com/LadybirdBrowser/ladybird/pull/11316)).
+Last month we caged `ArrayBuffer` contents and Wasm memories. This month we added caging for cell pointers stored in NaN-boxed JavaScript values. This limits where a corrupted value can point; it does not fully cage the JavaScript heap. Previously, corrupting one NaN-boxed value in the GC heap was enough to point the engine at arbitrary process memory. Now all GC heap blocks live in a single reserved region, and cell payloads are stored as offsets into it, masked on decode, so a forged value can only land inside the region ([#11086](https://github.com/LadybirdBrowser/ladybird/pull/11086), [#11316](https://github.com/LadybirdBrowser/ladybird/pull/11316)).
 
 In the interpreter's generated code the cage base is pinned in a CPU register, so unboxing a value there is a mask and an add, with no memory loads. Freshly generated bytecode is also stored in read-only mappings now, so heap corruption can't rewrite instruction streams directly.
 
@@ -188,7 +188,7 @@ In the interpreter's generated code the cage base is pinned in a CPU register, s
 
 Our [WPT](https://web-platform-tests.org) score went from 2,079,020 to 2,088,677 this month, a gain of 9,657 subtests. For scale, July's gain was 108.
 
-The biggest chunk in the diff: about 2,500 referrer-policy subtests covering how the referrer propagates through navigations, iframes and `srcdoc` documents began passing late in the month, and we now pass 99% of that suite. The rest tracks the month's feature work: 3D transforms, scroll snap and Media Source Extensions all show up in the diff.
+The biggest gain came from about 2,500 referrer-policy subtests covering how the referrer propagates through navigations, iframes and `srcdoc` documents. These began passing late in the month, and we now pass 99% of that suite. The rest tracks the month's feature work: 3D transforms, scroll snap and Media Source Extensions all show up in the diff.
 
 ### Other notable changes
 
@@ -202,6 +202,6 @@ The biggest chunk in the diff: about 2,500 referrer-policy subtests covering how
 
 ### The road to alpha
 
-We've said the first alpha starts in 2026, and that's still the plan. What's left before it can start is mostly not engine work: crash reporting that doesn't require launching from a terminal, signed installable builds for macOS and Linux, an auto-update mechanism so alpha users get improvements as fast as we make them, a small first-run experience (including optional adblock filter lists, like EasyList, that update automatically), and a place to download it. The engine will not be finished when the alpha starts. That's what the alpha is for.
+We've said the first alpha starts in 2026, and that's still the plan. What's left before it can start is mostly not engine work: crash reporting that doesn't require launching from a terminal, signed installable builds for macOS and Linux, an auto-update mechanism so alpha users get improvements as fast as we make them, a small first-run experience (including optional adblock filter lists, like EasyList, that update automatically), and a place to download it. The engine will not be finished when the alpha starts. That's what the alpha is for!
 
 That's it for August. Thanks for reading, and we'll see you next month!

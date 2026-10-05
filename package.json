@@ -13,23 +13,23 @@
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,md,mdx,js,cjs,mjs,jsx}\""
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.10",
     "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/typography": "^0.5.16",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/bun": "latest",
-    "fast-xml-parser": "^4.5.3",
+    "fast-xml-parser": "^4.5.7",
     "kleur": "^4.1.5",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.9",
     "prettier-plugin-astro": "^0.14.1"
   },
   "dependencies": {
     "@astrojs/mdx": "3.1.3",
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.4.0",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "3.6.0",
     "@astrojs/tailwind": "^5.1.5",
-    "@astrojs/ts-plugin": "^1.10.4",
-    "astro": "^4.16.18",
-    "tailwindcss": "^3.4.17"
+    "@astrojs/ts-plugin": "^1.10.12",
+    "astro": "^4.16.19",
+    "tailwindcss": "^3.4.19"
   }
 }

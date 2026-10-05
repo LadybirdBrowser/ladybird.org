@@ -169,9 +169,19 @@ We used to maintain several GUI frontends. Qt is now the only one, and we're con
 
 We reworked graphics presentation on macOS so compositor frames go directly to a native display layer. This removes an extra Metal rendering pass and a wait for a drawable on the UI thread, improving graphics performance across power modes. The difference is especially noticeable in Low Power Mode ([#12240](https://github.com/LadybirdBrowser/ladybird/pull/12240)).
 
-Helper crashes now leave local diagnostic reports on macOS and Linux, including backtraces, assertion failures, and Rust panic details. The crash overlay and settings can open the reports folder, so you can retrieve diagnostics for a bug report without launching from a terminal. Nothing is uploaded automatically ([#11625](https://github.com/LadybirdBrowser/ladybird/pull/11625)).
+Ladybird now has a crash reporter. When a helper process crashes on macOS or Linux, it saves a local report with a backtrace, assertion failure or Rust panic details, and build information. Reports contain no browsing data or local file paths ([#11625](https://github.com/LadybirdBrowser/ladybird/pull/11625)).
 
-Automatic filter-list updates and crash reports you can retrieve without a terminal were two items on [last month's road to alpha](/newsletter/2026-08-31/). Those pieces are now in place.
+When a page crashes, the crash screen shows what the report contains and lets you add a few words about what you were doing. You decide whether to send it to our crash report service ([#12298](https://github.com/LadybirdBrowser/ladybird/pull/12298)).
+
+<img
+  src="/assets/img/newsletter-sep-2026-crash-reporter.png"
+  style="max-width: 100%;"
+  alt="Ladybird's crash screen titled 'Ladybird flew off-course!' with an optional text field asking what you were doing, a Report details disclosure, and Send report, Don't send, and Reload page buttons"
+/>
+
+The saved reports are also available in a folder you can open from the General tab in settings.
+
+Automatic filter-list updates and crash reporting without a terminal were two items on [last month's road to alpha](/newsletter/2026-08-31/). Those pieces are now in place.
 
 {/* TODO: Add Andreas's authoritative September WPT figures. Public snapshots have changing suite totals. Confirm any off-repo sponsor news. */}
 

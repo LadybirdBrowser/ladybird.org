@@ -1,0 +1,178 @@
+---
+title: This Month in Ladybird - September 2026
+description: Security hardening with Trail of Bits, costly idle pages, smoother animation, hardware video decoding, and more of the web working in Ladybird.
+date: 2026-09-30
+draft: true
+---
+
+Hello friends! In September we spent a week working with Trail of Bits security engineers through [Patch the Planet](https://blog.trailofbits.com/2026/06/22/introducing-patch-the-planet/), sponsored by OpenAI. We also cut CPU and memory waste on idle pages, added hardware video decoding on macOS, and got more drawing and animation off the main thread. New settings let you darken pages and subscribe to filter lists that update automatically. You can paste images into web pages too. :^)
+
+### Sponsors
+
+Ladybird is entirely funded by companies and individuals who believe in the open web. You can see everyone supporting the project on our [sponsors page](/#sponsors), and we're grateful to all of them. If you're interested in sponsoring, please [contact us](mailto:contact@ladybird.org).
+
+### A week with Trail of Bits
+
+The engineers used a swarm of frontier models from OpenAI to find security issues and reported everything they found. We'd never had Ladybird scrutinized at that intensity before. They also crafted a few full exploit chains. The work left us with a considerable security backlog and helped sharpen our security model.
+
+Our security model has to hold even if a malicious page exploits a bug and takes over its renderer, the process that handles the page's HTML, CSS, and JavaScript. Other processes must treat its messages as untrusted and validate the requested operations. Each process needs as little system access as its job allows, and different sites need separate processes.
+
+For example, a compromised renderer could ask the browser to read or overwrite any site's HttpOnly cookies, which are deliberately hidden from page JavaScript. The network process now handles cookies for HTTP responses and WebSocket handshakes, and the browser rejects renderer requests for that privileged access ([#12113](https://github.com/LadybirdBrowser/ladybird/pull/12113)).
+
+We also tightened the helper sandboxes:
+
+- **macOS:** tighter service and file access, plus the hardened runtime to restrict executing code from writable memory ([#12102](https://github.com/LadybirdBrowser/ladybird/pull/12102)).
+- **Linux:** helpers can no longer connect to arbitrary UNIX sockets in the user's session. Landlock filesystem restrictions are now applied before GPU-driver threads start, so those threads are confined too. Helpers refuse to start without Landlock by default ([#12099](https://github.com/LadybirdBrowser/ladybird/pull/12099), [#12110](https://github.com/LadybirdBrowser/ladybird/pull/12110), [#12146](https://github.com/LadybirdBrowser/ladybird/pull/12146)).
+
+Cross-site iframes can now live in separate processes, and our web test runner exercises that path by default ([#11794](https://github.com/LadybirdBrowser/ladybird/pull/11794), [#12129](https://github.com/LadybirdBrowser/ladybird/pull/12129)). Normal browsing still isolates at the top level; embedded frames stay with their containing page.
+
+Security work is ongoing and will remain part of Ladybird for as long as the project exists. We're grateful to Trail of Bits for their efforts and OpenAI for supporting the work!
+
+### Dark pages and filter list subscriptions
+
+Ladybird can now darken pages that don't offer their own dark theme. Enable force-dark mode in `about:settings`; here's Phoronix with it off and on ([#11475](https://github.com/LadybirdBrowser/ladybird/pull/11475)).
+
+<img
+  src="/assets/img/newsletter-sep-2026-force-dark.png"
+  style="max-width: 100%;"
+  alt="Phoronix in Ladybird with force-dark disabled on the left and enabled on the right, turning the white page background dark while keeping photographs in their original colors"
+/>
+
+We adjust text, background, and border colors at paint time, while classifying images separately. The photos above keep their original colors. The architecture comes from Chromium; our lightness adjustment uses Oklab, a color space that separates lightness from hue.
+
+**Filter list subscriptions** let Ladybird download lists and keep them up to date for you ([#11708](https://github.com/LadybirdBrowser/ladybird/pull/11708)). In the new Blocking tab in settings, you can choose EasyList and other lists for ads, tracking, and cookie notices, or add a list URL of your own. Enable automatic updates and Ladybird checks for fresh copies at startup and daily. Changes take effect on the pages you already have open.
+
+### Hardware decoding and a media process
+
+On one Mac, video playback that used roughly 45-90% CPU with FFmpeg dropped to about 20% with VideoToolbox hardware decoding ([#11665](https://github.com/LadybirdBrowser/ladybird/pull/11665)). The VideoToolbox path supports H.264, HEVC, VP9, and AV1, using hardware acceleration where available. Decoded frames reach the compositor without copying their pixels.
+
+The decoding and playback pipeline for `<audio>` and `<video>` also moved into a separate media process ([#12181](https://github.com/LadybirdBrowser/ladybird/pull/12181)). Video-frame recycling no longer depends on the renderer's main thread, and media-buffer appends are processed asynchronously. A media-process crash becomes a playback error, and the renderer no longer needs decoder-service permissions:
+
+<img
+  src="/assets/img/newsletter-sep-2026-media-process.png"
+  style="max-width: 100%;"
+  alt="Simplified video pipeline: the renderer sends coded bytes to the media process over IPC; the media process decodes them and passes video frames through shared memory to the compositor for presentation"
+/>
+
+To prepare for distributing Ladybird, we removed the patent-encumbered H.264, HEVC, and AAC decoders from our bundled FFmpeg build. Linux loads them from system FFmpeg when available; macOS uses VideoToolbox and AudioToolbox ([#12164](https://github.com/LadybirdBrowser/ladybird/pull/12164), [#12079](https://github.com/LadybirdBrowser/ladybird/pull/12079)).
+
+### Less CPU and memory waste
+
+An ad library on Politico was waiting for a script our content blocker had blocked. It kept checking with a chain of `setTimeout(..., 0)` callbacks, which we ran about 71,000 times a second. We weren't carrying the timer chain's nesting level between callbacks, so the required 4 ms minimum delay never kicked in. With that fixed, the same polling runs about 500 times a second ([#11586](https://github.com/LadybirdBrowser/ladybird/pull/11586)).
+
+Hidden tabs on ProPublica and Al Jazeera were also spending CPU on reCAPTCHA timer chains. We now batch and throttle hidden-page timer wake-ups and find idle callbacks by ID instead of scanning their queues ([#11612](https://github.com/LadybirdBrowser/ladybird/pull/11612)).
+
+GitHub had another expensive way to sit idle: CI spinners outside the viewport kept both the renderer and compositor at roughly 10% CPU each. Stopping offscreen animation frames and skipping unchanged frame presentations brought both down to around 0.1% ([#11715](https://github.com/LadybirdBrowser/ladybird/pull/11715)).
+
+Reloading a news page left its previous documents alive in Ladybird. In profiling, a Politico tab reached 11 GB after four hours; an El País tab reached 15 GB after twenty. We fixed references held by navigation requests and pending animation-frame and idle callbacks, so replaced documents can be collected ([#11645](https://github.com/LadybirdBrowser/ladybird/pull/11645), [#11686](https://github.com/LadybirdBrowser/ladybird/pull/11686)).
+
+Across September, scores on our continuous Linux runner rose by about 30% in Speedometer 2, 50% in Speedometer 3, and 80% in StyleBench. Speedometer exercises interactive web apps; StyleBench focuses on CSS recalculation as a page changes.
+
+<img
+  src="/assets/img/newsletter-sep-2026-benchmarks.png"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Ladybird's September 2026 Linux benchmark scores: Speedometer 2 rising from about 65 to 84, Speedometer 3 from about 3.9 to 5.9, and StyleBench from about 85 to 155, with intermediate fluctuations"
+/>
+
+A native Task Manager window replaces `about:processes`. It has a searchable process tree, sortable CPU and memory columns, and an End Process action ([#11713](https://github.com/LadybirdBrowser/ladybird/pull/11713)).
+
+<img
+  src="/assets/img/newsletter-sep-2026-task-manager.png"
+  style="max-width: 100%;"
+  alt="Ladybird's native task manager listing browser helpers and page processes with their CPU usage, memory usage, and an End Process button"
+/>
+
+### While JavaScript is busy
+
+We expanded August's compositor animation support to more opacity and transform cases, plus eligible background-color and filter animations. The compositor assembles frames for display and can run these animations independently of the page's main thread ([#11559](https://github.com/LadybirdBrowser/ladybird/pull/11559), [#11561](https://github.com/LadybirdBrowser/ladybird/pull/11561)).
+
+The video below shows this on OpenAI's Codex page: the company logos animate smoothly while its JavaScript ASCII effect keeps the main thread busy.
+
+<video
+  poster="/assets/img/newsletter-sep-2026-compositor-animations-poster.png"
+  controls
+  muted
+  loop
+  playsinline
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source
+    src="/assets/img/newsletter-sep-2026-compositor-animations.mp4"
+    type="video/mp4"
+  />
+</video>
+
+`OffscreenCanvas` now has working 2D, WebGL, and WebGL2 rendering in pages and workers ([#12211](https://github.com/LadybirdBrowser/ladybird/pull/12211)). A page can hand its canvas to a dedicated worker, which sends frames directly to the compositor while the main thread does other work. The APIs are enabled by default.
+
+Both canvases below use the same drawing code. We block the main thread for six seconds; the worker keeps drawing:
+
+<video
+  poster="/assets/img/newsletter-sep-2026-offscreen-canvas-poster.png"
+  controls
+  muted
+  loop
+  playsinline
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source
+    src="/assets/img/newsletter-sep-2026-offscreen-canvas.mp4"
+    type="video/mp4"
+  />
+</video>
+
+This clip replays animation timing measured in Ladybird, rendered frame by frame in Ladybird.
+
+### Reusing work and sharing data
+
+The paint cache can now reuse a whole stacking context (a group of elements with its own painting order) without visiting each nested context again. For an unchanged viewport, we can reuse the entire display list of drawing instructions sent to the compositor ([#11525](https://github.com/LadybirdBrowser/ladybird/pull/11525)).
+
+The tree that determines painting order now updates incrementally, avoiding a full rebuild after every layout and letting the cache skip unchanged parts of the page ([#11495](https://github.com/LadybirdBrowser/ladybird/pull/11495)).
+
+On Rakuten, avoiding font-file copies and sharing and compacting CSS data saved about 500 MB in profiling ([#11762](https://github.com/LadybirdBrowser/ladybird/pull/11762)). We also removed duplicate C++ stylesheet storage: rules and values now live in shared Rust-owned storage that the style engine reads directly. C++ objects that expose individual rules to JavaScript are now created on demand ([#11659](https://github.com/LadybirdBrowser/ladybird/pull/11659)).
+
+### Image pasting and site fixes
+
+You can now copy an image from the desktop and paste it into editable content on a page. The demo below shows it working on Google ([#11514](https://github.com/LadybirdBrowser/ladybird/pull/11514)):
+
+<video
+  poster="/assets/img/newsletter-sep-2026-image-paste-poster.png"
+  controls
+  muted
+  playsinline
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source
+    src="/assets/img/newsletter-sep-2026-image-paste.mp4"
+    type="video/mp4"
+  />
+</video>
+
+Accented characters and IME input could disappear in Discord and other Slate-based editors as you continued typing. We now fire composition events so editors can recognize in-progress input and avoid overwriting it with stale document state ([#11280](https://github.com/LadybirdBrowser/ladybird/pull/11280)).
+
+GitHub's pull-request tree now shows files as well as directories. Its file rows use `content-visibility` to skip offscreen rendering and `contain-intrinsic-size` to reserve their height. We hadn't implemented those fallback sizes, so the rows collapsed to zero. They now reserve their space correctly ([#11508](https://github.com/LadybirdBrowser/ladybird/pull/11508)):
+
+<img
+  src="/assets/img/newsletter-sep-2026-github-file-tree.png"
+  style="max-width: 100%;"
+  alt="GitHub's pull-request file tree before and after the fix: the left pane lists only directories; the right pane also lists files"
+/>
+
+Other site fixes:
+
+- **Al Jazeera:** articles render instead of just the footer. Site-compatibility rules can now expose selected experimental interfaces per site, letting Al Jazeera pass its Permissions API feature check ([#11539](https://github.com/LadybirdBrowser/ladybird/pull/11539)).
+- **Japan Times:** the login button now works. The preload scanner now fetches module scripts in the correct CORS request mode ([#11560](https://github.com/LadybirdBrowser/ladybird/pull/11560)).
+- **Shopify:** we implemented CSS scroll-state queries. Shopify uses `scroll-state(stuck: top)` to give its sticky header a background once it sticks to the top ([#12067](https://github.com/LadybirdBrowser/ladybird/pull/12067)).
+
+### Getting ready for alpha testing
+
+We used to maintain several GUI frontends. Qt is now the only one, and we're concentrating all our GUI development there ([#12267](https://github.com/LadybirdBrowser/ladybird/pull/12267)).
+
+We reworked graphics presentation on macOS so compositor frames go directly to a native display layer. This removes an extra Metal rendering pass and a wait for a drawable on the UI thread, improving graphics performance across power modes. The difference is especially noticeable in Low Power Mode ([#12240](https://github.com/LadybirdBrowser/ladybird/pull/12240)).
+
+Helper crashes now leave local diagnostic reports on macOS and Linux, including backtraces, assertion failures, and Rust panic details. The crash overlay and settings can open the reports folder, so you can retrieve diagnostics for a bug report without launching from a terminal. Nothing is uploaded automatically ([#11625](https://github.com/LadybirdBrowser/ladybird/pull/11625)).
+
+Automatic filter-list updates and crash reports you can retrieve without a terminal were two items on [last month's road to alpha](/newsletter/2026-08-31/). Those pieces are now in place.
+
+{/* TODO: Add Andreas's authoritative September WPT figures. Public snapshots have changing suite totals. Confirm any off-repo sponsor news. */}
+
+That's it for September. Thanks for reading, and we'll see you next month!

@@ -3,6 +3,7 @@ import {
   currentSponsors,
   type SponsorTier,
 } from "@/components/landing/sponsors";
+import { logoWidth } from "@/components/landing/logo-size";
 
 type Props = {
   sponsors?: SponsorTier[];
@@ -34,27 +35,39 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
           <h4 class="tier-name">{tier.name}</h4>
           {hasLogos(tier) ? (
             <div class="tier-logos">
-              {tier.sponsors.map((s) => (
-                <div class="logo-card">
-                  {s.href ? (
-                    <a href={s.href} rel="nofollow">
-                      {s.logo ? (
-                        <img
-                          class:list={[s.logoClass]}
-                          src={s.logo}
-                          alt={s.name}
-                        />
-                      ) : (
-                        <span class="card-name">{s.name}</span>
-                      )}
-                    </a>
-                  ) : s.logo ? (
-                    <img class:list={[s.logoClass]} src={s.logo} alt={s.name} />
-                  ) : (
-                    <span class="card-name">{s.name}</span>
-                  )}
-                </div>
-              ))}
+              {tier.sponsors.map((s) => {
+                const logo = s.logo ? (
+                  <>
+                    <img
+                      class:list={[{ "only-dark": s.logoLight }]}
+                      style={`--logo-width: ${logoWidth(s.logo)}`}
+                      src={s.logo}
+                      alt={s.name}
+                    />
+                    {s.logoLight && (
+                      <img
+                        class="only-light"
+                        style={`--logo-width: ${logoWidth(s.logoLight)}`}
+                        src={s.logoLight}
+                        alt={s.name}
+                      />
+                    )}
+                  </>
+                ) : (
+                  <span class="card-name">{s.name}</span>
+                );
+                return (
+                  <div class="logo-card">
+                    {s.href ? (
+                      <a href={s.href} rel="nofollow">
+                        {logo}
+                      </a>
+                    ) : (
+                      logo
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <p class="tier-text">
@@ -95,8 +108,7 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     margin-top: -12px;
     margin-bottom: 32px;
     color: var(--text-muted);
-    font-size: 15px;
-    line-height: 1.7;
+    font-size: var(--text-sm);
   }
 
   .tier {
@@ -109,11 +121,9 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
 
   .tier-name {
     margin-bottom: 12px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-weight: var(--weight-medium);
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: var(--text-sm);
   }
 
   .tier-logos {
@@ -127,34 +137,31 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 20px;
+    height: 64px;
+    padding: 0 20px;
     background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    min-height: 56px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    --logo-height: 26px;
   }
 
   .logo-card a {
     display: flex;
     align-items: center;
+    max-width: 100%;
     text-decoration: none;
     color: var(--text-primary);
   }
 
+  /* --logo-width is set per logo by logoWidth() so all logos get similar area. */
   .logo-card img {
-    max-height: 28px;
-    max-width: 120px;
-    object-fit: contain;
-  }
-
-  .logo-card img.sponsor-logo--large {
-    height: 28px;
-    max-width: 120px;
-    max-height: 28px;
+    width: calc(var(--logo-height) * var(--logo-width));
+    height: auto;
+    max-width: 100%;
   }
 
   .card-name {
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: var(--weight-medium);
     color: var(--text-primary);
     white-space: nowrap;
@@ -164,7 +171,7 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     display: flex;
     flex-wrap: wrap;
     column-gap: 0.35em;
-    font-size: 14px;
+    font-size: var(--text-sm);
     line-height: 1.8;
   }
 
@@ -188,35 +195,17 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     }
 
     .logo-card {
-      padding: 10px 12px;
-      min-height: 44px;
+      height: 56px;
+      padding: 0 12px;
       min-width: 0;
-    }
-
-    .logo-card img {
-      max-height: 22px;
-      max-width: 100px;
-    }
-
-    .logo-card img.sponsor-logo--large {
-      height: 22px;
-      max-width: 100px;
-      max-height: 22px;
+      --logo-height: 21px;
     }
 
     .card-name {
-      font-size: 12px;
+      font-size: var(--text-xs);
       white-space: normal;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .tier-text {
-      font-size: 13px;
-    }
-
-    .sponsors-description {
-      font-size: 13px;
     }
   }
 </style>

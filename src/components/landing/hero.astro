@@ -2,58 +2,122 @@
   <div class="container">
     <h1>A truly independent<br />web browser</h1>
     <p class="hero-desc">
-      Ladybird is a new browser engine built from scratch. Not a fork. No user
-      monetization. Backed by a <a href="/organization/">501(c)(3) non-profit</a
+      Ladybird is a new browser engine built from scratch, backed by a <a
+        href="/organization/">501(c)(3) non-profit</a
       >.
     </p>
-    <div class="hero-meta">
-      <span><strong>Status:</strong> In active development</span>
-      <span><strong>Target:</strong> Alpha 2026 (Linux & macOS)</span>
-    </div>
+    <p class="hero-alpha">
+      Our first Alpha for macOS and Linux is coming later this year.
+    </p>
     <div class="hero-cta">
       <a href="/#contribute" class="btn">Get involved</a>
-      <a href="/#support" class="btn btn--outline">Support us</a>
+      <a href="/#support" class="btn btn--outline">Donate</a>
     </div>
+  </div>
+  <div class="container container-wide hero-shot">
+    <img
+      class="only-light"
+      src="/assets/img/hero-screenshot-light.webp"
+      width="1920"
+      height="1423"
+      loading="lazy"
+      alt="Ladybird showing the Wikipedia article about Ladybird"
+    />
+    <img
+      class="only-dark"
+      src="/assets/img/hero-screenshot-dark.webp"
+      width="1920"
+      height="1423"
+      loading="lazy"
+      alt="Ladybird showing the Wikipedia article about Ladybird"
+    />
   </div>
 </section>
 
 <style>
   .hero-landing {
-    padding: 80px 0 64px;
+    position: relative;
+    overflow: hidden;
+    padding: 96px 0 0;
     border-bottom: 1px solid var(--border);
   }
 
+  /* Soft brand-violet glow behind the headline. */
+  .hero-landing::before {
+    content: "";
+    position: absolute;
+    inset: -320px -10% auto auto;
+    width: min(900px, 90%);
+    aspect-ratio: 1;
+    background: radial-gradient(closest-side, var(--hero-glow), transparent);
+    pointer-events: none;
+  }
+
+  .hero-landing .container {
+    position: relative;
+  }
+
+  .hero-shot {
+    position: relative;
+    margin-top: 64px;
+  }
+
+  /* Sits behind the window itself (inside the screenshot's shadow margin). */
+  .hero-shot::before {
+    content: "";
+    position: absolute;
+    inset: 4% var(--gutter) 9%;
+    border-radius: 12px;
+    box-shadow: 0 0 140px 10px var(--screenshot-glow);
+    pointer-events: none;
+  }
+
+  /* The screenshot includes the macOS window shadow (about 4.7% on each side).
+     Overhang the container by that much so the window edges line up with the
+     content column and only the shadow spills into the margin. */
+  .hero-shot img {
+    position: relative;
+    width: 110.47%;
+    max-width: none;
+    height: auto;
+    margin-left: -5.24%;
+  }
+
   .hero-landing h1 {
-    font-size: 48px;
-    font-weight: var(--weight-light);
-    line-height: 1.15;
-    margin-bottom: 20px;
+    font-size: var(--text-hero);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
   }
 
   .hero-desc {
-    font-size: 18px;
-    max-width: 520px;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
+    font-size: var(--text-lg);
+    max-width: 580px;
+    margin-bottom: 24px;
+  }
+
+  .hero-alpha {
+    color: var(--text-primary);
+    margin-bottom: 32px;
+  }
+
+  .hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   @media (max-width: 640px) {
     .hero-landing {
-      padding: 48px 0 40px;
+      padding: 56px 0 0;
     }
 
-    .hero-landing h1 {
-      font-size: 32px;
-      line-height: 1.1;
-      margin-bottom: 16px;
+    .hero-shot {
+      margin-top: 40px;
     }
 
-    .hero-desc {
-      font-size: 16px;
-    }
-
-    .hero-meta {
-      margin-bottom: 24px;
+    .hero-landing::before {
+      width: 120%;
     }
 
     .hero-cta {
@@ -64,28 +128,5 @@
     .hero-cta .btn {
       text-align: center;
     }
-  }
-
-  .hero-desc a {
-    color: var(--color-accent);
-  }
-
-  .hero-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-size: 15px;
-    color: var(--text-muted);
-    margin-bottom: 32px;
-  }
-
-  .hero-meta strong {
-    color: var(--text-primary);
-  }
-
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
   }
 </style>

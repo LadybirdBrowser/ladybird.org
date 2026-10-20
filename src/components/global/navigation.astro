@@ -1,20 +1,59 @@
 <header>
   <div class="container nav-container">
     <a href="/" class="nav-logo">
-      <img src="/assets/img/logo-new.webp" alt="Ladybird" />
+      <img class="only-dark" src="/assets/img/logo-new.webp" alt="Ladybird" />
+      <img
+        class="only-light"
+        src="/assets/img/logo-new-light.webp"
+        alt="Ladybird"
+      />
     </a>
-    <button class="burger" aria-label="Menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
+    <div class="nav-buttons">
+      <button class="theme-toggle" aria-label="Toggle light and dark theme">
+        <svg
+          class="only-dark"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4"></circle>
+          <path
+            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+          ></path>
+        </svg>
+        <svg
+          class="only-light"
+          viewBox="0 0 24 24"
+          width="18"
+          height="18"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>
+        </svg>
+      </button>
+      <button class="burger" aria-label="Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
     <nav>
       <a href="/#about">About</a>
       <a href="/news/">News</a>
       <a href="/#contribute">Get involved</a>
       <a href="/#sponsors">Sponsors</a>
       <a href="/#faq">FAQ</a>
-      <a href="/#support">Support</a>
+      <a href="/#support">Donate</a>
     </nav>
   </div>
 </header>
@@ -34,6 +73,20 @@
       nav?.classList.remove("open");
     });
   });
+
+  // Flip to whichever theme is not currently showing, and remember it.
+  document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+    const root = document.documentElement;
+    const isDark =
+      root.dataset["theme"] === "dark" ||
+      (!root.dataset["theme"] &&
+        matchMedia("(prefers-color-scheme: dark)").matches);
+    const theme = isDark ? "light" : "dark";
+    root.dataset["theme"] = theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {}
+  });
 </script>
 
 <style>
@@ -42,8 +95,8 @@
     top: 0;
     z-index: 100;
     border-bottom: 1px solid var(--border);
-    padding: 20px 0;
-    background: rgba(0, 0, 0, 0.85);
+    padding: 18px 0;
+    background: var(--header-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
@@ -51,17 +104,45 @@
   .nav-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    gap: 16px 24px;
   }
 
   .nav-logo {
     text-decoration: none;
+    margin-right: auto;
   }
 
   .nav-logo img {
-    height: 24px;
+    height: 26px;
     width: auto;
+  }
+
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    order: 1;
+  }
+
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+
+  .theme-toggle:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
   }
 
   .burger {
@@ -71,7 +152,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    padding: 8px 4px;
   }
 
   .burger span {
@@ -98,14 +179,13 @@
 
   nav {
     display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
+    gap: 22px;
+    white-space: nowrap;
   }
 
   nav a {
-    font-size: 14px;
-    font-weight: var(--weight-normal);
-    color: var(--text-muted);
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -114,26 +194,30 @@
     color: var(--text-primary);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 760px) {
     header {
-      padding: 14px 0;
+      padding: 12px 0;
     }
 
     .nav-logo img {
-      height: 20px;
-      width: auto;
+      height: 22px;
     }
 
     .burger {
       display: flex;
     }
 
+    .nav-container {
+      flex-wrap: wrap;
+    }
+
     nav {
       display: none;
+      order: 2;
       width: 100%;
       flex-direction: column;
       gap: 0;
-      padding-top: 16px;
+      padding-top: 8px;
     }
 
     nav.open {
@@ -141,13 +225,9 @@
     }
 
     nav a {
-      font-size: 15px;
-      padding: 10px 0;
+      font-size: var(--text-md);
+      padding: 12px 0;
       border-top: 1px solid var(--border-light);
-    }
-
-    .nav-container {
-      flex-wrap: wrap;
     }
   }
 </style>

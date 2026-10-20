@@ -15,6 +15,15 @@ const defaultDescription =
 
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light dark" />
+<script is:inline>
+  // Apply a saved theme choice before first paint to avoid a flash.
+  try {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light" || theme === "dark")
+      document.documentElement.dataset.theme = theme;
+  } catch {}
+</script>
 <meta
   name="description"
   content={description !== undefined ? description : defaultDescription}

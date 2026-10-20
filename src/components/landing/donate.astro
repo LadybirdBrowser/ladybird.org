@@ -1,14 +1,10 @@
-<section id="support" class="section section--subtle">
+<section id="support" class="section">
   <div class="container">
     <h2 class="section-heading">Support the project</h2>
-    <p>
-      Ladybird is funded entirely by donations and sponsorships. No search
-      deals, no data collection, no ads. Just people and companies who believe
-      in an open web.
-    </p>
+    <p>Ladybird is funded entirely by donations and sponsorships.</p>
 
     <div class="donate-grid">
-      <div>
+      <div class="panel">
         <h3>Become a sponsor</h3>
         <p>
           Sponsors are recognized on our website and in project updates.
@@ -27,18 +23,17 @@
         </p>
       </div>
 
-      <div>
+      <div class="panel">
         <h3>Individual donations</h3>
         <p>
           One-time or recurring monthly donations via
-          <a href="https://donorbox.org/ladybird">Donorbox</a>. Every
-          contribution helps.
+          <a href="https://donorbox.org/ladybird">Donorbox</a>.
         </p>
         <a href="https://donorbox.org/ladybird" class="btn">Donate</a>
         <p class="donate-note">
           For larger donations, please
-          <a href="mailto:contact@ladybird.org">contact us directly</a> to avoid processing
-          fees.
+          <a href="mailto:contact@ladybird.org">contact us directly</a> to avoid
+          processing fees.
         </p>
       </div>
     </div>
@@ -49,14 +44,14 @@
   .donate-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 40px;
-    margin-top: 24px;
+    gap: 16px;
+    margin-top: 32px;
   }
 
   @media (min-width: 640px) {
     .donate-grid {
       grid-template-columns: 1fr 1fr;
-      gap: 48px;
+      gap: 16px;
     }
   }
 
@@ -70,7 +65,7 @@
 
   .donate-note {
     margin-top: 16px;
-    font-size: 13px;
+    font-size: var(--text-sm);
     color: var(--text-muted);
   }
 </style>

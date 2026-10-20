@@ -30,14 +30,14 @@ const allNews = [...posts, ...newsletters]
   <div class="container">
     <h2 class="section-heading">News</h2>
 
-    <div class="posts-list">
+    <div class="dated-list">
       {
         allNews.map((item) => (
-          <div class="post-row">
-            <span class="post-date">
+          <div class="dated-row">
+            <span class="dated-row__date">
               {new Date(item.date).toISOString().slice(0, 10)}
             </span>
-            <div class="post-info">
+            <div class="dated-row__info">
               <a href={item.href}>{item.title}</a>
               <p>{item.description}</p>
             </div>
@@ -51,62 +51,17 @@ const allNews = [...posts, ...newsletters]
 </section>
 
 <style>
-  .posts-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .post-row {
-    display: flex;
-    gap: 20px;
-    align-items: baseline;
-  }
-
-  .post-date {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-muted);
-    flex-shrink: 0;
-    min-width: 90px;
-  }
-
-  .post-info a {
-    font-weight: var(--weight-bold);
-    color: var(--text-primary);
-    text-decoration-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .post-info a:hover {
-    text-decoration-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  .post-info p {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin: 2px 0 0;
-  }
-
   .see-all-link {
     display: block;
-    margin-top: 30px;
+    margin-top: 32px;
     text-align: center;
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-xs);
     color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.2s;
   }
 
   .see-all-link:hover {
     color: var(--color-accent);
-  }
-
-  @media (max-width: 640px) {
-    .post-row {
-      flex-direction: column;
-      gap: 2px;
-    }
   }
 </style>

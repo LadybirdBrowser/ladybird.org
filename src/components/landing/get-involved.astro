@@ -1,4 +1,4 @@
-<section id="contribute" class="section section--subtle">
+<section id="contribute" class="section">
   <div class="container">
     <h2 class="section-heading">Get involved</h2>
     <p>
@@ -25,15 +25,62 @@ $ ./Meta/ladybird.py run</code></pre>
       >.
     </p>
 
-    <p>
-      <strong>Source code:</strong>
-      <a href="https://github.com/LadybirdBrowser/ladybird"
-        >github.com/LadybirdBrowser/ladybird</a
-      >
-    </p>
-    <p>
-      <strong>Community chat:</strong>
-      <a href="https://discord.gg/nvfjVJ4Svh">Discord</a>
-    </p>
+    <div class="link-cards">
+      <a class="link-card" href="https://github.com/LadybirdBrowser/ladybird">
+        <span class="link-card__title">Source code</span>
+        <span class="link-card__host">github.com/LadybirdBrowser/ladybird</span>
+      </a>
+      <a class="link-card" href="https://discord.gg/nvfjVJ4Svh">
+        <span class="link-card__title">Community chat</span>
+        <span class="link-card__host">Discord</span>
+      </a>
+    </div>
   </div>
 </section>
+
+<style>
+  .link-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  @media (min-width: 640px) {
+    .link-cards {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) * 1.5);
+    text-decoration: none;
+    transition:
+      border-color 0.2s,
+      background 0.2s;
+  }
+
+  .link-card:hover {
+    border-color: var(--color-accent);
+    background: var(--bg-subtle);
+  }
+
+  .link-card__title {
+    font-size: var(--text-lg);
+    color: var(--text-primary);
+  }
+
+  .link-card__host {
+    margin-top: 4px;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+
+  .link-card:hover .link-card__host {
+    color: var(--color-accent);
+  }
+</style>

@@ -3,28 +3,106 @@
 @tailwind utilities;
 
 /* ===========================================
-   Ladybird — Clean, intentionally simple
+   Design tokens
+
+   Everything that controls how the site looks
+   lives here. Component styles should only
+   reference these variables, never raw values.
    =========================================== */
 
 :root {
-  --color-accent: #8a64e5;
-  --color-accent-hover: #9d7cf2;
-  --color-slate: #6d98cc;
-  --color-indigo: #2a1373;
-  --text-primary: #e6e6e6;
-  --text-secondary: #999;
-  --text-muted: #666;
-  --bg-page: #000;
-  --bg-subtle: #111;
-  --border: #222;
-  --border-light: #1a1a1a;
-  --font-sans: "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: "Berkeley Mono", ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+  /* ---- Type scale ----
+     Change --font-size-base to resize all text on the site.
+     Every other size is derived from it. */
+  --font-size-base: 19px;
+  --text-xs: calc(var(--font-size-base) * 0.8);
+  --text-sm: calc(var(--font-size-base) * 0.9);
+  --text-md: var(--font-size-base);
+  --text-lg: calc(var(--font-size-base) * 1.2);
+  --text-xl: calc(var(--font-size-base) * 1.5);
+  --text-2xl: calc(var(--font-size-base) * 2);
+  --text-hero: calc(var(--font-size-base) * 3);
+
+  --leading-body: 1.7;
+  --leading-tight: 1.2;
+
+  --font-sans:
+    "General Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  --font-mono:
+    "Berkeley Mono", ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+
   --weight-light: 300;
-  --weight-normal: 420;
-  --weight-medium: 460;
-  --weight-bold: 520;
+  --weight-normal: 450;
+  --weight-medium: 500;
+  --weight-bold: 600;
+
+  /* ---- Layout ---- */
+  --content-width: 760px;
+  --content-width-wide: 960px;
+  --gutter: 24px;
+  --section-spacing: 72px;
+  --radius: 8px;
+
+  /* ---- Brand colors ----
+     Fixed brand palette, identical in both themes. Used for the brand band. */
+  --brand-indigo: #2a1373;
+  --brand-indigo-900: #190c4a;
+  --brand-slate: #6d98cc;
+  --brand-violet-100: #cab5ff;
+  --brand-violet-10: #e0d4ff;
+
+  /* ---- Colors ----
+     Each color is light-dark(<light theme>, <dark theme>).
+     Values come from the brand palette in the brand guidelines. */
+  color-scheme: light dark;
+
+  --bg-page: light-dark(#ffffff, #000000);
+  --bg-subtle: light-dark(#f6f6f8, #121214);
+  --border: light-dark(#dcdce2, #2c2c30);
+  --border-light: light-dark(#ebebef, #1e1e22);
+
+  --text-primary: light-dark(#0a0a0a, #f4f4f5);
+  --text-secondary: light-dark(#2e2e33, #d4d4d8);
+  --text-muted: light-dark(#5a5a63, #a1a1aa);
+
+  --color-accent: light-dark(#6a39db, #b496ff);
+  --color-accent-hover: light-dark(#3c28a1, #cab5ff);
+  --color-accent-underline: light-dark(
+    rgba(106, 57, 219, 0.35),
+    rgba(180, 150, 255, 0.35)
+  );
+
+  --header-bg: light-dark(rgba(255, 255, 255, 0.85), rgba(0, 0, 0, 0.85));
+  /* The screenshot's own shadow is black, so in dark mode it glows instead. */
+  --screenshot-glow: light-dark(transparent, rgba(138, 100, 229, 0.4));
+  --hero-glow: light-dark(
+    rgba(138, 100, 229, 0.14),
+    rgba(138, 100, 229, 0.22)
+  );
 }
+
+/* An explicit choice from the theme toggle overrides the system setting. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --font-size-base: 17px;
+    --text-hero: calc(var(--font-size-base) * 2.1);
+    --gutter: 16px;
+    --section-spacing: 44px;
+  }
+}
+
+/* ===========================================
+   Base
+   =========================================== */
 
 *,
 *::before,
@@ -42,19 +120,21 @@ html {
 body {
   font-family: var(--font-sans);
   font-weight: var(--weight-normal);
-  font-size: 18px;
-  line-height: 1.7;
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
   color: var(--text-secondary);
   background: var(--bg-page);
 }
 
-b, strong {
+b,
+strong {
   font-weight: var(--weight-bold);
+  color: var(--text-primary);
 }
 
 ::selection {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--bg-page);
 }
 
 img {
@@ -66,48 +146,74 @@ img {
 a {
   color: var(--color-accent);
   text-decoration: underline;
-  text-decoration-color: rgba(138, 100, 229, 0.3);
-  text-underline-offset: 2px;
-  transition: text-decoration-color 0.2s;
+  text-decoration-color: var(--color-accent-underline);
+  text-underline-offset: 3px;
+  transition:
+    color 0.2s,
+    text-decoration-color 0.2s;
 }
 
 a:hover {
-  text-decoration-color: var(--color-accent);
+  color: var(--color-accent-hover);
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 section[id] {
-  scroll-margin-top: 32px;
+  scroll-margin-top: 80px;
 }
 
 /* ---- Container ---- */
 
 .container {
-  max-width: 740px;
+  max-width: var(--content-width);
   width: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
 }
 
 .container-wide {
-  max-width: 960px;
+  max-width: var(--content-width-wide);
 }
 
 /* ---- Typography ---- */
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-primary);
-  font-weight: var(--weight-light);
-  line-height: 1.25;
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
   margin: 0;
 }
 
-h1 { font-size: 32px; }
-h2 { font-size: 24px; font-weight: var(--weight-medium); }
-h3 { font-size: 18px; font-weight: var(--weight-medium); }
-h4 { font-size: 16px; font-weight: var(--weight-medium); }
+h1 {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-light);
+}
+h2 {
+  font-size: var(--text-xl);
+}
+h3 {
+  font-size: var(--text-lg);
+}
+h4 {
+  font-size: var(--text-md);
+}
 
-p { margin: 0 0 16px; }
-p:last-child { margin-bottom: 0; }
+p {
+  margin: 0 0 1em;
+}
+p:last-child {
+  margin-bottom: 0;
+}
 
 hr {
   border: none;
@@ -115,7 +221,9 @@ hr {
   margin: 48px 0;
 }
 
-ul { padding-left: 24px; }
+ul {
+  padding-left: 24px;
+}
 
 blockquote {
   border-left: 3px solid var(--color-accent);
@@ -125,12 +233,13 @@ blockquote {
   font-style: italic;
 }
 
-pre, code {
+pre,
+code {
   font-family: var(--font-mono);
 }
 
 code {
-  font-size: 0.9em;
+  font-size: 0.875em;
   background: var(--bg-subtle);
   padding: 2px 5px;
   border-radius: 3px;
@@ -139,16 +248,14 @@ code {
 pre {
   background: var(--bg-subtle);
   border: 1px solid var(--border-light);
-  border-radius: 6px;
+  border-radius: var(--radius);
   padding: 16px 20px;
   overflow-x: auto;
-  font-size: 14px;
+  font-size: var(--text-xs);
   line-height: 1.5;
   margin: 0 0 16px;
   max-width: 100%;
 }
-
-/* (mobile pre overrides are in the mobile section below) */
 
 pre code {
   background: none;
@@ -161,7 +268,8 @@ table {
   margin: 0 0 16px;
 }
 
-th, td {
+th,
+td {
   text-align: left;
   padding: 8px 24px 8px 0;
   vertical-align: top;
@@ -170,6 +278,38 @@ th, td {
 th {
   font-weight: var(--weight-medium);
   color: var(--text-primary);
+}
+
+/* Hidden visually but still read by screen readers. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Show an element in only one theme, e.g. a logo variant. */
+.only-light {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .only-dark {
+    display: none;
+  }
+  :root:not([data-theme="dark"]) .only-light {
+    display: block;
+  }
+}
+
+:root[data-theme="light"] .only-dark {
+  display: none;
+}
+
+:root[data-theme="light"] .only-light {
+  display: block;
 }
 
 /* ---- Buttons ---- */
@@ -183,7 +323,7 @@ th {
 .btn {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--text-xs);
   font-weight: var(--weight-normal);
   padding: 10px 24px;
   color: var(--text-primary);
@@ -202,16 +342,25 @@ th {
   text-decoration: none;
   background:
     linear-gradient(var(--bg-page), var(--bg-page)) padding-box,
-    conic-gradient(from var(--gradient-angle), #8a64e5, #6d98cc, #2a1373, #8a64e5) border-box;
+    conic-gradient(
+        from var(--gradient-angle),
+        #8a64e5,
+        #6d98cc,
+        #2a1373,
+        #8a64e5
+      )
+      border-box;
   animation: spin-border 3s linear infinite;
 }
 
 @keyframes spin-border {
-  to { --gradient-angle: 360deg; }
+  to {
+    --gradient-angle: 360deg;
+  }
 }
 
 .btn--outline {
-  color: var(--text-muted);
+  color: var(--text-secondary);
   background:
     linear-gradient(var(--bg-page), var(--bg-page)) padding-box,
     linear-gradient(var(--border), var(--border)) border-box;
@@ -221,24 +370,28 @@ th {
   color: var(--text-primary);
 }
 
-/* ---- Section spacing ---- */
+/* ---- Sections ---- */
 
 .section {
-  padding: 64px 0;
-}
-
-/* (mobile section overrides are in the mobile section below) */
-
-.section--subtle {
-  background: var(--bg-subtle);
+  padding: var(--section-spacing) 0;
 }
 
 .section-heading {
-  margin-bottom: 24px;
-  font-weight: var(--weight-medium);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-light);
+  letter-spacing: -0.01em;
+  margin-bottom: 32px;
 }
 
-/* ---- Hero (single post/newsletter pages) ---- */
+/* A panel that groups related content, e.g. the two ways to donate. */
+.panel {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: calc(var(--radius) * 1.5);
+  padding: 28px;
+}
+
+/* ---- Page header (posts, newsletters, standalone pages) ---- */
 
 .hero {
   background: var(--bg-subtle);
@@ -246,14 +399,8 @@ th {
   padding: 80px 0 48px;
 }
 
-.hero_single {
-  padding: 80px 0 48px;
-}
-
 .hero h1 {
-  color: var(--text-primary);
-  font-size: 28px;
-  font-weight: var(--weight-light);
+  font-size: var(--text-2xl);
 }
 
 .hero p {
@@ -262,9 +409,9 @@ th {
 }
 
 .hero__tf {
-  max-width: 740px;
+  max-width: var(--content-width);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
 }
 
 .hero__tf h1 {
@@ -272,58 +419,39 @@ th {
 }
 
 .hero__tf p {
-  font-size: 14px;
+  font-size: var(--text-sm);
   margin-bottom: 4px;
 }
 
-/* ---- Single Content ---- */
+/* ---- Long-form content ---- */
 
 .single-content {
   padding: 48px 0 80px;
-  background: var(--bg-page);
-  color: var(--text-secondary);
 }
 
 .single-content:has(+ .single-content) {
   padding-bottom: 0;
 }
 
-.single-content h1,
-.single-content h2,
-.single-content h3,
-.single-content h4 {
-  color: var(--text-primary);
-}
-
 .single-content h2 {
-  font-size: 22px;
-  margin-bottom: 16px;
+  margin: 1.6em 0 0.6em;
 }
 
 .single-content h3 {
-  font-size: 18px;
-  margin-bottom: 12px;
+  margin: 1.4em 0 0.5em;
 }
 
-.single-content p,
-.single-content ul,
-.single-content li {
-  color: var(--text-secondary);
+.single-content h2:first-child {
+  margin-top: 0;
 }
 
 .single-content p,
 .single-content ul {
-  margin-bottom: 16px;
+  margin-bottom: 1em;
 }
 
-.single-content a {
-  color: var(--color-accent);
-}
-
-.single-content b,
-.single-content strong {
-  color: var(--text-primary);
-  font-weight: var(--weight-bold);
+.single-content li {
+  margin-bottom: 0.25em;
 }
 
 .single-content hr {
@@ -332,7 +460,7 @@ th {
 
 .single-content img {
   margin: 24px 0;
-  border-radius: 6px;
+  border-radius: var(--radius);
 }
 
 .single-content table th,
@@ -355,7 +483,53 @@ th {
 
 .single-content p.bigger-text,
 .single-content ul.bigger-text {
-  font-size: 20px;
+  font-size: var(--text-lg);
+}
+
+/* ---- Dated link lists (landing page news, /news) ---- */
+
+.dated-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dated-row {
+  display: flex;
+  gap: 24px;
+  align-items: baseline;
+}
+
+.dated-row__date {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+.dated-row__info a {
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  text-decoration-color: var(--border);
+}
+
+.dated-row__info a:hover {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent);
+}
+
+.dated-row__info p {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 4px 0 0;
+}
+
+@media (max-width: 640px) {
+  .dated-row {
+    flex-direction: column;
+    gap: 2px;
+  }
 }
 
 /* ---- Organization ---- */
@@ -376,12 +550,17 @@ table.backer-tiers td:first-child {
 
 .headshot img {
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
+  border-radius: var(--radius);
   width: 100%;
   object-fit: cover;
+  margin: 0 0 12px;
 }
 
-.headshot p { margin: 0; }
+.headshot p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
 
 .headshots-grid {
   display: grid;
@@ -409,8 +588,9 @@ table.backer-tiers td:first-child {
 
 div.newsletter-image-caption {
   text-align: center;
-  font-size: 0.65em;
-  margin-top: -2.5em;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: -2em;
   margin-bottom: 3em;
 }
 
@@ -421,7 +601,7 @@ div.newsletter-image-caption a {
 .astro-code {
   padding: 1em;
   margin-bottom: 1em;
-  border-radius: 6px;
+  border-radius: var(--radius);
 }
 
 .custom-row {
@@ -438,96 +618,13 @@ div.newsletter-image-caption a {
   }
 }
 
-/* ---- News Grid (used by post listing pages) ---- */
-
-.news__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-}
-
-@media (min-width: 768px) {
-  .news__grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-}
-
-@media (min-width: 991px) {
-  .news__grid {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-}
-
-.news__box {
-  max-width: 360px;
-}
-
-.news__box-image {
-  margin-bottom: 12px;
-}
-
-.news__box-image img {
-  border-radius: 6px;
-  aspect-ratio: 5 / 4;
-  width: 100%;
-  object-fit: cover;
-}
-
-.news__box-category {
-  position: relative;
-  margin-bottom: 4px;
-}
-
-.news__box-category span {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: var(--weight-medium);
-}
-
-.news__box h4 {
-  font-size: 16px;
-  margin-bottom: 4px;
-}
-
-.news__box p {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.news-teaser {
-  padding: 48px 0;
-}
-
-.news-teaser .news__grid {
-  margin-top: 24px;
-}
-
 /* ===========================================
    Mobile
    =========================================== */
 
 @media (max-width: 640px) {
-  .container {
-    padding: 0 16px;
-  }
-
-  .section {
-    padding: 36px 0;
-  }
-
-  h1 { font-size: 26px; }
-  h2 { font-size: 20px; }
-  h3 { font-size: 16px; }
-
-  body {
-    font-size: 15px;
-  }
-
   pre {
-    font-size: 12px;
     padding: 12px 14px;
-    border-radius: 4px;
   }
 
   hr {
@@ -535,33 +632,18 @@ div.newsletter-image-caption a {
   }
 
   .section-heading {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
-  /* Hero (post/newsletter pages) */
+  .panel {
+    padding: 20px;
+  }
+
   .hero {
     padding: 48px 0 32px;
   }
 
-  .hero h1 {
-    font-size: 22px;
-  }
-
-  /* Single content */
   .single-content {
     padding: 32px 0 48px;
-  }
-
-  .single-content h2 {
-    font-size: 18px;
-  }
-
-/* News grid */
-  .news__grid {
-    gap: 24px;
-  }
-
-  .news-teaser {
-    padding: 36px 0;
   }
 }

@@ -1,50 +1,76 @@
-<section class="section section--subtle">
+<section class="section brand-band">
   <div class="container">
     <h2 class="section-heading">What makes Ladybird different</h2>
 
-    <div class="why-grid">
-      <div class="why-item">
-        <h4>Truly independent</h4>
+    <ol class="why-grid">
+      <li>
+        <h3>Independent</h3>
         <p>
-          We're building a new browser engine from scratch, based on web
-          standards. Not a fork of an existing engine.
+          A new engine written from scratch, based on web standards. Not a fork
+          of Chromium, Gecko or WebKit.
         </p>
-      </div>
-      <div class="why-item">
-        <h4>Singular focus</h4>
-        <p>We are focused on one thing: building a web browser.</p>
-      </div>
-      <div class="why-item">
-        <h4>No monetization</h4>
+      </li>
+      <li>
+        <h3>Just a browser</h3>
+        <p>We build a web browser, and nothing else.</p>
+      </li>
+      <li>
+        <h3>No monetization</h3>
         <p>
           No "default search deals", crypto tokens, or other forms of user
           monetization.
         </p>
-      </div>
-    </div>
+      </li>
+    </ol>
   </div>
 </section>
 
 <style>
+  /* Brand gradient (indigo into slate blue), the same in both themes. */
+  .brand-band {
+    padding: calc(var(--section-spacing) * 1.25) 0;
+    color: var(--brand-violet-10);
+    background:
+      radial-gradient(
+        circle at 100% 0%,
+        color-mix(in srgb, var(--brand-slate) 60%, transparent),
+        transparent 55%
+      ),
+      linear-gradient(160deg, var(--brand-indigo), var(--brand-indigo-900));
+  }
+
+  .brand-band h2,
+  .brand-band h3 {
+    color: #fff;
+  }
+
   .why-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 32px;
+    list-style: none;
+    padding: 0;
   }
 
   @media (min-width: 640px) {
     .why-grid {
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 40px;
+      gap: 32px;
     }
   }
 
-  .why-item h4 {
-    margin-bottom: 8px;
+  .why-grid li {
+    border-top: 1px solid color-mix(in srgb, #fff 25%, transparent);
+    padding-top: 16px;
   }
 
-  .why-item p {
-    font-size: 15px;
+  .why-grid h3 {
+    font-size: var(--text-lg);
+    margin-bottom: 10px;
+  }
+
+  .why-grid p {
+    font-size: var(--text-sm);
     margin: 0;
   }
 </style>

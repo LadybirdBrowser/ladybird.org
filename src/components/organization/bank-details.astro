@@ -1,6 +1,5 @@
 <section id="bank-details" class="single-content">
   <div class="container">
-    <span class="org-section-label">03 / Banking</span>
     <h2>Wire transfers</h2>
     <div class="bank-table-wrap">
       <table>
@@ -48,20 +47,11 @@
 </section>
 
 <style>
-  .org-section-label {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    color: var(--color-accent);
-    display: block;
-    margin-bottom: 16px;
-  }
-
   .bank-table-wrap {
     margin: 32px 0;
     padding: 28px 32px;
     background: var(--bg-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius);
     border: 1px solid var(--border);
     overflow-x: auto;
   }
@@ -74,7 +64,7 @@
   .bank-table-wrap th,
   .bank-table-wrap td {
     padding: 10px 24px 10px 0;
-    font-size: 15px;
+    font-size: var(--text-sm);
     vertical-align: top;
   }
 

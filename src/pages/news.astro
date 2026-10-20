@@ -39,7 +39,7 @@ for (const item of allNews) {
   title="News"
   description="News and updates from the Ladybird web browser project."
 >
-  <section class="hero hero_single">
+  <section class="hero">
     <div class="hero__tf">
       <h1>News</h1>
       <p>Posts and newsletters from the Ladybird project.</p>
@@ -52,13 +52,13 @@ for (const item of allNews) {
         [...byYear.entries()].map(([year, items]) => (
           <div class="news-year">
             <h2>{year}</h2>
-            <div class="news-list">
+            <div class="dated-list">
               {items.map((item) => (
-                <div class="news-row">
-                  <span class="news-date">
+                <div class="dated-row">
+                  <span class="dated-row__date">
                     {new Date(item.date).toISOString().slice(0, 10)}
                   </span>
-                  <div class="news-info">
+                  <div class="dated-row__info">
                     <a href={item.href}>{item.title}</a>
                     <p>{item.description}</p>
                   </div>
@@ -74,7 +74,7 @@ for (const item of allNews) {
 
 <style>
   .news-year {
-    margin-bottom: 48px;
+    margin-bottom: 56px;
   }
 
   .news-year:last-child {
@@ -82,50 +82,6 @@ for (const item of allNews) {
   }
 
   .news-year h2 {
-    margin-bottom: 20px;
-  }
-
-  .news-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .news-row {
-    display: flex;
-    gap: 20px;
-    align-items: baseline;
-  }
-
-  .news-date {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-muted);
-    flex-shrink: 0;
-    min-width: 90px;
-  }
-
-  .news-info a {
-    font-weight: var(--weight-bold);
-    color: var(--text-primary);
-    text-decoration-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .news-info a:hover {
-    text-decoration-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  .news-info p {
-    font-size: 14px;
-    color: var(--text-muted);
-    margin: 2px 0 0;
-  }
-
-  @media (max-width: 640px) {
-    .news-row {
-      flex-direction: column;
-      gap: 2px;
-    }
+    margin: 0 0 24px;
   }
 </style>

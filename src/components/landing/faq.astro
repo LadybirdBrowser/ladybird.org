@@ -126,10 +126,11 @@
   }
 
   .faq-item summary {
-    padding: 18px 0;
+    position: relative;
+    padding: 18px 0 18px 28px;
     cursor: pointer;
     font-size: var(--text-md);
-    font-weight: var(--weight-medium);
+    font-weight: var(--weight-emphasis);
     color: var(--text-primary);
     list-style: none;
   }
@@ -143,15 +144,16 @@
     content: "";
   }
 
+  /* Hang the +/- marker in the left gutter so wrapped lines align. */
   .faq-item summary::before {
-    content: "+ ";
-    font-family: var(--font-mono);
+    content: "+";
+    position: absolute;
+    left: 2px;
     color: var(--text-muted);
-    margin-right: 8px;
   }
 
   .faq-item[open] summary::before {
-    content: "− ";
+    content: "−";
   }
 
   .faq-answer {

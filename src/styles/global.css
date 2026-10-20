@@ -32,10 +32,13 @@
   --font-mono:
     "Berkeley Mono", ui-monospace, "SF Mono", "Cascadia Mono", monospace;
 
-  --weight-light: 300;
-  --weight-normal: 450;
-  --weight-medium: 500;
-  --weight-bold: 600;
+  /* Three weights, each with one job:
+     display  - page titles, section headings, large statements
+     text     - body copy
+     emphasis - small headings, item titles, bold text, buttons */
+  --weight-display: 300;
+  --weight-text: 450;
+  --weight-emphasis: 520;
 
   /* ---- Layout ---- */
   --content-width: 760px;
@@ -119,7 +122,7 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-weight: var(--weight-normal);
+  font-weight: var(--weight-text);
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--text-secondary);
@@ -128,7 +131,7 @@ body {
 
 b,
 strong {
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-emphasis);
   color: var(--text-primary);
 }
 
@@ -189,17 +192,18 @@ h4,
 h5,
 h6 {
   color: var(--text-primary);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
   line-height: var(--leading-tight);
   margin: 0;
 }
 
 h1 {
   font-size: var(--text-2xl);
-  font-weight: var(--weight-light);
+  font-weight: var(--weight-display);
 }
 h2 {
   font-size: var(--text-xl);
+  font-weight: var(--weight-display);
 }
 h3 {
   font-size: var(--text-lg);
@@ -276,7 +280,7 @@ td {
 }
 
 th {
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
   color: var(--text-primary);
 }
 
@@ -322,9 +326,8 @@ th {
 
 .btn {
   display: inline-block;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: var(--weight-normal);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-emphasis);
   padding: 10px 24px;
   color: var(--text-primary);
   border: 2px solid transparent;
@@ -378,7 +381,6 @@ th {
 
 .section-heading {
   font-size: var(--text-2xl);
-  font-weight: var(--weight-light);
   letter-spacing: -0.01em;
   margin-bottom: 32px;
 }
@@ -501,15 +503,15 @@ th {
 }
 
 .dated-row__date {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   flex-shrink: 0;
   min-width: 100px;
 }
 
 .dated-row__info a {
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
   color: var(--text-primary);
   text-decoration-color: var(--border);
 }
@@ -540,7 +542,7 @@ table.backer-tiers td {
 }
 
 table.backer-tiers td:first-child {
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-emphasis);
   color: var(--text-primary);
 }
 

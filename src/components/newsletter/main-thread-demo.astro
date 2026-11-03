@@ -1,0 +1,136 @@
+---
+// Live demo for the October 2026 newsletter. It has to stay in the top-level
+// document rather than an iframe, since blocking the main thread is the point.
+---
+
+<div class="demo" data-main-thread-demo>
+  <div class="demo__tiles">
+    <div class="demo__tile">
+      <div class="demo__stage"><div class="demo__spin"></div></div>
+      <code>transform</code>
+    </div>
+    <div class="demo__tile">
+      <div class="demo__stage"><div class="demo__bar"></div></div>
+      <code>width</code>
+    </div>
+    <div class="demo__tile">
+      <div class="demo__stage"><div class="demo__hover">Hover me</div></div>
+      <code>:hover</code>
+    </div>
+  </div>
+  <div class="demo__controls">
+    <button type="button" class="demo__button">
+      Run JavaScript for 3 seconds
+    </button>
+    <span class="demo__status" role="status">Idle</span>
+  </div>
+</div>
+
+<style>
+  .demo {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-subtle);
+    padding: 16px;
+    margin-bottom: 1em;
+  }
+  .demo__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .demo__tile {
+    text-align: center;
+    min-width: 0;
+  }
+  .demo__stage {
+    height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+  .demo__spin {
+    width: 38px;
+    height: 38px;
+    border-radius: 7px;
+    background: var(--color-accent);
+    animation: demo-spin 2s linear infinite;
+  }
+  .demo__bar {
+    height: 22px;
+    width: 10%;
+    align-self: center;
+    margin-right: auto;
+    border-radius: 6px;
+    background: var(--color-accent);
+    animation: demo-width 2s ease-in-out infinite alternate;
+  }
+  .demo__hover {
+    padding: 14px 10px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-size: 0.9em;
+    transition:
+      background-color 0.12s,
+      color 0.12s;
+  }
+  .demo__hover:hover {
+    background: var(--color-accent);
+    color: var(--bg-page);
+  }
+  .demo__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .demo__button {
+    font: inherit;
+    font-size: 0.9em;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--text-muted);
+    border-radius: 999px;
+    padding: 6px 16px;
+    cursor: pointer;
+  }
+  .demo__status {
+    color: var(--text-muted);
+    font-size: 0.9em;
+  }
+  @keyframes demo-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes demo-width {
+    to {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>("[data-main-thread-demo]")
+    .forEach((demo) => {
+      const button = demo.querySelector("button")!;
+      const status = demo.querySelector<HTMLElement>(".demo__status")!;
+      button.addEventListener("click", () => {
+        button.disabled = true;
+        status.textContent = "JavaScript is running...";
+        // Let that text reach the screen before blocking the main thread.
+        requestAnimationFrame(() =>
+          setTimeout(() => {
+            const end = performance.now() + 3000;
+            while (performance.now() < end);
+            status.textContent = "Done";
+            button.disabled = false;
+          }, 0)
+        );
+      });
+    });
+</script>

@@ -1,8 +1,8 @@
 ---
 title: This Month in Ladybird - October 2026
-description: CSS animations and hover that keep working while JavaScript is busy, a JavaScript JIT, a new WebAssembly engine, a redesigned UI, and passing Safari on WPT.
+description: CSS animations and hover that keep working while JavaScript is busy, a JavaScript JIT, a new WebAssembly engine, and a redesigned UI.
 date: 2026-10-31
-draft: true
+draft: false
 ---
 
 import MainThreadDemo from "@/components/newsletter/main-thread-demo.astro";
@@ -17,7 +17,7 @@ Ladybird is entirely funded by companies and individuals who believe in the open
 
 Browsers normally run JavaScript, style, and layout on one main thread, one at a time. While a script runs, the page can't update. A few simple animations can keep going on the compositor, but everything else has to wait.
 
-We moved style and layout to their own thread, and paint recording to another ([#12377](https://github.com/LadybirdBrowser/ladybird/pull/12377), [#12400](https://github.com/LadybirdBrowser/ladybird/pull/12400)). They now run at the same time as JavaScript ([#12396](https://github.com/LadybirdBrowser/ladybird/pull/12396), [#12432](https://github.com/LadybirdBrowser/ladybird/pull/12432), [#12460](https://github.com/LadybirdBrowser/ladybird/pull/12460)). If a script asks for layout information, it still gets the correct answer.
+We moved style and layout to their own thread, and paint recording to another ([#12377](https://github.com/LadybirdBrowser/ladybird/pull/12377), [#12400](https://github.com/LadybirdBrowser/ladybird/pull/12400)). They now run at the same time as JavaScript ([#12396](https://github.com/LadybirdBrowser/ladybird/pull/12396), [#12432](https://github.com/LadybirdBrowser/ladybird/pull/12432), [#12460](https://github.com/LadybirdBrowser/ladybird/pull/12460)). If a script asks for layout information, like an element's size, it waits until pending layout work is finished, so it never gets stale data.
 
 <img
   class="only-light"
@@ -35,21 +35,48 @@ We moved style and layout to their own thread, and paint recording to another ([
 So two things now work during a long script:
 
 - **CSS animations keep running while JavaScript is busy.** This includes animations that change layout, like `width` and `font-size` ([#12433](https://github.com/LadybirdBrowser/ladybird/pull/12433), [#12447](https://github.com/LadybirdBrowser/ladybird/pull/12447), [#12451](https://github.com/LadybirdBrowser/ladybird/pull/12451)).
-- **`:hover` keeps working while JavaScript is busy.** The render thread finds the element under the mouse, applies its hover styles, starts any transitions, updates the cursor, and draws a new frame. When the script ends, the main thread catches up and fires the hover events. In a test across 24 websites, the number of pointer moves that took over 100ms to show up on screen dropped from about 2,300 to 405 ([#12530](https://github.com/LadybirdBrowser/ladybird/pull/12530)).
+- **`:hover` keeps working while JavaScript is busy.** The render thread finds the element under the mouse, applies its hover styles, starts any transitions, updates the cursor, and draws a new frame. When the script ends, the main thread catches up and fires the hover events ([#12530](https://github.com/LadybirdBrowser/ladybird/pull/12530)).
 
-As far as we know, no other browser can do this today. You can try it here. The button blocks the main thread for three seconds. Most browsers keep the square spinning, but freeze the bar and the hover target.
+As far as we know, no other browser can do this today. Here's a text animation while JavaScript blocks the main thread in 1.5 second bursts, with Ladybird in the top left:
+
+<video
+  poster="/assets/img/newsletter-oct-2026-animations-poster.webp"
+  controls
+  muted
+  loop
+  playsinline
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source
+    src="/assets/img/newsletter-oct-2026-animations.mp4"
+    type="video/mp4"
+  />
+</video>
+
+And here's `:hover` on a page running JavaScript for 250ms at a time, with Ladybird on the left and Chrome on the right:
+
+<video
+  poster="/assets/img/newsletter-oct-2026-hover-poster.webp"
+  controls
+  muted
+  loop
+  playsinline
+  style="max-width: 100%; margin-bottom: 1em;"
+>
+  <source src="/assets/img/newsletter-oct-2026-hover.mp4" type="video/mp4" />
+</video>
+
+You can also try it yourself. The button blocks the main thread for three seconds. Most browsers keep the square spinning, but freeze the bar and the hover target.
 
 <MainThreadDemo />
 
-{/* MEDIA TODO: record the demo above in Ladybird, moving the mouse over "Hover me" during the block. */}
-
 ### A JavaScript JIT
 
-On Linux and macOS, LibJS now compiles hot JavaScript to machine code, on both x86-64 and AArch64. It's been on by default since October 11 ([#12613](https://github.com/LadybirdBrowser/ladybird/pull/12613)).
+On Linux and macOS, LibJS now compiles hot JavaScript to machine code, on both x86-64 and AArch64 ([#12613](https://github.com/LadybirdBrowser/ladybird/pull/12613)).
 
 We decided against a JIT in the past, and did what we could to push and tune the interpreter instead. It's already competitive, so making it twice as fast would be a huge effort, and that would only turn a 300ms hang into a 150ms hang, which you'd still notice. So we needed an optimizing JIT.
 
-The design is deliberately boring: speculative optimization based on runtime type profiling. We're not trying to innovate right now, just trying to go reasonably fast.
+The design is deliberately boring: speculative optimization based on runtime type profiling, like other JavaScript engines. For now, we just want to go reasonably fast.
 
 <img
   class="only-light"
@@ -64,32 +91,30 @@ The design is deliberately boring: speculative optimization based on runtime typ
   alt="Flow diagram: code starts in the interpreter, moves to a profiling interpreter, then a background compiler, then runs as JIT code. If a guess was wrong, it goes back to the interpreter and gets recompiled."
 />
 
-Code starts in the interpreter. When it gets warm, we record what it does, like which types and object shapes it sees ([#12588](https://github.com/LadybirdBrowser/ladybird/pull/12588)). Hot code is then compiled on a background thread while the interpreter keeps running it ([#12595](https://github.com/LadybirdBrowser/ladybird/pull/12595)).
+While code warms up, we record things like which types and object shapes it sees ([#12588](https://github.com/LadybirdBrowser/ladybird/pull/12588)). The compiled code uses those recordings to make guesses, like "this value is always an integer", and inlines small functions ([#12595](https://github.com/LadybirdBrowser/ladybird/pull/12595), [#12598](https://github.com/LadybirdBrowser/ladybird/pull/12598)).
 
-The compiled code makes guesses based on those recordings, like "this value is always an integer", and inlines small functions ([#12598](https://github.com/LadybirdBrowser/ladybird/pull/12598)). If a guess turns out to be wrong, the code drops back to the interpreter and gets recompiled ([#12595](https://github.com/LadybirdBrowser/ladybird/pull/12595)). Code that relies on something staying true, like a prototype chain, is thrown away if that changes ([#12600](https://github.com/LadybirdBrowser/ladybird/pull/12600)).
-
-To find bugs, a fuzzer runs the same code in the JIT and the interpreter and compares the results ([#12601](https://github.com/LadybirdBrowser/ladybird/pull/12601)).
+To find bugs during development, we used a fuzzer that ran the same code in the JIT and the interpreter and compared the results ([#12601](https://github.com/LadybirdBrowser/ladybird/pull/12601)).
 
 ### A new WebAssembly engine
 
-We replaced our C++ Wasm engine and Cranelift with a new engine that has its own interpreter and JIT ([#12963](https://github.com/LadybirdBrowser/ladybird/pull/12963)). It runs all 19 WebAssembly workloads in JetStream 3, up from 11, and scores about 7x higher on those 11. The 8 the old engine couldn't run include ones built with Kotlin, Dart, and .NET, which use exception handling and GC instructions it didn't know.
+We replaced our C++ Wasm engine and Cranelift with a new engine that has its own interpreter and JIT ([#12963](https://github.com/LadybirdBrowser/ladybird/pull/12963)). It supports newer parts of WebAssembly that the old engine didn't, like exception handling and GC. On the JetStream 3 Wasm workloads both engines can run, it scores about 7x higher.
 
 <img
   class="only-light"
   src="/assets/img/newsletter-oct-2026-wasm-light.webp"
   style="max-width: 100%;"
-  alt="Flow diagram: validator, interpreter written in flap, and JIT. 19 of 19 JetStream 3 Wasm workloads run, up from 11. About 7x faster on those 11."
+  alt="Flow diagram: validator, interpreter written in flap, and JIT. About 7x higher JetStream 3 Wasm score on workloads both engines run."
 />
 <img
   class="only-dark"
   src="/assets/img/newsletter-oct-2026-wasm-dark.webp"
   style="max-width: 100%;"
-  alt="Flow diagram: validator, interpreter written in flap, and JIT. 19 of 19 JetStream 3 Wasm workloads run, up from 11. About 7x faster on those 11."
+  alt="Flow diagram: validator, interpreter written in flap, and JIT. About 7x higher JetStream 3 Wasm score on workloads both engines run."
 />
 
 In July, we built flap, a small language and compiler for writing LibJS's interpreter. The Wasm interpreter is written in flap too, so one source builds it for x86-64, AArch64, and Windows x64. Hot functions move from there to the JIT, even in the middle of a running loop.
 
-JSLinux, an x86 PC emulator, boots Alpine Linux to a shell in 1.8 seconds, against 1.5 in Chrome. The new JIT also compiles much faster than Cranelift did, using 0.45 seconds of CPU time instead of 30.9 on Godot's 38,510 functions. The engine passes all 61,642 tests in the WebAssembly spec test suite.
+We're making great progress on performance. [JSLinux](https://bellard.org/jslinux/), an x86 PC emulator, now boots Alpine Linux to a shell in 1.8 seconds, while Chrome takes 1.5.
 
 ### Benchmarks
 
@@ -106,23 +131,21 @@ JSLinux, an x86 PC emulator, boots Alpine Linux to a shell in 1.8 seconds, again
   alt="Four charts of October benchmark scores: Speedometer 2 from 84 to 156, Speedometer 3 from 5.9 to 8.6, Octane up 4.7x with a jump when the JIT was turned on, and Wasm CoreMark up 2.5x with a jump at the new engine."
 />
 
-Kraken went from about 7 seconds to just over 1. All of these numbers are from [linegodown.lol](https://linegodown.lol).
-
 ### Web Platform Tests (WPT)
 
-On October 26, we passed Safari Technology Preview on [WPT](https://web-platform-tests.org). :^) We ended the month at 2,184,722 subtests, a gain of 75,650. The latest numbers are at [linegoup.lol](https://linegoup.lol).
+On October 26, we passed Safari Technology Preview on [WPT](https://web-platform-tests.org). :^) We ended the month at 2,184,722 subtests, a gain of 75,650.
 
 <img
   class="only-light"
   src="/assets/img/newsletter-oct-2026-wpt-light.webp"
   style="max-width: 100%; margin-bottom: 1em;"
-  alt="Line chart of WPT subtests passed in October. At the end of the month: Chrome 2,244,397, Firefox 2,189,315, Ladybird 2,184,722, Safari Technology Preview 2,172,990. Ladybird crosses Safari on October 26."
+  alt="Line chart of WPT subtests passed in October. At the end of the month: Chrome 2,244,397, Firefox 2,189,315, Ladybird 2,184,722, Safari Technology Preview 2,172,990."
 />
 <img
   class="only-dark"
   src="/assets/img/newsletter-oct-2026-wpt-dark.webp"
   style="max-width: 100%; margin-bottom: 1em;"
-  alt="Line chart of WPT subtests passed in October. At the end of the month: Chrome 2,244,397, Firefox 2,189,315, Ladybird 2,184,722, Safari Technology Preview 2,172,990. Ladybird crosses Safari on October 26."
+  alt="Line chart of WPT subtests passed in October. At the end of the month: Chrome 2,244,397, Firefox 2,189,315, Ladybird 2,184,722, Safari Technology Preview 2,172,990."
 />
 
 Most of that gain came in five days, from about 2.12 million on October 22 to about 2.18 million on October 27. We pointed AI coding agents at WPT and asked them to fill in missing functionality. They made lots of small fixes, and those added up. Our biggest gains for the month were about 30,000 in `/css` and 10,000 in `/editing`.
@@ -130,14 +153,46 @@ Most of that gain came in five days, from about 2.12 million on October 22 to ab
 ### A new browser UI
 
 <img
-  src="/assets/img/newsletter-oct-2026-new-ui.webp"
-  style="max-width: 100%;"
-  alt="Ladybird's redesigned interface in dark mode, showing ladybird.org with a row of tabs open on the websites of other browsers"
+  class="only-light"
+  src="/assets/img/newsletter-oct-2026-new-ui-home-light.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Ladybird's redesigned interface showing ladybird.org, with a row of tabs open on the websites of other browsers"
+/>
+<img
+  class="only-dark"
+  src="/assets/img/newsletter-oct-2026-new-ui-home-dark.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Ladybird's redesigned interface showing ladybird.org, with a row of tabs open on the websites of other browsers"
 />
 
 Until now, our UI had grown organically, with tinkering here and there. This was the first time we sat down and mapped out a complete design. We kept it modest and quiet, so the attention stays on the page.
 
 It covers tabs, toolbars, menus, and our own `about:` pages on macOS and Linux, in light, dark, and a violet dark theme for private windows ([#13271](https://github.com/LadybirdBrowser/ladybird/pull/13271), [#13169](https://github.com/LadybirdBrowser/ladybird/pull/13169), [#12815](https://github.com/LadybirdBrowser/ladybird/pull/12815)).
+
+<img
+  class="only-light"
+  src="/assets/img/newsletter-oct-2026-new-ui-settings-light.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Ladybird's Settings page, with a sidebar of sections, a search field, and toggles for startup, content, and browsing options"
+/>
+<img
+  class="only-dark"
+  src="/assets/img/newsletter-oct-2026-new-ui-settings-dark.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="Ladybird's Settings page, with a sidebar of sections, a search field, and toggles for startup, content, and browsing options"
+/>
+<img
+  class="only-light"
+  src="/assets/img/newsletter-oct-2026-new-ui-site-light.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="The site settings popover in Ladybird, opened from the address bar, with controls for autoplay, dark mode, and content blocking"
+/>
+<img
+  class="only-dark"
+  src="/assets/img/newsletter-oct-2026-new-ui-site-dark.webp"
+  style="max-width: 100%; margin-bottom: 1em;"
+  alt="The site settings popover in Ladybird, opened from the address bar, with controls for autoplay, dark mode, and content blocking"
+/>
 
 - **Tabs:** you can pin tabs, search all open tabs, and restore your windows on launch ([#12757](https://github.com/LadybirdBrowser/ladybird/pull/12757), [#13271](https://github.com/LadybirdBrowser/ladybird/pull/13271)).
 - **Form controls** got a new look, and date and time inputs got a picker ([#13554](https://github.com/LadybirdBrowser/ladybird/pull/13554)).
@@ -171,21 +226,21 @@ We rendered this page in Ladybird, using features that landed in October:
   class="only-light"
   src="/assets/img/newsletter-oct-2026-css-showcase-light.webp"
   style="max-width: 100%; margin-bottom: 1em;"
-  alt="A grid of CSS features rendered by Ladybird: multi-column text, a grid-lanes masonry layout, MathML formulas, boxes using corner-shape, shapes on an offset path, an anchored label, and a balanced heading."
+  alt="A grid of web features rendered by Ladybird: multi-column text, twelve numbered boxes in a grid-lanes masonry layout, MathML formulas, six boxes using different corner shapes, arrows following an offset path, labels anchored to all four sides of a box, and a heading with and without text-wrap: balance."
 />
 <img
   class="only-dark"
   src="/assets/img/newsletter-oct-2026-css-showcase-dark.webp"
   style="max-width: 100%; margin-bottom: 1em;"
-  alt="A grid of CSS features rendered by Ladybird: multi-column text, a grid-lanes masonry layout, MathML formulas, boxes using corner-shape, shapes on an offset path, an anchored label, and a balanced heading."
+  alt="A grid of web features rendered by Ladybird: multi-column text, twelve numbered boxes in a grid-lanes masonry layout, MathML formulas, six boxes using different corner shapes, arrows following an offset path, labels anchored to all four sides of a box, and a heading with and without text-wrap: balance."
 />
 
-From the top left, that's multi-column ([#13026](https://github.com/LadybirdBrowser/ladybird/pull/13026)), `display: grid-lanes` for masonry ([#13236](https://github.com/LadybirdBrowser/ladybird/pull/13236)), MathML ([#13062](https://github.com/LadybirdBrowser/ladybird/pull/13062), [#13141](https://github.com/LadybirdBrowser/ladybird/pull/13141)), `corner-shape` ([#12942](https://github.com/LadybirdBrowser/ladybird/pull/12942)), CSS Motion Path ([#13027](https://github.com/LadybirdBrowser/ladybird/pull/13027)), and in the last box, `text-wrap: balance` ([#13461](https://github.com/LadybirdBrowser/ladybird/pull/13461)) and much more of anchor positioning ([#13021](https://github.com/LadybirdBrowser/ladybird/pull/13021), [#13079](https://github.com/LadybirdBrowser/ladybird/pull/13079), [#13166](https://github.com/LadybirdBrowser/ladybird/pull/13166)).
+From the top left, that's multi-column ([#13026](https://github.com/LadybirdBrowser/ladybird/pull/13026)), `display: grid-lanes` for masonry ([#13236](https://github.com/LadybirdBrowser/ladybird/pull/13236)), MathML ([#13062](https://github.com/LadybirdBrowser/ladybird/pull/13062), [#13141](https://github.com/LadybirdBrowser/ladybird/pull/13141)), `corner-shape` ([#12942](https://github.com/LadybirdBrowser/ladybird/pull/12942)), CSS Motion Path ([#13027](https://github.com/LadybirdBrowser/ladybird/pull/13027)), much more of anchor positioning ([#13021](https://github.com/LadybirdBrowser/ladybird/pull/13021), [#13079](https://github.com/LadybirdBrowser/ladybird/pull/13079), [#13166](https://github.com/LadybirdBrowser/ladybird/pull/13166)), and `text-wrap: balance` ([#13461](https://github.com/LadybirdBrowser/ladybird/pull/13461)).
 
 We also added:
 
 - **CSS:** `calc-size()`, which lets heights animate to and from `auto` ([#13006](https://github.com/LadybirdBrowser/ladybird/pull/13006)), plus vertical writing modes ([#13103](https://github.com/LadybirdBrowser/ladybird/pull/13103)), `zoom` ([#13237](https://github.com/LadybirdBrowser/ladybird/pull/13237)), the `stretch` sizing keyword ([#13006](https://github.com/LadybirdBrowser/ladybird/pull/13006)), `shape()` and `border-shape` ([#12942](https://github.com/LadybirdBrowser/ladybird/pull/12942)), `field-sizing` ([#13050](https://github.com/LadybirdBrowser/ladybird/pull/13050)), view progress timelines and `animation-range` ([#12943](https://github.com/LadybirdBrowser/ladybird/pull/12943)), and the start of SVG animation ([#12823](https://github.com/LadybirdBrowser/ladybird/pull/12823), [#13498](https://github.com/LadybirdBrowser/ladybird/pull/13498)).
-- **Web APIs and more:** the HTML Sanitizer API ([#13185](https://github.com/LadybirdBrowser/ladybird/pull/13185)), Touch Events ([#13249](https://github.com/LadybirdBrowser/ladybird/pull/13249)), `Cross-Origin-Opener-Policy` ([#12296](https://github.com/LadybirdBrowser/ladybird/pull/12296)), Paint Timing, Event Timing, and Largest Contentful Paint ([#13110](https://github.com/LadybirdBrowser/ladybird/pull/13110)), WebVTT cues ([#12895](https://github.com/LadybirdBrowser/ladybird/pull/12895)), wide-gamut canvases ([#13097](https://github.com/LadybirdBrowser/ladybird/pull/13097)), WebDriver BiDi ([#13167](https://github.com/LadybirdBrowser/ladybird/pull/13167)), JavaScript's `using` and `await using` ([#13102](https://github.com/LadybirdBrowser/ladybird/pull/13102)), and many `execCommand` and `contenteditable` fixes ([#13186](https://github.com/LadybirdBrowser/ladybird/pull/13186), [#13038](https://github.com/LadybirdBrowser/ladybird/pull/13038)).
+- **Web APIs and more:** the HTML Sanitizer API ([#13185](https://github.com/LadybirdBrowser/ladybird/pull/13185)), Touch Events ([#13249](https://github.com/LadybirdBrowser/ladybird/pull/13249)), `Cross-Origin-Opener-Policy` ([#12296](https://github.com/LadybirdBrowser/ladybird/pull/12296)), Paint Timing, Event Timing, Largest Contentful Paint ([#13110](https://github.com/LadybirdBrowser/ladybird/pull/13110)), WebVTT cues ([#12895](https://github.com/LadybirdBrowser/ladybird/pull/12895)), wide-gamut canvases ([#13097](https://github.com/LadybirdBrowser/ladybird/pull/13097)), WebDriver BiDi ([#13167](https://github.com/LadybirdBrowser/ladybird/pull/13167)), JavaScript's `using` and `await using` ([#13102](https://github.com/LadybirdBrowser/ladybird/pull/13102)), and many `execCommand` and `contenteditable` fixes ([#13186](https://github.com/LadybirdBrowser/ladybird/pull/13186), [#13038](https://github.com/LadybirdBrowser/ladybird/pull/13038)).
 
 ### Security and process isolation
 
@@ -214,21 +269,19 @@ We also split the browser into more processes, so a compromised one can reach le
 
 ### Media and Windows
 
-On Windows, video now plays and YouTube works ([#12646](https://github.com/LadybirdBrowser/ladybird/pull/12646), [#13195](https://github.com/LadybirdBrowser/ladybird/pull/13195)). Hardware video decoding moved to its own process and now works on Linux through Vulkan ([#12868](https://github.com/LadybirdBrowser/ladybird/pull/12868)), and we no longer use FFmpeg to read MP4 files ([#12641](https://github.com/LadybirdBrowser/ladybird/pull/12641)).
+On Windows, video now plays and YouTube works ([#12646](https://github.com/LadybirdBrowser/ladybird/pull/12646), [#13195](https://github.com/LadybirdBrowser/ladybird/pull/13195)). Hardware video decoding moved to its own process and now works on Linux through Vulkan ([#12868](https://github.com/LadybirdBrowser/ladybird/pull/12868)). We also read MP4 files ourselves now instead of using FFmpeg, which fixes problems with seeking and buffering ([#12641](https://github.com/LadybirdBrowser/ladybird/pull/12641)).
 
 ### More C++ moved to Rust
 
-LibJS's runtime moved from C++ to Rust just before the JIT landed, so our JavaScript engine is now all Rust, apart from its flap interpreter and the garbage collector ([#12492](https://github.com/LadybirdBrowser/ladybird/pull/12492)). The new Wasm engine replaces C++ with Rust too. WebGL, 2D canvas, IndexedDB, Streams, and `URL` moved over this month too ([#12699](https://github.com/LadybirdBrowser/ladybird/pull/12699), [#12935](https://github.com/LadybirdBrowser/ladybird/pull/12935), [#13287](https://github.com/LadybirdBrowser/ladybird/pull/13287), [#13083](https://github.com/LadybirdBrowser/ladybird/pull/13083), [#12998](https://github.com/LadybirdBrowser/ladybird/pull/12998)). We also deleted the C++ style computation, so style is now computed entirely in Rust ([#12346](https://github.com/LadybirdBrowser/ladybird/pull/12346)).
+LibJS's runtime moved from C++ to Rust just before the JIT landed, so our JavaScript engine is now all Rust, apart from its flap interpreter and the garbage collector ([#12492](https://github.com/LadybirdBrowser/ladybird/pull/12492)). The new Wasm engine is Rust as well. WebGL, 2D canvas, IndexedDB, Streams, and `URL` also moved over ([#12699](https://github.com/LadybirdBrowser/ladybird/pull/12699), [#12935](https://github.com/LadybirdBrowser/ladybird/pull/12935), [#13287](https://github.com/LadybirdBrowser/ladybird/pull/13287), [#13083](https://github.com/LadybirdBrowser/ladybird/pull/13083), [#12998](https://github.com/LadybirdBrowser/ladybird/pull/12998)). We also deleted the C++ style computation, so style is now computed entirely in Rust ([#12346](https://github.com/LadybirdBrowser/ladybird/pull/12346)).
 
 ### Getting ready for alpha
 
 Our first alpha is planned for later this year. This month we added:
 
-- **Release builds:** macOS archives, Linux tarballs, `.deb` and `.rpm` packages, and Flatpak bundles ([#13176](https://github.com/LadybirdBrowser/ladybird/pull/13176), [#13313](https://github.com/LadybirdBrowser/ladybird/pull/13313), [#13340](https://github.com/LadybirdBrowser/ladybird/pull/13340)). The macOS app is prepared for signing ([#13078](https://github.com/LadybirdBrowser/ladybird/pull/13078)).
+- **Release builds:** macOS archives, Linux tarballs, `.deb` and `.rpm` packages, and Flatpak bundles ([#13176](https://github.com/LadybirdBrowser/ladybird/pull/13176), [#13313](https://github.com/LadybirdBrowser/ladybird/pull/13313), [#13340](https://github.com/LadybirdBrowser/ladybird/pull/13340)).
 - **Crash reports:** after a crash, you can review a report and choose to send it to us ([#12298](https://github.com/LadybirdBrowser/ladybird/pull/12298), [#12342](https://github.com/LadybirdBrowser/ladybird/pull/12342)).
 - **A welcome page** to pick your tab layout, search engine, and ad blocking ([#12333](https://github.com/LadybirdBrowser/ladybird/pull/12333)).
 - **Reporting broken sites** from inside the browser ([#12880](https://github.com/LadybirdBrowser/ladybird/pull/12880)).
-
-We still need auto-update, and the infrastructure to produce new builds and get them to users. The engine won't be finished when the alpha starts, and that's what the alpha is for.
 
 That's it for October. Thanks for reading, and we'll see you next month!

@@ -1,0 +1,57 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+
+const updated = "2026-11-14";
+---
+
+<BaseLayout
+  title="Trademark policy"
+  description="How you may use the Ladybird name and logo."
+>
+  <section class="hero">
+    <div class="hero__tf">
+      <h1>Trademark policy</h1>
+      <p class="updated">Updated: {updated}</p>
+    </div>
+  </section>
+  <section class="single-content">
+    <div class="container">
+      <p>
+        The Ladybird name and logo are trademarks of Ladybird Browser
+        Initiative.
+      </p>
+      <p>
+        You may use them to discuss, review, or document Ladybird, provided you
+        do not imply that we sponsor or endorse your work.
+      </p>
+      <p>
+        Builds and packages made by others must clearly say who made them and
+        that they are not official releases from Ladybird Browser Initiative.
+      </p>
+      <p>
+        Distinct derivative products must use their own names and logos. You may
+        truthfully describe them as based on Ladybird.
+      </p>
+      <p>
+        Our branding must not be used to make websites, accounts, products, or
+        services appear official when they are not. Please get our written
+        permission before selling merchandise featuring the Ladybird name or
+        logo.
+      </p>
+      <p>
+        This policy does not change the source code license or restrict uses
+        permitted by law.
+      </p>
+      <p>
+        For questions or permission, email
+        <a href="mailto:contact@ladybird.org">contact@ladybird.org</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero__tf .updated {
+    margin-top: 8px;
+  }
+</style>

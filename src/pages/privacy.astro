@@ -1,0 +1,138 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+
+const updated = "2026-11-14";
+---
+
+<BaseLayout
+  title="Privacy policy"
+  description="How the Ladybird Browser Initiative handles your information."
+>
+  <section class="hero">
+    <div class="hero__tf">
+      <h1>Privacy policy</h1>
+      <p class="updated">Updated: {updated}</p>
+    </div>
+  </section>
+  <section class="single-content">
+    <div class="container">
+      <p>
+        Ladybird Browser Initiative doesn't track your browsing or sell your
+        data. This policy covers the browser, our website, newsletter,
+        donations, and correspondence.
+      </p>
+
+      <h2>Crash reports</h2>
+      <p>
+        If you choose to send a report, we use it to find and fix bugs. Reports
+        contain technical details about your Ladybird build, operating system,
+        and crash, including an error message and stack trace. You can also
+        choose to include the URL of the page that crashed and a description of
+        what happened. We keep reports and submission IP addresses for up to 93
+        days, then delete them. We use the IP addresses to limit spam.
+      </p>
+
+      <h2>Site compatibility reports</h2>
+      <p>
+        If you choose to send a report, we receive your description of the
+        problem, the page URL, technical information about your Ladybird build
+        and system, a screenshot unless you remove it, and, if you choose,
+        layout and painting information. These can show what's on the page, such
+        as your name or messages if you are signed in, so check them before
+        sending. We use these reports to investigate and fix compatibility
+        problems. We keep reports for up to 93 days, then delete them.
+      </p>
+
+      <h2>Updates and downloads</h2>
+      <p>
+        When a Ladybird build from us checks for updates, it sends your Ladybird
+        version and platform. Downloads, updates, and packages from us are
+        delivered through Cloudflare, which also receives your IP address when
+        you connect.
+      </p>
+
+      <h2>Filter lists</h2>
+      <p>
+        If you turn on content blocking filter lists, such as EasyList, Ladybird
+        downloads them and checks for updates from the servers of the people who
+        maintain each list. Those servers receive your IP address and handle it
+        under their own policies.
+      </p>
+
+      <h2>Website</h2>
+      <p>
+        Our website is served through Cloudflare and hosted on GitHub Pages,
+        which process connection information, including your IP address, to
+        deliver and protect the site. The site doesn't use cookies or analytics.
+        Logs we retain for our own online services are kept for up to 93 days.
+      </p>
+
+      <h2>Email</h2>
+      <p>
+        If you contact us, we keep your message for as long as it's useful for
+        responding to you and keeping a record of our work. You can ask us to
+        delete it.
+      </p>
+
+      <h2>Donations</h2>
+      <p>
+        If you donate, we receive donor and transaction information from the
+        service you use. We use it to manage donations, send receipts, and keep
+        financial records. We keep financial records for as long as US tax and
+        nonprofit law requires.
+      </p>
+
+      <h2>Newsletter</h2>
+      <p>
+        If you subscribe, we use your email address to send Ladybird updates.
+        Our newsletter provider also stores subscription details, including your
+        signup date, IP address, and referrer information. Email tracking is
+        disabled. You can unsubscribe at any time. We keep subscription records
+        while you're subscribed. After you unsubscribe, a record remains to
+        prevent accidental resubscription; you can ask us to delete it.
+      </p>
+
+      <h2>Service providers</h2>
+      <p>
+        We use external services for hosting, email, newsletters, and donations.
+        Our <a href="/service-providers/">Service providers</a> page explains which
+        services we use and what they handle.
+      </p>
+      <p>
+        Ladybird Browser Initiative is based in the United States, so
+        information you send us is processed there.
+      </p>
+
+      <h2>Your information</h2>
+      <p>
+        For privacy questions or requests to access, correct, or delete your
+        information, email
+        <a href="mailto:privacy@ladybird.org">privacy@ladybird.org</a>.
+        Depending on the law that applies, you can also request a portable copy,
+        object to or restrict processing, withdraw consent, and complain to a
+        data protection authority.
+      </p>
+      <p>
+        Ladybird Browser Initiative<br />
+        2261 Market Street STE 10029<br />
+        San Francisco, CA 94114-1612<br />
+        United States
+      </p>
+
+      <h2>Why we use this information</h2>
+      <p>
+        We rely on your consent to send newsletters and process voluntary crash
+        and compatibility reports. We use connection details and update checks
+        to operate, update, and protect our services, and keep correspondence to
+        handle your inquiries. These are our legitimate interests. We keep
+        financial records to meet our legal obligations.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero__tf .updated {
+    margin-top: 8px;
+  }
+</style>

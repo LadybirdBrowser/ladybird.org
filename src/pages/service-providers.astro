@@ -1,0 +1,123 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+
+const updated = "2026-11-14";
+
+type Provider = { name: string; description: string };
+
+const hosting: Provider[] = [
+  {
+    name: "Cloudflare",
+    description:
+      "CDN, DNS, and delivery of our website and Ladybird downloads and updates. Processes connection and request information, including IP addresses, for services routed through its network. Update checks also send your Ladybird version and platform.",
+  },
+  { name: "Hetzner", description: "Servers and storage." },
+  {
+    name: "GitHub",
+    description:
+      "Source code, CI, website hosting through GitHub Pages, and issue tracking. Public issues, comments, and contributions are visible to others.",
+  },
+];
+
+const donations: Provider[] = [
+  { name: "Donorbox", description: "Donation forms and donation management." },
+  { name: "Open Collective", description: "Donations." },
+  { name: "Benevity", description: "Charitable giving." },
+  { name: "Stripe", description: "Payment processing." },
+  { name: "PayPal", description: "Payment processing." },
+  { name: "Customers Bank", description: "Bank account." },
+  { name: "Xero", description: "Accounting and invoicing." },
+];
+---
+
+<BaseLayout
+  title="Service providers"
+  description="The services the Ladybird Browser Initiative uses and what they handle."
+>
+  <section class="hero">
+    <div class="hero__tf">
+      <h1>Service providers</h1>
+      <p class="updated">Updated: {updated}</p>
+    </div>
+  </section>
+  <section class="single-content">
+    <div class="container">
+      <p>
+        We use the services below to run Ladybird and Ladybird Browser
+        Initiative. Which ones handle your information depends on how you
+        interact with us.
+      </p>
+      <p>
+        This page forms part of our <a href="/privacy/">Privacy policy</a>.
+      </p>
+
+      <h2>Hosting and infrastructure</h2>
+      <ul class="providers">
+        {
+          hosting.map((p) => (
+            <li>
+              <strong>{p.name}</strong>: {p.description}
+            </li>
+          ))
+        }
+      </ul>
+      <p>
+        Crash and site compatibility reports, and the IP addresses they're sent
+        from, are stored with Hetzner in Germany.
+      </p>
+
+      <h2>Email, post, and newsletters</h2>
+      <ul class="providers">
+        <li>
+          <strong>Google Workspace</strong>: Email and voice services. Handles
+          correspondence sent to us, including sender information, message
+          contents, and attachments.
+        </li>
+        <li>
+          <strong>Buttondown</strong>: Newsletter subscriptions and delivery.
+          Stores email addresses, subscription dates and status, signup IP
+          addresses, and referrer information.
+        </li>
+        <li>
+          <strong>Stable</strong>: Virtual mailbox. Receives and scans postal
+          mail sent to our address.
+        </li>
+      </ul>
+
+      <h2>Donations and financial records</h2>
+      <p>
+        Donation services share donor and transaction information with us.
+        Banking and accounting services hold our financial records.
+      </p>
+      <ul class="providers">
+        {
+          donations.map((p) => (
+            <li>
+              <strong>{p.name}</strong>: {p.description}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero__tf .updated {
+    margin-top: 8px;
+  }
+
+  .providers {
+    list-style-type: disc;
+    margin-left: 24px;
+  }
+
+  .providers li {
+    color: var(--text-secondary);
+    padding: 4px 0;
+  }
+
+  .providers strong {
+    color: var(--text-primary);
+  }
+</style>

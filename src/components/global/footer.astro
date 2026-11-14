@@ -21,14 +21,18 @@
       </div>
 
       <nav class="footer-links">
-        <a href="/#about">About</a>
-        <a href="/news/">News</a>
-        <a href="/#contribute">Get involved</a>
-        <a href="/#support">Donate</a>
-        <a href="/#faq">FAQ</a>
-        <a href="/organization/">Organization</a>
-        <a href="/privacy/">Privacy</a>
-        <a href="/trademark/">Trademark</a>
+        <div class="footer-col">
+          <a href="/#about">About</a>
+          <a href="/news/">News</a>
+          <a href="/#contribute">Get involved</a>
+          <a href="/#support">Donate</a>
+          <a href="/#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <a href="/organization/">Organization</a>
+          <a href="/privacy/">Privacy</a>
+          <a href="/trademark/">Trademark</a>
+        </div>
       </nav>
     </div>
 
@@ -107,12 +111,17 @@
 
   .footer-links {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px 24px;
-    max-width: 360px;
+    gap: 64px;
+  }
+
+  .footer-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .footer-links a {
+    white-space: nowrap;
     font-size: var(--text-sm);
     color: var(--text-secondary);
     text-decoration: none;
@@ -178,7 +187,7 @@
     }
 
     .footer-links {
-      gap: 12px 16px;
+      gap: 48px;
     }
 
     .footer-social {

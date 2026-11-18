@@ -79,10 +79,7 @@
   --header-bg: light-dark(rgba(255, 255, 255, 0.85), rgba(0, 0, 0, 0.85));
   /* The screenshot's own shadow is black, so in dark mode it glows instead. */
   --screenshot-glow: light-dark(transparent, rgba(138, 100, 229, 0.4));
-  --hero-glow: light-dark(
-    rgba(138, 100, 229, 0.14),
-    rgba(138, 100, 229, 0.22)
-  );
+  --hero-glow: light-dark(rgba(138, 100, 229, 0.14), rgba(138, 100, 229, 0.22));
 }
 
 /* An explicit choice from the theme toggle overrides the system setting. */

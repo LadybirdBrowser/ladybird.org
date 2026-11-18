@@ -1,0 +1,44 @@
+---
+import BaseLayout from "@/layouts/base.astro";
+import DownloadExplorer from "@/components/downloads/explorer.astro";
+import { repositoryURL } from "@/lib/downloads/config";
+
+const page = new URL("/download/", Astro.site);
+
+// Release details load in the browser, so this describes the parts that don't
+// change between releases. It helps search engines show the page as the place
+// to get Ladybird.
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Ladybird",
+  description: "A truly independent web browser, backed by a non-profit.",
+  applicationCategory: "BrowserApplication",
+  operatingSystem: "macOS, Linux",
+  url: new URL("/", Astro.site).href,
+  downloadUrl: page.href,
+  installUrl: page.href,
+  image: new URL("/assets/img/ladybird-purple-on-black.png", Astro.site).href,
+  isAccessibleForFree: true,
+  license: `${repositoryURL}/blob/master/LICENSE`,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: {
+    "@type": "Organization",
+    name: "Ladybird Browser Initiative",
+    url: new URL("/organization/", Astro.site).href,
+  },
+  sameAs: [repositoryURL],
+};
+---
+
+<BaseLayout
+  title="Download for macOS and Linux"
+  description="Download Ladybird, the independent web browser, for macOS and Linux. Get the disk image, install with Flatpak or from the Ubuntu and Fedora repositories, or build from source."
+>
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData)}
+  />
+  <DownloadExplorer />
+</BaseLayout>

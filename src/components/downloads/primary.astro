@@ -1,0 +1,427 @@
+<div class="download-cta">
+  <div class="download-cta__actions">
+    <span class="download-button-wrap">
+      <a
+        class="btn btn--primary download-button"
+        href="/download/"
+        data-cta-link
+      >
+        <span class="download-button__icon" aria-hidden="true">
+          <svg
+            class="download-button__arrow"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 4v10m-4.5-4.5L12 14l4.5-4.5"></path>
+          </svg>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          >
+            <path d="M5 19h14"></path>
+          </svg>
+        </span>
+        <span class="download-button__text">
+          <span class="download-button__label" data-cta-label
+            >Download Ladybird</span
+          >
+          <span class="download-button__detail" data-cta-detail
+            >For macOS and Linux</span
+          >
+        </span>
+      </a>
+    </span>
+    <!-- Only useful once the main button points at a specific platform. -->
+    <a class="download-cta__more" href="/download/" data-cta-more hidden
+      >All downloads <span aria-hidden="true">→</span></a
+    >
+  </div>
+  <!-- Empty unless there is something to say: a note for systems Ladybird
+       doesn't support yet, or install help after a download starts. -->
+  <p class="download-cta__meta" data-cta-meta></p>
+</div>
+
+<script>
+  import { desktopUserAgent, loadReleases } from "@/lib/downloads/client";
+  import {
+    architectureLabel,
+    architectureList,
+    detectPlatform,
+    isMobile,
+    linuxArchitectures,
+    macDownload,
+  } from "@/lib/downloads/releases";
+
+  const link = document.querySelector<HTMLAnchorElement>("[data-cta-link]");
+  const label = document.querySelector<HTMLElement>("[data-cta-label]");
+  const detail = document.querySelector<HTMLElement>("[data-cta-detail]");
+  const meta = document.querySelector<HTMLElement>("[data-cta-meta]");
+  const more = document.querySelector<HTMLElement>("[data-cta-more]");
+
+  // A narrow window wraps the line between parts, never inside one.
+  function details(element: HTMLElement, parts: (string | undefined)[]) {
+    element.replaceChildren();
+    parts.filter(Boolean).forEach((part, index) => {
+      const span = document.createElement("span");
+      span.className = "download-button__part";
+      span.textContent = part!;
+      element.append(...(index ? [" · "] : []), span);
+    });
+  }
+
+  function skeleton(width: string): HTMLElement {
+    const bar = document.createElement("span");
+    bar.className = "skeleton";
+    bar.style.width = width;
+    return bar;
+  }
+
+  async function prepare(
+    link: HTMLAnchorElement,
+    label: HTMLElement,
+    detail: HTMLElement,
+    meta: HTMLElement
+  ) {
+    const agent = desktopUserAgent();
+    const platform = detectPlatform(agent);
+
+    if (platform === "Windows") {
+      meta.textContent = "Windows support is planned.";
+      return;
+    }
+    if (isMobile(agent)) {
+      meta.textContent = "Ladybird is a desktop browser.";
+      return;
+    }
+    if (platform !== "macOS" && platform !== "Linux") return;
+
+    // The label comes from the user agent alone, so it is right straight away.
+    // The details wait for the manifest, with skeletons in their place.
+    label.textContent = `Download for ${platform}`;
+    link.href = `/download/#${platform.toLowerCase()}`;
+    if (more) more.hidden = false;
+    const cta = link.closest<HTMLElement>(".download-cta");
+    cta?.setAttribute("aria-busy", "true");
+    detail.replaceChildren(
+      skeleton(platform === "macOS" ? "20.3em" : "13.7em")
+    );
+
+    let release;
+    try {
+      release = (await loadReleases()).releases[0];
+    } finally {
+      cta?.removeAttribute("aria-busy");
+      // The skeleton's width only approximates the text, so the button keeps
+      // its width rather than shrinking once the text replaces it.
+      const wrap = link.parentElement!;
+      wrap.style.minWidth = `min(${wrap.getBoundingClientRect().width}px, 100%)`;
+      // Without the manifest, the button still leads to the downloads page.
+      detail.textContent =
+        platform === "macOS" ? "Disk image" : "Flatpak · Ubuntu · Fedora";
+    }
+    if (!release) return;
+    const { version } = release;
+
+    if (platform === "macOS") {
+      const file = macDownload(release);
+      if (!file) return;
+      // The user agent can't tell the macOS version, so the button states it.
+      details(detail, [
+        architectureLabel(file.architecture, "macOS"),
+        file.minimum_macos_version &&
+          `macOS ${file.minimum_macos_version} or later`,
+        version,
+      ]);
+      link.href = file.url;
+      link.addEventListener("click", () => {
+        meta.textContent =
+          "Downloading. Open the disk image and drag Ladybird into Applications.";
+      });
+    } else {
+      const { all } = linuxArchitectures(release);
+      details(detail, [architectureList(all, "Linux"), version]);
+    }
+    // Announce later changes, such as the hint after clicking, but not the initial fill.
+    meta.setAttribute("aria-live", "polite");
+  }
+
+  if (link && label && detail && meta)
+    prepare(link, label, detail, meta).catch(() => {
+      // The link still leads to the downloads page, which can retry.
+    });
+</script>
+
+<style>
+  .download-cta {
+    /* A soft deceleration: quick to respond, gentle to settle. */
+    --cta-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* The site's spinning ring colors, shared by the border and its glow. */
+    --cta-ring: #8a64e5, #6d98cc, #2a1373, #8a64e5;
+    /* The glow uses the same hues, brighter on a dark page: a dim indigo
+       glow disappears against black. */
+    --cta-ring-glow:
+      light-dark(#8a64e5, #a586ff), light-dark(#6d98cc, #8db7ec),
+      light-dark(#2a1373, #6447dc), light-dark(#8a64e5, #a586ff);
+  }
+
+  .download-cta__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px 32px;
+  }
+
+  /* Builds on .btn and .btn--primary: same pill, same spinning ring on hover,
+     with more presence for the one action the homepage exists to offer. */
+  .download-button {
+    --cta-top: color-mix(in srgb, var(--color-accent), white 14%);
+    --cta-bottom: color-mix(
+      in srgb,
+      var(--color-accent),
+      var(--brand-indigo) 22%
+    );
+    justify-content: flex-start;
+    gap: 14px;
+    min-width: 300px;
+    min-height: 64px;
+    padding: 10px 32px 10px 12px;
+    text-align: left;
+    line-height: 1.25;
+    background:
+      linear-gradient(var(--cta-top), var(--cta-bottom)) padding-box,
+      linear-gradient(var(--cta-top), var(--cta-bottom)) border-box;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.25),
+      0 1px 2px rgb(0 0 0 / 0.12),
+      0 8px 20px -10px rgb(0 0 0 / 0.3);
+    /* The lift moves the button with a layout offset, not a transform:
+       Firefox draws text inside an animated transform with a softer
+       rendering path, while an offset keeps it drawn like any other text. */
+    position: relative;
+    z-index: 1;
+    top: 0;
+    transition:
+      color 0.3s,
+      top 0.3s var(--cta-ease),
+      box-shadow 0.3s var(--cta-ease);
+    /* The ring's rotation pauses rather than stops when the pointer leaves,
+       so it and its glow stay in step and never snap back. */
+    animation: spin-border 3s linear infinite paused;
+  }
+
+  .download-button:hover {
+    top: -2px;
+    background:
+      linear-gradient(var(--cta-top), var(--cta-bottom)) padding-box,
+      conic-gradient(from var(--gradient-angle), var(--cta-ring)) border-box;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      0 1px 2px rgb(0 0 0 / 0.12),
+      0 12px 24px -12px rgb(0 0 0 / 0.3);
+    animation-play-state: running;
+  }
+
+  .download-button:active {
+    top: 0;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.25),
+      0 1px 2px rgb(0 0 0 / 0.12),
+      0 6px 16px -10px rgb(0 0 0 / 0.3);
+    transition-duration: 0.1s;
+  }
+
+  /* The glow sits behind the button. Drawn by the button itself, it would
+     paint over its own fill, so it lives on a wrapper instead. Plain stacking
+     order (glow 0, button 1) keeps it behind without isolating the wrapper:
+     an isolated group can make Firefox render the button's text offscreen,
+     which softens it. */
+  .download-button-wrap {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+    border-radius: 999px;
+  }
+
+  /* Fills the wrapper when the script gives it a minimum width. */
+  .download-button-wrap > .download-button {
+    flex-grow: 1;
+  }
+
+  /* A blurred copy of the spinning ring, so on hover the button glows in the
+     same colors as its border. */
+  .download-button-wrap::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 2px 6px;
+    border-radius: inherit;
+    background: conic-gradient(
+      from var(--gradient-angle),
+      var(--cta-ring-glow)
+    );
+    filter: blur(16px);
+    opacity: 0;
+    transition: opacity 0.4s var(--cta-ease);
+    animation: spin-border 3s linear infinite paused;
+    pointer-events: none;
+  }
+
+  .download-button-wrap:has(> .download-button:hover)::before {
+    opacity: 0.85;
+    animation-play-state: running;
+  }
+
+  .download-button__icon {
+    display: grid;
+    place-items: center;
+    grid-template-areas: "icon";
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--bg-page) 16%, transparent);
+    box-shadow: inset 0 0 0 1px
+      color-mix(in srgb, var(--bg-page) 22%, transparent);
+  }
+
+  .download-button__icon svg {
+    grid-area: icon;
+  }
+
+  /* The arrow is its own composited layer, so it glides with subpixel
+     precision instead of being redrawn in whole-pixel steps, and comes to
+     rest on a whole pixel so it is crisp when still. */
+  .download-button__arrow {
+    transition: transform 0.35s var(--cta-ease);
+    will-change: transform;
+  }
+
+  .download-button:hover .download-button__arrow,
+  .download-button:focus-visible .download-button__arrow {
+    transform: translateY(2px);
+  }
+
+  /* May shrink, so a loading bar never widens the button past the screen. */
+  .download-button__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .download-button__label {
+    font-size: var(--text-md);
+  }
+
+  .download-button__detail {
+    font-size: var(--text-xs);
+    font-weight: var(--weight-text);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.9;
+  }
+
+  .download-button__detail :global(.download-button__part) {
+    white-space: nowrap;
+  }
+
+  /* Loading placeholders in the button's text color, so they show on its
+     fill in both themes. (Global: the script creates them.) */
+  .download-button :global(.skeleton) {
+    --skeleton-base: color-mix(in srgb, currentColor 24%, transparent);
+    --skeleton-shine: color-mix(in srgb, currentColor 42%, transparent);
+  }
+
+  @media (max-width: 640px) {
+    .download-cta :global(.skeleton) {
+      margin-inline: auto;
+    }
+  }
+
+  .download-cta__more {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .download-cta__more span {
+    display: inline-block;
+    margin-left: 4px;
+    transition: transform 0.2s;
+  }
+
+  .download-cta__more:hover {
+    color: var(--text-primary);
+  }
+
+  .download-cta__more:hover span {
+    transform: translateX(3px);
+  }
+
+  .download-cta__meta {
+    margin: 16px 0 0 12px;
+    font-size: var(--text-xs);
+    line-height: 1.5;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Kept in the page while empty, so screen readers hear what it says later. */
+  .download-cta__meta:empty {
+    margin: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .download-button-wrap::before {
+      animation: none;
+    }
+
+    .download-button,
+    .download-button__arrow,
+    .download-cta__more span {
+      transition: none;
+    }
+
+    .download-button:hover {
+      top: 0;
+    }
+
+    .download-button:hover .download-button__arrow,
+    .download-button:focus-visible .download-button__arrow,
+    .download-cta__more:hover span {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* A single column. Wrapping would size the column to its widest
+       content instead of the screen. */
+    .download-cta__actions {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      text-align: center;
+    }
+
+    .download-button {
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
+      padding-right: 28px;
+    }
+
+    .download-cta__meta {
+      margin-left: 0;
+      text-align: center;
+    }
+  }
+</style>

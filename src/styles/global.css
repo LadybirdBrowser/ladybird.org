@@ -370,6 +370,91 @@ th {
   color: var(--text-primary);
 }
 
+/* The one solid call to action on a page, e.g. a download. */
+.btn--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--bg-page);
+  background:
+    linear-gradient(var(--color-accent), var(--color-accent)) padding-box,
+    linear-gradient(var(--color-accent), var(--color-accent)) border-box;
+}
+
+.btn--primary:hover {
+  color: var(--bg-page);
+  background:
+    linear-gradient(var(--color-accent-hover), var(--color-accent-hover))
+      padding-box,
+    conic-gradient(
+        from var(--gradient-angle),
+        #8a64e5,
+        #6d98cc,
+        #2a1373,
+        #8a64e5
+      )
+      border-box;
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover {
+    animation: none;
+  }
+}
+
+/* ---- Skeleton loaders ---- */
+
+/* A placeholder bar for one line of text that is still loading. It takes up
+   exactly one line of its parent's text, so the real text replaces it without
+   moving anything. Set a width; colors can be overridden. */
+.skeleton {
+  /* A dark page needs a little more contrast for the bars to show. */
+  --skeleton-base: light-dark(
+    color-mix(in srgb, var(--text-primary) 9%, transparent),
+    color-mix(in srgb, var(--text-primary) 15%, transparent)
+  );
+  --skeleton-shine: light-dark(
+    color-mix(in srgb, var(--text-primary) 3%, transparent),
+    color-mix(in srgb, var(--text-primary) 6%, transparent)
+  );
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 1lh;
+  /* Transparent borders center the bar in the line. Unlike margins, they
+     can't collapse into a parent's, so the line keeps its full height. */
+  border-block: calc((1lh - 0.8em) / 2) solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(
+      90deg,
+      var(--skeleton-base) 35%,
+      var(--skeleton-shine) 50%,
+      var(--skeleton-base) 65%
+    )
+    0 0 / 300% 100% padding-box;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
 /* ---- Sections ---- */
 
 .section {

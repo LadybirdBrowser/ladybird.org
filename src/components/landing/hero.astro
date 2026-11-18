@@ -1,3 +1,7 @@
+---
+import PrimaryDownload from "@/components/downloads/primary.astro";
+---
+
 <section class="hero-landing">
   <div class="container">
     <h1>A truly independent<br />web browser</h1>
@@ -6,13 +10,10 @@
         href="/organization/">501(c)(3) non-profit</a
       >.
     </p>
-    <p class="hero-alpha">
-      Our first Alpha for macOS and Linux is coming later this year.
+    <p class="hero-alpha" id="download">
+      Alpha available now for macOS and Linux. Free and open source.
     </p>
-    <div class="hero-cta">
-      <a href="/#contribute" class="btn">Get involved</a>
-      <a href="/#support" class="btn btn--outline">Donate</a>
-    </div>
+    <PrimaryDownload />
   </div>
   <div class="container container-wide hero-shot">
     <img
@@ -97,14 +98,11 @@
   }
 
   .hero-alpha {
+    /* Clear of the sticky header when the navigation jumps here. */
+    scroll-margin-top: 80px;
     color: var(--text-primary);
+    text-wrap: pretty;
     margin-bottom: 32px;
-  }
-
-  .hero-cta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
   }
 
   @media (max-width: 640px) {
@@ -118,15 +116,6 @@
 
     .hero-landing::before {
       width: 120%;
-    }
-
-    .hero-cta {
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .hero-cta .btn {
-      text-align: center;
     }
   }
 </style>

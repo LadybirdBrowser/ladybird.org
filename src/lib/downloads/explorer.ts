@@ -362,13 +362,14 @@ function setUp(root: HTMLElement) {
       const output = slot("apt-command");
       const key = verifyKey("apt", "Ubuntu packages", aptKeyCheck(apt));
       versions.querySelectorAll("label").forEach((each) => each.remove());
-      aptChoices(apt.systems).forEach(({ label: name, system }, index) => {
+      const choices = aptChoices(apt.systems);
+      choices.forEach(({ label: name, system }, index) => {
         const label = document.createElement("label");
         const input = document.createElement("input");
         input.type = "radio";
         input.name = "apt-suite";
         input.value = system.suite;
-        input.checked = index === 0;
+        input.checked = index === choices.length - 1;
         const show = () => {
           output.replaceChildren(
             command(

@@ -8,11 +8,6 @@ export const releasesURL =
 export const repository = "LadybirdBrowser/ladybird";
 export const repositoryURL = `https://github.com/${repository}`;
 
-/** Release tags are named after the version, e.g. "2026.11.0". */
-export function releaseTagURL(version: string): string {
-  return `${repositoryURL}/releases/tag/${encodeURIComponent(version)}`;
-}
-
 // Who signs releases. These live here, not in the release manifest: a
 // fingerprint served from the same host as its key proves nothing if that host
 // is compromised, and changing these takes a commit to this website.
@@ -24,6 +19,21 @@ export const signingKeys = {
   rpm: "5C9B16C67BF7A50B3EBD2EE172FC8B30AFFCACA6",
   flatpak: "9436EDD8A32302AD5B9BC80FD941A9B53C448496",
 };
+
+/**
+ * The public key of the APT repository, which also signs the Debian packages.
+ * It is public/keys/ladybird-apt.asc in this website's repository, so the key
+ * that a signature is checked with never comes from the host that serves the
+ * signature.
+ */
+export const aptKeyURL = "https://ladybird.org/keys/ladybird-apt.asc";
+
+/**
+ * The public key of the RPM repository, which also signs each RPM package
+ * inside the file. It is public/keys/RPM-GPG-KEY-ladybird in this website's
+ * repository, for the same reason as the APT key.
+ */
+export const rpmKeyURL = "https://ladybird.org/keys/RPM-GPG-KEY-ladybird";
 
 /** The Apple Developer Team ID that signs the macOS disk image. */
 export const appleTeamID = "KQT83NTQL8";

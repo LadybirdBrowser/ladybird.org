@@ -1,6 +1,8 @@
 import {
   appleTeamID,
+  aptKeyURL,
   attestationKeyURL,
+  rpmKeyURL,
   repository,
   signingKeys,
 } from "./config";
@@ -15,6 +17,8 @@ export interface Download {
   attestation?: string;
   /** The Sigstore bundle of an attestation that release-tools signed itself. */
   attestation_bundle?: string;
+  /** The detached OpenPGP signature of the file. */
+  signature?: string;
   /** The oldest macOS the app runs on, e.g. "14.4". */
   minimum_macos_version?: string;
 }
@@ -43,24 +47,34 @@ export interface ThirdPartySource {
   sha256: string;
 }
 
+export interface AptRepository {
+  key: string;
+  package: string;
+  systems: AptSystem[];
+}
+
+export interface RpmRepository {
+  key: string;
+  repository: string;
+  package: string;
+  systems: RepositorySystem[];
+}
+
+export interface FlatpakRepository {
+  flatpakref: string;
+  flatpakrepo: string;
+  architectures: string[];
+}
+
 export interface Release {
   version: string;
   published: string;
   downloads: Download[];
   thirdPartySources: ThirdPartySource[];
   repositories: {
-    apt?: { key: string; package: string; systems: AptSystem[] };
-    rpm?: {
-      key: string;
-      repository: string;
-      package: string;
-      systems: RepositorySystem[];
-    };
-    flatpak?: {
-      flatpakref: string;
-      flatpakrepo: string;
-      architectures: string[];
-    };
+    apt?: AptRepository;
+    rpm?: RpmRepository;
+    flatpak?: FlatpakRepository;
   };
 }
 
@@ -96,6 +110,13 @@ function url(value: unknown): string {
   if (parsed.protocol !== "https:" || parsed.username || parsed.password)
     throw new Error("Release links must use HTTPS without credentials.");
   return result;
+}
+
+function optional<T>(
+  value: unknown,
+  parse: (value: unknown) => T
+): T | undefined {
+  return value ? parse(value) : undefined;
 }
 
 function token(value: unknown): string {
@@ -139,20 +160,15 @@ function parseDownload(value: unknown): Download {
   const entry = record(value);
   return {
     platform: string(entry["platform"]),
-    architecture: entry["architecture"]
-      ? string(entry["architecture"])
-      : undefined,
+    architecture: optional(entry["architecture"], string),
     name: fileName(entry["name"]),
     url: url(entry["url"]),
     size: size(entry["size"]),
     sha256: digest(entry["sha256"]),
-    attestation: entry["attestation"] ? url(entry["attestation"]) : undefined,
-    attestation_bundle: entry["attestation_bundle"]
-      ? url(entry["attestation_bundle"])
-      : undefined,
-    minimum_macos_version: entry["minimum_macos_version"]
-      ? osVersion(entry["minimum_macos_version"])
-      : undefined,
+    attestation: optional(entry["attestation"], url),
+    attestation_bundle: optional(entry["attestation_bundle"], url),
+    signature: optional(entry["signature"], url),
+    minimum_macos_version: optional(entry["minimum_macos_version"], osVersion),
   };
 }
 
@@ -173,70 +189,85 @@ function parseSystem(value: unknown): RepositorySystem {
   };
 }
 
+function parseApt(value: unknown): AptRepository {
+  const apt = record(value);
+  return {
+    key: url(apt["key"]),
+    package: token(apt["package"]),
+    systems: list(apt["systems"]).map((value) => {
+      const system = record(value);
+      return {
+        ...parseSystem(system),
+        suite: token(system["suite"]),
+        sources: url(system["sources"]),
+      };
+    }),
+  };
+}
+
+function parseRpm(value: unknown): RpmRepository {
+  const rpm = record(value);
+  return {
+    key: url(rpm["key"]),
+    repository: url(rpm["repository"]),
+    package: token(rpm["package"]),
+    systems: list(rpm["systems"]).map(parseSystem),
+  };
+}
+
+function parseFlatpak(value: unknown): FlatpakRepository {
+  const flatpak = record(value);
+  return {
+    flatpakref: url(flatpak["flatpakref"]),
+    flatpakrepo: url(flatpak["flatpakrepo"]),
+    architectures: strings(flatpak["architectures"]),
+  };
+}
+
+function parseRepositories(value: unknown): Release["repositories"] {
+  const entry = record(value);
+  return {
+    apt: optional(entry["apt"], parseApt),
+    rpm: optional(entry["rpm"], parseRpm),
+    flatpak: optional(entry["flatpak"], parseFlatpak),
+  };
+}
+
+function parseRelease(value: unknown): Release {
+  const entry = record(value);
+  const version = string(entry["version"]);
+  if (!/^\d+(?:\.\d+)*$/.test(version)) throw new Error("Invalid version.");
+  const published = string(entry["published"]);
+  if (!Number.isFinite(Date.parse(published)))
+    throw new Error("Invalid release date.");
+  return {
+    version,
+    published,
+    downloads: list(entry["downloads"]).map(parseDownload),
+    // A release that uses no library under the LGPL has none.
+    thirdPartySources:
+      optional(entry["third_party_sources"], (value) =>
+        list(value).map(parseThirdPartySource)
+      ) ?? [],
+    repositories: parseRepositories(entry["repositories"]),
+  };
+}
+
+function newestFirst(a: Release, b: Release): number {
+  const left = a.version.split(".").map(Number);
+  const right = b.version.split(".").map(Number);
+  for (let index = 0; index < Math.max(left.length, right.length); index++) {
+    const difference = (right[index] ?? 0) - (left[index] ?? 0);
+    if (difference) return difference;
+  }
+  return 0;
+}
+
 export function parseManifest(value: unknown): Manifest {
   const document = record(value);
   if (document["format"] !== 1) throw new Error("Unsupported manifest format.");
-  const releases = list(document["releases"]).map((value): Release => {
-    const entry = record(value);
-    const version = string(entry["version"]);
-    if (!/^\d+(?:\.\d+)*$/.test(version)) throw new Error("Invalid version.");
-    const published = string(entry["published"]);
-    if (!Number.isFinite(Date.parse(published)))
-      throw new Error("Invalid release date.");
-    const repositories = record(entry["repositories"]);
-    const result: Release = {
-      version,
-      published,
-      downloads: list(entry["downloads"]).map(parseDownload),
-      // A release that uses no library under the LGPL has none.
-      thirdPartySources: entry["third_party_sources"]
-        ? list(entry["third_party_sources"]).map(parseThirdPartySource)
-        : [],
-      repositories: {},
-    };
-    if (repositories["apt"]) {
-      const apt = record(repositories["apt"]);
-      result.repositories.apt = {
-        key: url(apt["key"]),
-        package: token(apt["package"]),
-        systems: list(apt["systems"]).map((value) => {
-          const system = record(value);
-          return {
-            ...parseSystem(system),
-            suite: token(system["suite"]),
-            sources: url(system["sources"]),
-          };
-        }),
-      };
-    }
-    if (repositories["rpm"]) {
-      const rpm = record(repositories["rpm"]);
-      result.repositories.rpm = {
-        key: url(rpm["key"]),
-        repository: url(rpm["repository"]),
-        package: token(rpm["package"]),
-        systems: list(rpm["systems"]).map(parseSystem),
-      };
-    }
-    if (repositories["flatpak"]) {
-      const flatpak = record(repositories["flatpak"]);
-      result.repositories.flatpak = {
-        flatpakref: url(flatpak["flatpakref"]),
-        flatpakrepo: url(flatpak["flatpakrepo"]),
-        architectures: strings(flatpak["architectures"]),
-      };
-    }
-    return result;
-  });
-  releases.sort((a, b) => {
-    const left = a.version.split(".").map(Number);
-    const right = b.version.split(".").map(Number);
-    for (let index = 0; index < Math.max(left.length, right.length); index++) {
-      const difference = (right[index] ?? 0) - (left[index] ?? 0);
-      if (difference) return difference;
-    }
-    return 0;
-  });
+  const releases = list(document["releases"]).map(parseRelease);
+  releases.sort(newestFirst);
   if (
     new Set(releases.map((release) => release.version)).size !== releases.length
   )
@@ -244,7 +275,7 @@ export function parseManifest(value: unknown): Manifest {
   return { format: 1, releases };
 }
 
-export function normalizeArchitecture(architecture: string): string {
+function normalizeArchitecture(architecture: string): string {
   if (["arm64", "aarch64"].includes(architecture)) return "arm64";
   if (["amd64", "x86_64", "x64"].includes(architecture)) return "x86_64";
   return architecture;
@@ -296,14 +327,10 @@ export function linuxArchitectures(release: Release): {
   uniform: boolean;
 } {
   const { flatpak, apt, rpm } = release.repositories;
-  const archives = downloadsFor(release, "Linux").map(
-    (file) => file.architecture ?? ""
-  );
   const sets = [
     flatpak?.architectures,
     ...(apt?.systems.map((system) => system.architectures) ?? []),
     ...(rpm?.systems.map((system) => system.architectures) ?? []),
-    archives.length ? archives : undefined,
   ]
     .filter((each): each is string[] => Boolean(each))
     .map((each) => architectureSet(each).join());
@@ -351,6 +378,29 @@ export function downloadsFor(release: Release, platform: string): Download[] {
   return release.downloads.filter((download) => download.platform === platform);
 }
 
+/**
+ * The downloads that no other part of the page shows: the macOS disk image has
+ * its own, and the source tarball goes with the source code.
+ */
+export function otherDownloads(release: Release): Download[] {
+  return release.downloads.filter(
+    (file) => file.platform !== "macOS" && file.platform !== "source"
+  );
+}
+
+/** A file's size the way macOS's Finder shows it, e.g. "82.8 MB". */
+export function sizeLabel(bytes: number): string {
+  const units = ["bytes", "KB", "MB", "GB"];
+  let value = bytes;
+  let unit = 0;
+  while (value >= 1000 && unit < units.length - 1) {
+    value /= 1000;
+    unit++;
+  }
+  const digits = unit === 0 || value >= 100 ? 0 : 1;
+  return `${value.toFixed(digits)} ${units[unit]}`;
+}
+
 /** The disk image to offer on the homepage, if exactly one is published. */
 export function macDownload(release: Release): Download | undefined {
   const files = downloadsFor(release, "macOS");
@@ -365,13 +415,15 @@ export function macMinimum(files: Download[]): string | undefined {
 
 export function hasLinux(release: Release): boolean {
   const { apt, rpm, flatpak } = release.repositories;
-  return Boolean(
-    apt || rpm || flatpak || downloadsFor(release, "Linux").length
-  );
+  return Boolean(apt || rpm || flatpak);
 }
 
 // Quote manifest values even after validation: these commands may be copied into a shell.
 const quote = (value: string) => `'${value.replaceAll("'", "'\\''")}'`;
+
+// The name that wget and curl -O give a file.
+const savedAs = (url: string) =>
+  decodeURIComponent(new URL(url).pathname.split("/").pop()!);
 
 // Where the APT instructions save the repository's key.
 const aptKeyring = "/etc/apt/keyrings/ladybird.asc";
@@ -384,7 +436,7 @@ const attestationURLs = [
 ];
 
 /** Whether the attestation the manifest links is of this very file. */
-export function isAttested(file: Download): boolean {
+function isAttested(file: Download): boolean {
   return attestationURLs.some(
     (pattern) =>
       pattern.exec(file.attestation ?? "")?.[1]?.toLowerCase() ===
@@ -393,7 +445,7 @@ export function isAttested(file: Download): boolean {
 }
 
 /** The file's attestation in Sigstore's public log, if the manifest links it. */
-export function attestationLog(file: Download): string | undefined {
+function attestationLog(file: Download): string | undefined {
   return isAttested(file) &&
     file.attestation!.startsWith("https://search.sigstore.dev/")
     ? file.attestation
@@ -413,7 +465,7 @@ export interface Check {
    * names it ("Expected hash:"). */
   expected?: string;
   /** Where to see the same evidence without running anything. */
-  link?: { text: string; url: string };
+  links?: { text: string; url: string }[];
 }
 
 /**
@@ -425,12 +477,9 @@ export interface Check {
 function bundleCheck(
   file: Download,
   bundle: string,
-  link: Check["link"]
+  links: Check["links"]
 ): Check {
-  // The name curl -O gives it.
-  const saved = quote(
-    decodeURIComponent(new URL(bundle).pathname.split("/").pop()!)
-  );
+  const saved = quote(savedAs(bundle));
   // macOS has no wget, Ubuntu's desktop install no curl.
   const fetch =
     file.platform === "macOS"
@@ -443,7 +492,48 @@ function bundleCheck(
       `COSIGN_MAX_ATTACHMENT_SIZE=1G cosign verify-blob-attestation --key ${quote(attestationKeyURL)} --bundle ${saved} --type slsaprovenance1 ${quote(file.name)}`,
     ].join("\n"),
     outcome: "Should print `Verified OK`.",
-    link,
+    links,
+  };
+}
+
+/**
+ * Checks the signature of a package with the key that made it, if the key is
+ * known: the signature inside an RPM, or the detached one of a Debian package.
+ */
+function signatureCheck(file: Download): Check | undefined {
+  if (/\.rpm$/i.test(file.name)) return rpmSignatureCheck(file);
+  if (!file.signature || !/\.deb$/i.test(file.name)) return undefined;
+  const signature = quote(savedAs(file.signature));
+  return {
+    title: "OpenPGP signature",
+    note: "Signed with the key of Ladybird's APT repository.",
+    links: [{ text: "Signature", url: file.signature }, keyLink(aptKeyURL)],
+    command: [
+      `wget -qO- ${quote(aptKeyURL)} | gpg --import`,
+      `wget -q ${quote(file.signature)}`,
+      `gpg --verify ${signature} ${quote(file.name)}`,
+    ].join("\n"),
+    outcome:
+      'Should print `Good signature from "Ladybird APT repository"`, with the key fingerprint:',
+    expected: signingKeys.apt,
+  };
+}
+
+// rpm 6, which Fedora 44 ships, names the key by its fingerprint in lowercase.
+function rpmSignatureCheck(file: Download): Check {
+  const key = savedAs(rpmKeyURL);
+  return {
+    title: "RPM signature",
+    note: "Signed with the key of Ladybird's RPM repository. The signature is part of the package, which DNF also checks.",
+    links: [keyLink(rpmKeyURL)],
+    command: [
+      `wget -q ${quote(rpmKeyURL)}`,
+      `sudo rpmkeys --import ${quote(key)}`,
+      `rpmkeys --checksig --verbose ${quote(file.name)}`,
+    ].join("\n"),
+    outcome:
+      "Should print `signature, key fingerprint:` and `OK`, with the key fingerprint:",
+    expected: signingKeys.rpm.toLowerCase(),
   };
 }
 
@@ -469,18 +559,20 @@ export function verification(file: Download): Check[] {
       outcome: "Should print `explicit requirement satisfied`.",
     });
   }
+  const signature = signatureCheck(file);
+  if (signature) checks.push(signature);
   if (isAttested(file)) {
     const log = attestationLog(file);
-    const link = log ? { text: "Sigstore log entry", url: log } : undefined;
+    const links = log ? [{ text: "Sigstore log entry", url: log }] : undefined;
     checks.push(
       file.attestation_bundle
-        ? bundleCheck(file, file.attestation_bundle, link)
+        ? bundleCheck(file, file.attestation_bundle, links)
         : {
             // Attested by GitHub's build workflow.
             title: "Build attestation",
             command: `gh attestation verify ${name} --repo ${quote(repository)}`,
             outcome: "Should print `Verification succeeded!`.",
-            link,
+            links,
           }
     );
   }
@@ -497,12 +589,10 @@ const keyLink = (url: string) => ({
 // install by default (curl is missing from Ubuntu's desktop install). macOS
 // has curl and no wget.
 
-export function flatpakKeyCheck(
-  flatpak: NonNullable<Release["repositories"]["flatpak"]>
-): Check {
+export function flatpakKeyCheck(flatpak: FlatpakRepository): Check {
   return {
     title: "Signing key",
-    link: keyLink(flatpak.flatpakrepo),
+    links: [keyLink(flatpak.flatpakrepo)],
     note: "Flatpak saves this key when it adds the repository.",
     // The key in the .flatpakref that the install command uses.
     command: `wget -qO- ${quote(flatpak.flatpakref)} | sed -n 's/^GPGKey=//p' | base64 -d | gpg --show-keys`,
@@ -511,12 +601,10 @@ export function flatpakKeyCheck(
   };
 }
 
-export function aptKeyCheck(
-  apt: NonNullable<Release["repositories"]["apt"]>
-): Check {
+export function aptKeyCheck(apt: AptRepository): Check {
   return {
     title: "Signing key",
-    link: keyLink(apt.key),
+    links: [keyLink(apt.key)],
     note: "APT verifies the repository with this key. Check it after saving it, before `apt update`.",
     command: `gpg --show-keys ${aptKeyring}`,
     outcome: "Expected fingerprint:",
@@ -524,28 +612,21 @@ export function aptKeyCheck(
   };
 }
 
-export function rpmKeyCheck(
-  rpm: NonNullable<Release["repositories"]["rpm"]>
-): Check {
+export function rpmKeyCheck(rpm: RpmRepository): Check {
   return {
     title: "Signing key",
-    link: keyLink(rpm.key),
+    links: [keyLink(rpm.key)],
     note: "DNF shows its fingerprint when it asks to import this key on first install.",
     outcome: "Expected fingerprint:",
     expected: signingKeys.rpm,
   };
 }
 
-export function flatpakCommand(
-  flatpak: NonNullable<Release["repositories"]["flatpak"]>
-): string {
+export function flatpakCommand(flatpak: FlatpakRepository): string {
   return `flatpak install --user ${quote(flatpak.flatpakref)}`;
 }
 
-export function aptCommands(
-  apt: NonNullable<Release["repositories"]["apt"]>,
-  system: AptSystem
-): string {
+export function aptCommands(apt: AptRepository, system: AptSystem): string {
   // A key added by hand belongs in /etc/apt/keyrings (see sources.list(5)),
   // which the apt package creates. The repository's .sources files name this
   // path in Signed-By.
@@ -556,9 +637,7 @@ export function aptCommands(
   ].join("\n");
 }
 
-export function rpmCommands(
-  rpm: NonNullable<Release["repositories"]["rpm"]>
-): string {
+export function rpmCommands(rpm: RpmRepository): string {
   return [
     // DNF5's config-manager checks the file before saving it to the repository directory.
     `sudo dnf config-manager addrepo --from-repofile=${quote(rpm.repository)}`,

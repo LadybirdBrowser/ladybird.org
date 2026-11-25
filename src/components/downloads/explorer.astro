@@ -193,29 +193,12 @@ const repository = repositoryURL;
           <p class="method__foot" data-slot="rpm-foot"></p>
           <div class="method__verify" data-slot="rpm-verify"></div>
         </section>
-
-        <section
-          class="panel method"
-          data-method="archive"
-          aria-labelledby="archive-heading"
-        >
-          <div class="method__head">
-            <h3 id="archive-heading">Standalone archive</h3>
-          </div>
-          <p>Doesn’t update automatically.</p>
-          <ul class="files" data-slot="linux-files"></ul>
-        </section>
       </div>
     </section>
 
-    <section class="section" id="source" aria-labelledby="source-heading">
-      <h2 id="source-heading" class="section-heading">Source code</h2>
-      <p>
-        Build this release yourself with the <a href={buildInstructions}
-          >build instructions</a
-        >.
-      </p>
-      <ul class="files" data-slot="source-files"></ul>
+    <section class="section" id="other" aria-labelledby="other-heading">
+      <h2 id="other-heading" class="section-heading">Other downloads</h2>
+      <ul class="files" data-slot="other-files"></ul>
     </section>
   </div>
 
@@ -223,27 +206,9 @@ const repository = repositoryURL;
 
   <template data-template="file">
     <li class="file">
-      <div class="file__info">
-        <span class="file__label" data-field="label"></span>
-        <span class="file__meta" data-field="meta"></span>
-        <span class="file__verify" data-field="verify"></span>
-      </div>
-      <span class="file__actions" data-field="actions">
-        <a class="btn btn--outline btn--small" data-field="link"
-          ><svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            ><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"></path></svg
-          >Download</a
-        >
-      </span>
+      <a class="file__link" data-field="link"></a>
+      <span class="file__size" data-field="size"></span>
+      <span class="file__verify" data-field="verify"></span>
     </li>
   </template>
 
@@ -317,7 +282,7 @@ const repository = repositoryURL;
     <li class="verify__check">
       <span class="verify__head">
         <span class="verify__label" data-field="title"></span>
-        <a class="verify__link" data-field="link" hidden></a>
+        <span class="verify__links" data-field="links"></span>
       </span>
       <span class="verify__note" data-field="note" hidden></span>
       <span
@@ -720,26 +685,36 @@ const repository = repositoryURL;
     border-top: 1px solid var(--border-light);
   }
 
+  /* One dense row per file: what it is, its size, its signature and its
+     checks, in columns that line up from row to row. */
   .files :global(.file) {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 4px 16px;
-    padding: 16px 0;
+    grid-template-columns: minmax(0, 1fr) 5.5em auto;
+    align-items: baseline;
+    gap: 4px 20px;
+    padding: 8px 0;
     border-bottom: 1px solid var(--border-light);
+  }
+
+  .files :global(.file[hidden]) {
+    display: none;
+  }
+
+  .files :global(.file__link) {
+    font-weight: var(--weight-emphasis);
+  }
+
+  .files :global(.file__size) {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
   }
 
   .files :global(.file__info) {
     display: flex;
     flex-direction: column;
     min-width: 0;
-  }
-
-  .files :global(.file__actions) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 12px;
   }
 
   .files :global(.file__label) {
@@ -763,7 +738,7 @@ const repository = repositoryURL;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: 4px 16px;
-    padding: 16px 0;
+    padding: 8px 0;
     color: var(--text-muted);
     list-style: none;
     cursor: pointer;
@@ -813,7 +788,7 @@ const repository = repositoryURL;
   /* ---- Verification ---- */
 
   .files :global(.file__verify) {
-    margin-top: 2px;
+    text-align: right;
   }
 
   /* Present for the few who verify downloads, and quiet for everyone else. */
@@ -991,7 +966,13 @@ const repository = repositoryURL;
     white-space: nowrap;
   }
 
-  /* A check's title, with a link to the same evidence online beside it. */
+  .downloads :global(.verify__links) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+
+  /* A check's title, with links to what it checks with beside it. */
   .downloads :global(.verify__head) {
     display: flex;
     flex-wrap: wrap;
@@ -1080,13 +1061,13 @@ const repository = repositoryURL;
       grid-template-columns: 1fr;
     }
 
-    /* Buttons go under the file details, so the name keeps its width. */
+    /* The description gets a line of its own, so it keeps its width. */
     .files :global(.file) {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: auto minmax(0, 1fr);
     }
 
-    .files :global(.file__actions) {
-      margin-top: 8px;
+    .files :global(.file__link) {
+      grid-column: 1 / -1;
     }
   }
 </style>

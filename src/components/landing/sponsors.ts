@@ -76,6 +76,12 @@ export const currentSponsors: SponsorTier[] = [
         logo: "/assets/img/sponsors/coderabbit.svg",
         logoLight: "/assets/img/sponsors/coderabbit-light.svg",
       },
+      {
+        name: "Polar",
+        href: "https://polar.sh",
+        logo: "/assets/img/sponsors/polar.svg",
+        logoLight: "/assets/img/sponsors/polar-light.svg",
+      },
     ],
   },
   {

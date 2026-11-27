@@ -56,16 +56,12 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
                 ) : (
                   <span class="card-name">{s.name}</span>
                 );
-                return (
-                  <div class="logo-card">
-                    {s.href ? (
-                      <a href={s.href} rel="nofollow">
-                        {logo}
-                      </a>
-                    ) : (
-                      logo
-                    )}
-                  </div>
+                return s.href ? (
+                  <a class="logo-card" href={s.href} rel="nofollow">
+                    {logo}
+                  </a>
+                ) : (
+                  <div class="logo-card">{logo}</div>
                 );
               })}
             </div>
@@ -145,12 +141,13 @@ const hasLogos = (tier: SponsorTier) => tier.sponsors.some((s) => s.logo);
     --logo-height: 26px;
   }
 
-  .logo-card a {
-    display: flex;
-    align-items: center;
-    max-width: 100%;
+  a.logo-card {
     text-decoration: none;
-    color: var(--text-primary);
+    transition: border-color 0.2s;
+  }
+
+  a.logo-card:hover {
+    border-color: var(--color-accent);
   }
 
   /* --logo-width is set per logo by logoWidth() so all logos get similar area. */

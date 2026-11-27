@@ -275,7 +275,7 @@ export function parseManifest(value: unknown): Manifest {
   return { format: 1, releases };
 }
 
-function normalizeArchitecture(architecture: string): string {
+export function normalizeArchitecture(architecture: string): string {
   if (["arm64", "aarch64"].includes(architecture)) return "arm64";
   if (["amd64", "x86_64", "x64"].includes(architecture)) return "x86_64";
   return architecture;
@@ -327,8 +327,10 @@ export function linuxArchitectures(release: Release): {
   uniform: boolean;
 } {
   const { flatpak, apt, rpm } = release.repositories;
+  const images = appImages(release).map((file) => file.architecture ?? "");
   const sets = [
     flatpak?.architectures,
+    images.length ? images : undefined,
     ...(apt?.systems.map((system) => system.architectures) ?? []),
     ...(rpm?.systems.map((system) => system.architectures) ?? []),
   ]
@@ -378,13 +380,21 @@ export function downloadsFor(release: Release, platform: string): Download[] {
   return release.downloads.filter((download) => download.platform === platform);
 }
 
+const isAppImage = (file: Download) =>
+  file.platform === "Linux" && /\.AppImage$/.test(file.name);
+
+export function appImages(release: Release): Download[] {
+  return release.downloads.filter(isAppImage);
+}
+
 /**
- * The downloads that no other part of the page shows: the macOS disk image has
- * its own, and the source tarball goes with the source code.
+ * The Linux downloads that no other tab shows, for the Other tab:
+ * the Debian and RPM packages that the repositories install. The AppImages
+ * have a tab of their own.
  */
 export function otherDownloads(release: Release): Download[] {
   return release.downloads.filter(
-    (file) => file.platform !== "macOS" && file.platform !== "source"
+    (file) => file.platform === "Linux" && !isAppImage(file)
   );
 }
 
@@ -415,7 +425,7 @@ export function macMinimum(files: Download[]): string | undefined {
 
 export function hasLinux(release: Release): boolean {
   const { apt, rpm, flatpak } = release.repositories;
-  return Boolean(apt || rpm || flatpak);
+  return Boolean(apt || rpm || flatpak || appImages(release).length);
 }
 
 // Quote manifest values even after validation: these commands may be copied into a shell.
@@ -654,6 +664,25 @@ export function detectPlatform(userAgent: string): string | undefined {
   if (/Macintosh|Mac OS X/i.test(userAgent)) return "macOS";
   if (/Windows/i.test(userAgent)) return "Windows";
   if (/Linux|X11/i.test(userAgent)) return "Linux";
+  return undefined;
+}
+
+/**
+ * The CPU of the visitor's computer, normalized, if the browser tells.
+ * Chromium's user agent string always claims x86-64 on Linux, so its client
+ * hints, where given, come first: "x86" or "arm" with a bitness of "64".
+ * Firefox's user agent string names the CPU, e.g. "Linux aarch64".
+ */
+export function detectArchitecture(
+  userAgent: string,
+  hints?: { architecture?: string; bitness?: string }
+): string | undefined {
+  if (hints?.architecture && hints.bitness === "64") {
+    if (hints.architecture === "arm") return "arm64";
+    if (hints.architecture === "x86") return "x86_64";
+  }
+  if (/\b(aarch64|arm64)\b/i.test(userAgent)) return "arm64";
+  if (/\b(x86_64|amd64)\b/i.test(userAgent)) return "x86_64";
   return undefined;
 }
 

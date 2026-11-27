@@ -1,11 +1,13 @@
 import { desktopUserAgent, loadReleases } from "./client";
 import {
+  appImages,
   aptChoices,
   aptCommands,
   aptKeyCheck,
   architectureLabel,
   architectureList,
   architectureSet,
+  detectArchitecture,
   detectPlatform,
   downloadsFor,
   flatpakCommand,
@@ -14,6 +16,7 @@ import {
   hasLinux,
   linuxArchitectures,
   macMinimum,
+  normalizeArchitecture,
   isMobile,
   otherDownloads,
   rpmCommands,
@@ -253,19 +256,92 @@ function setUp(root: HTMLElement) {
   }
 
   /**
-   * A row of Other downloads: the file, as the link that downloads it, its
+   * A row of a file list: the file, as the link that downloads it, its
    * size, and its checks, which link its signature if it has one.
    */
-  function fileRow(file: Download, label: string): DocumentFragment {
+  function fileRow(file: Download): DocumentFragment {
     const fragment = instantiate("file");
     const anchor = link(field<HTMLAnchorElement>(fragment, "link"), file.url);
-    anchor.textContent = label;
-    if (label !== file.name) anchor.title = file.name;
+    anchor.textContent = file.name;
     field(fragment, "size").textContent = sizeLabel(file.size);
     const { trigger, details } = verify(file);
     field(fragment, "verify").append(trigger);
     fragment.firstElementChild!.append(details);
     return fragment;
+  }
+
+  // ---- Architecture ----
+
+  // The visitor's CPU, which every architecture picker shows chosen. A choice
+  // in one picker goes for all of them, which are all about one computer.
+  const agent = desktopUserAgent();
+  let architecture = detectArchitecture(agent);
+  let architectureChosen = false;
+  const pickers = new Map<string, (architecture?: string) => void>();
+
+  function chooseArchitecture(chosen: string | undefined) {
+    architecture = chosen;
+    pickers.forEach((select) => select(chosen));
+  }
+
+  // Chromium tells its CPU only when asked. Its answer counts unless the
+  // visitor chose already.
+  (
+    navigator as Navigator & {
+      userAgentData?: {
+        getHighEntropyValues(
+          hints: string[]
+        ): Promise<{ architecture?: string; bitness?: string }>;
+      };
+    }
+  ).userAgentData
+    ?.getHighEntropyValues(["architecture", "bitness"])
+    .then((values) => {
+      if (!architectureChosen)
+        chooseArchitecture(detectArchitecture(agent, values) ?? architecture);
+    })
+    .catch(() => {});
+
+  const matches = (file: Download, chosen: string) =>
+    normalizeArchitecture(file.architecture ?? "") === chosen;
+
+  /**
+   * Fills a picker with the CPUs of the files, and shows what goes with the
+   * chosen one: the visitor's, or else the first. A picker with one CPU to
+   * choose from stays hidden.
+   */
+  function architecturePicker(
+    name: string,
+    files: Download[],
+    show: (architecture: string) => void
+  ) {
+    const picker = slot(name);
+    const choices = architectureSet(
+      files.map((file) => file.architecture ?? "").filter(Boolean)
+    );
+    picker.hidden = choices.length < 2;
+    picker.querySelectorAll("label").forEach((each) => each.remove());
+    const inputs = choices.map((choice) => {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = name;
+      input.value = choice;
+      input.addEventListener("change", () => {
+        architectureChosen = true;
+        chooseArchitecture(choice);
+      });
+      label.append(input, architectureLabel(choice, "Linux"));
+      picker.append(label);
+      return input;
+    });
+    function select(wanted?: string) {
+      const input = inputs.find((each) => each.value === wanted) ?? inputs[0];
+      if (input) input.checked = true;
+      show(input?.value ?? "");
+    }
+    pickers.set(name, select);
+    select(architecture);
   }
 
   // ---- Sections ----
@@ -276,6 +352,44 @@ function setUp(root: HTMLElement) {
     button.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>`;
     button.append(label);
     return button;
+  }
+
+  /**
+   * One download button for the AppImage of one CPU, which a picker chooses
+   * if there are several. The button shows the file's size, and its one
+   * Verification toggle shows the checks of the file that it downloads.
+   */
+  function renderAppImages(images: Download[]) {
+    const actions = slot("appimage-actions");
+    const panels = slot("appimage-verify");
+
+    let open = false;
+    function show(file: Download) {
+      const { trigger, details } = verify(file);
+      // The checks stay open when another CPU is chosen, now for its file.
+      trigger.addEventListener("click", () => (open = !details.hidden));
+      if (open) {
+        details.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+      }
+      const meta = document.createElement("span");
+      meta.className = "method__meta";
+      meta.textContent = sizeLabel(file.size);
+      // The size and the toggle share a line, beside the button or, on a
+      // narrow screen, below it.
+      const info = document.createElement("span");
+      info.className = "method__info";
+      info.append(meta, trigger);
+      actions.replaceChildren(
+        primaryButton(file.url, "Download AppImage"),
+        info
+      );
+      panels.replaceChildren(details);
+    }
+
+    architecturePicker("appimage-architectures", images, (chosen) =>
+      show(images.find((file) => matches(file, chosen)) ?? images[0]!)
+    );
   }
 
   function renderMac(release: Release): boolean {
@@ -422,32 +536,31 @@ function setUp(root: HTMLElement) {
       );
     }
 
+    const images = appImages(release);
+    method("appimage").hidden = !images.length;
+    if (images.length) renderAppImages(images);
+
+    const files = otherDownloads(release);
+    method("other").hidden = !files.length;
+    // Only the packages of the chosen CPU, so that the last row is the last
+    // child, which the card draws no line below.
+    const list = slot("linux-files");
+    architecturePicker("linux-files-architectures", files, (chosen) =>
+      list.replaceChildren(
+        ...files
+          .filter((file) => !file.architecture || matches(file, chosen))
+          .map(fileRow)
+      )
+    );
+
     return true;
   }
 
-  function renderOther(release: Release) {
-    slot("other-files").replaceChildren(
-      ...downloadsFor(release, "source").map((file) =>
-        fileRow(file, file.name)
-      ),
-      ...otherDownloads(release).map((file) => {
-        const row = fileRow(file, file.name);
-        (row.firstElementChild as HTMLElement).dataset["platform"] =
-          file.platform;
-        return row;
-      }),
+  function renderSource(release: Release) {
+    slot("source-files").replaceChildren(
+      ...downloadsFor(release, "source").map(fileRow),
       ...thirdPartyRows(release)
     );
-  }
-
-  // Other downloads show the files of the platform that the tabs select, and
-  // those of every platform, such as the source code.
-  function showOtherFiles(platform: string | undefined) {
-    slot("other-files")
-      .querySelectorAll<HTMLElement>(":scope > [data-platform]")
-      .forEach((row) => {
-        row.hidden = row.dataset["platform"] !== platform;
-      });
   }
 
   // The LGPL libraries go in one collapsed row: few people need their source.
@@ -458,42 +571,54 @@ function setUp(root: HTMLElement) {
     field(group, "count").textContent =
       libraries.length === 1 ? "1 archive" : `${libraries.length} archives`;
     field(group, "files").replaceChildren(
-      ...libraries.map((library) =>
-        // Named after the library, its version and a digest of what it holds.
-        fileRow(
-          { ...library, platform: "source" },
-          library.name.replace(/-[0-9a-f]{12}\.tar$/, "")
-        )
-      )
+      ...libraries.map((library) => fileRow({ ...library, platform: "source" }))
     );
     return [group];
   }
 
   // ---- Platform switcher ----
 
+  // Two rows of tabs: the platforms, and the ways to install on Linux. A tab
+  // switches between the tabs of its own row.
   const tabs = Array.from(
     root.querySelectorAll<HTMLButtonElement>('[role="tab"]')
   );
   const panelFor = (tab: HTMLElement) =>
     find(`#${tab.getAttribute("aria-controls")}`);
+  const rowOf = (tab: HTMLElement) =>
+    tabs.filter((each) => each.parentElement === tab.parentElement);
+  const linuxTab = find<HTMLButtonElement>("#tab-linux");
 
   function select(tab: HTMLButtonElement, focus = false, remember = false) {
-    for (const each of tabs) {
+    for (const each of rowOf(tab)) {
       const selected = each === tab;
       each.setAttribute("aria-selected", String(selected));
       each.tabIndex = selected ? 0 : -1;
       panelFor(each).hidden = !selected;
     }
-    showOtherFiles(tab.dataset["platform"]);
+    reveal(tab);
     if (focus) tab.focus();
     if (remember)
       history.replaceState(null, "", `#${tab.getAttribute("aria-controls")}`);
   }
 
+  /**
+   * Scrolls a row that scrolls sideways to show the whole tab, without
+   * scrolling the page as scrollIntoView() would. A hidden row has no size,
+   * so this waits until it shows.
+   */
+  function reveal(tab: HTMLElement) {
+    const list = tab.parentElement!;
+    const row = list.getBoundingClientRect();
+    const box = tab.getBoundingClientRect();
+    if (box.right > row.right) list.scrollLeft += box.right - row.right;
+    else if (box.left < row.left) list.scrollLeft -= row.left - box.left;
+  }
+
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => select(tab, false, true));
     tab.addEventListener("keydown", (event: KeyboardEvent) => {
-      const visible = tabs.filter((each) => !each.hidden);
+      const visible = rowOf(tab).filter((each) => !each.hidden);
       const position = visible.indexOf(tab);
       const target =
         event.key === "ArrowRight"
@@ -511,21 +636,30 @@ function setUp(root: HTMLElement) {
     });
   });
 
+  // A way to install counts only while the release is available for Linux.
   function tabFromHash(): HTMLButtonElement | undefined {
     const id = location.hash.slice(1);
     return tabs.find(
-      (tab) => !tab.hidden && tab.getAttribute("aria-controls") === id
+      (tab) =>
+        !tab.hidden &&
+        !(tab.dataset["method"] && linuxTab.hidden) &&
+        tab.getAttribute("aria-controls") === id
     );
+  }
+
+  // A way to install, e.g. #linux-appimage, shows on the Linux tab.
+  function show(tab: HTMLButtonElement) {
+    if (tab.dataset["method"]) select(linuxTab);
+    select(tab);
   }
 
   window.addEventListener("hashchange", () => {
     const tab = tabFromHash();
-    if (tab) select(tab);
+    if (tab) show(tab);
   });
 
   // ---- Start ----
 
-  const agent = desktopUserAgent();
   const platform = detectPlatform(agent);
   const platformNotice = find("[data-platform-notice]");
   if (platform === "Windows" || isMobile(agent)) {
@@ -544,14 +678,19 @@ function setUp(root: HTMLElement) {
     date.setAttribute("datetime", latest.published);
     date.textContent = formatDate(latest.published);
     find("#tab-macos").hidden = !renderMac(latest);
-    find("#tab-linux").hidden = !renderLinux(latest);
-    renderOther(latest);
-    const available = tabs.filter((tab) => !tab.hidden);
+    linuxTab.hidden = !renderLinux(latest);
+    renderSource(latest);
+    // The first way to install, Flatpak, unless the release has none.
+    const method = tabs.find((tab) => tab.dataset["method"] && !tab.hidden);
+    if (method) select(method);
+    const available = tabs.filter(
+      (tab) => tab.dataset["platform"] && !tab.hidden
+    );
     const detected = available.find(
       (tab) => tab.dataset["platform"] === platform
     );
     const initial = tabFromHash() ?? detected ?? available[0];
-    if (initial) select(initial);
+    if (initial) show(initial);
   }
 
   const loading = find("[data-loading]");
@@ -572,6 +711,10 @@ function setUp(root: HTMLElement) {
       render(manifest);
       loading.hidden = true;
       content.hidden = false;
+      const method = root.querySelector<HTMLElement>(
+        '.method-tabs [aria-selected="true"]'
+      );
+      if (method) reveal(method);
     } catch (reason) {
       console.error("Couldn’t show downloads:", reason);
       loading.hidden = true;

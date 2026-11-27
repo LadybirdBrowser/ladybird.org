@@ -2,7 +2,9 @@ import { test, expect, describe } from "bun:test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import {
+  appImages,
   aptChoices,
+  detectArchitecture,
   hasLinux,
   linuxArchitectures,
   otherDownloads,
@@ -113,12 +115,13 @@ function release(downloads: Download[]): Release {
 }
 
 describe("Other downloads", () => {
-  test("Every file that no other part of the page shows is listed", () => {
+  test("Linux packages that no other tab shows are listed", () => {
+    const windows = download({ platform: "Windows", name: "ladybird.msi" });
     expect(
-      otherDownloads(release([mac, source, deb, appImage])).map(
+      otherDownloads(release([mac, source, deb, appImage, windows])).map(
         (file) => file.name
       )
-    ).toEqual([deb.name, appImage.name]);
+    ).toEqual([deb.name]);
   });
 
   test("A release with nothing else lists nothing", () => {
@@ -169,9 +172,18 @@ describe("Other downloads", () => {
     ]);
   });
 
-  test("Downloads of the release alone do not make it available for Linux", () => {
-    expect(hasLinux(release([deb, appImage]))).toBe(false);
+  test("Packages of the release alone do not make it available for Linux", () => {
+    expect(hasLinux(release([deb]))).toBe(false);
     expect(linuxArchitectures(release([deb])).all).toEqual([]);
+  });
+});
+
+describe("AppImages", () => {
+  test("An AppImage alone makes a release available for Linux", () => {
+    const only = release([mac, deb, appImage]);
+    expect(appImages(only)).toEqual([appImage]);
+    expect(hasLinux(only)).toBe(true);
+    expect(linuxArchitectures(only).all).toEqual(["arm64"]);
   });
 });
 
@@ -413,5 +425,25 @@ describe("Signing keys", () => {
       "utf8"
     );
     expect(fingerprint(key)).toBe(pinned);
+  });
+});
+
+describe("The visitor's CPU", () => {
+  // Chromium's user agent string claims x86-64 on every Linux computer.
+  const chromium = "Mozilla/5.0 (X11; Linux x86_64) Chrome/142.0.0.0";
+
+  test("Chromium's client hints outweigh its user agent string", () => {
+    const hints = (architecture: string, bitness = "64") =>
+      detectArchitecture(chromium, { architecture, bitness });
+    expect(hints("arm")).toBe("arm64");
+    expect(hints("x86")).toBe("x86_64");
+    expect(hints("arm", "32")).toBe("x86_64");
+  });
+
+  test("Otherwise the user agent string names the CPU, if any", () => {
+    expect(detectArchitecture("Mozilla/5.0 (X11; Linux aarch64)")).toBe(
+      "arm64"
+    );
+    expect(detectArchitecture("Mozilla/5.0 (X11; Linux)")).toBeUndefined();
   });
 });

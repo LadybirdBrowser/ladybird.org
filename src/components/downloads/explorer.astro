@@ -40,11 +40,8 @@ const repository = repositoryURL;
       <p class="tabpanel__intro">
         <span class="skeleton" style="width: 30em"></span>
       </p>
-      <!-- The first card on either tab: a heading and an install button. -->
+      <!-- The first card on either tab starts with an install button. -->
       <div class="panel method">
-        <div class="method__head">
-          <h3><span class="skeleton" style="width: 5em"></span></h3>
-        </div>
         <div class="method__actions">
           <!-- A real button's box, so it has exactly its size. -->
           <span class="btn btn--primary skeleton-button"
@@ -123,10 +120,7 @@ const repository = repositoryURL;
       >
         <p class="tabpanel__intro" data-slot="mac-requirement"></p>
 
-        <section class="panel method" aria-labelledby="dmg-heading">
-          <div class="method__head">
-            <h3 id="dmg-heading">Disk image</h3>
-          </div>
+        <section class="panel method">
           <div class="method__actions" data-slot="mac-actions"></div>
           <div class="method__verify" data-slot="mac-verify"></div>
           <ol class="steps">
@@ -149,16 +143,48 @@ const repository = repositoryURL;
           <span data-slot="linux-requirement"></span>
         </p>
 
+        <!-- One way to install at a time. Each tab and its panel share a name:
+             the panel's id is linux-<name>, which the address may name. -->
+        <div class="method-tabs" role="tablist" aria-label="Way to install">
+          <button
+            type="button"
+            role="tab"
+            id="tab-linux-flatpak"
+            aria-controls="linux-flatpak"
+            data-method="flatpak">Flatpak</button
+          ><button
+            type="button"
+            role="tab"
+            id="tab-linux-apt"
+            aria-controls="linux-apt"
+            data-method="apt">Ubuntu</button
+          ><button
+            type="button"
+            role="tab"
+            id="tab-linux-rpm"
+            aria-controls="linux-rpm"
+            data-method="rpm">Fedora</button
+          ><button
+            type="button"
+            role="tab"
+            id="tab-linux-appimage"
+            aria-controls="linux-appimage"
+            data-method="appimage">AppImage</button
+          ><button
+            type="button"
+            role="tab"
+            id="tab-linux-other"
+            aria-controls="linux-other"
+            data-method="other">Other</button
+          >
+        </div>
+
         <section
           class="panel method"
-          data-method="flatpak"
-          aria-labelledby="flatpak-heading"
+          role="tabpanel"
+          id="linux-flatpak"
+          aria-labelledby="tab-linux-flatpak"
         >
-          <div class="method__head">
-            <h3 id="flatpak-heading">Flatpak</h3>
-            <span class="tag">Recommended</span>
-          </div>
-          <p>Works on most distributions.</p>
           <div class="method__actions" data-slot="flatpak-action"></div>
           <div data-slot="flatpak-command"></div>
           <p class="method__foot" data-slot="flatpak-foot"></p>
@@ -167,14 +193,13 @@ const repository = repositoryURL;
 
         <section
           class="panel method"
-          data-method="apt"
-          aria-labelledby="apt-heading"
+          role="tabpanel"
+          id="linux-apt"
+          aria-labelledby="tab-linux-apt"
+          hidden
         >
-          <div class="method__head">
-            <h3 id="apt-heading">Ubuntu</h3>
-          </div>
           <fieldset class="segmented" data-slot="apt-suites">
-            <legend class="label">Ubuntu version</legend>
+            <legend class="visually-hidden">Ubuntu version</legend>
           </fieldset>
           <div data-slot="apt-command"></div>
           <p class="method__foot" data-slot="apt-foot"></p>
@@ -183,22 +208,58 @@ const repository = repositoryURL;
 
         <section
           class="panel method"
-          data-method="rpm"
-          aria-labelledby="rpm-heading"
+          role="tabpanel"
+          id="linux-rpm"
+          aria-labelledby="tab-linux-rpm"
+          hidden
         >
-          <div class="method__head">
-            <h3 id="rpm-heading">Fedora</h3>
-          </div>
           <div data-slot="rpm-command"></div>
           <p class="method__foot" data-slot="rpm-foot"></p>
           <div class="method__verify" data-slot="rpm-verify"></div>
         </section>
+
+        <section
+          class="panel method"
+          role="tabpanel"
+          id="linux-appimage"
+          aria-labelledby="tab-linux-appimage"
+          hidden
+        >
+          <fieldset class="segmented" data-slot="appimage-architectures">
+            <legend class="visually-hidden">Architecture</legend>
+          </fieldset>
+          <div class="method__actions" data-slot="appimage-actions"></div>
+          <div class="method__verify" data-slot="appimage-verify"></div>
+          <ol class="steps">
+            <li>Open the folder that you downloaded the AppImage to.</li>
+            <li>
+              <!-- One box beside the step's number, code and all. -->
+              <span
+                >Make it executable with <code>chmod +x</code> or in its properties.</span
+              >
+            </li>
+            <li>Open it to start Ladybird.</li>
+          </ol>
+        </section>
+
+        <section
+          class="panel method"
+          role="tabpanel"
+          id="linux-other"
+          aria-labelledby="tab-linux-other"
+          hidden
+        >
+          <fieldset class="segmented" data-slot="linux-files-architectures">
+            <legend class="visually-hidden">Architecture</legend>
+          </fieldset>
+          <ul class="files" data-slot="linux-files"></ul>
+        </section>
       </div>
     </section>
 
-    <section class="section" id="other" aria-labelledby="other-heading">
-      <h2 id="other-heading" class="section-heading">Other downloads</h2>
-      <ul class="files" data-slot="other-files"></ul>
+    <section class="section" id="source" aria-labelledby="source-heading">
+      <h2 id="source-heading" class="section-heading">Source code</h2>
+      <ul class="files" data-slot="source-files"></ul>
     </section>
   </div>
 
@@ -457,16 +518,73 @@ const repository = repositoryURL;
     margin-bottom: 20px;
   }
 
+  /* ---- Ways to install on Linux ---- */
+
+  /* A quieter row than the platform switch above it: it chooses within a
+     platform. A long row scrolls sideways rather than wrapping. */
+  /* Each tab is clickable across the space beside its caption. The row
+     reaches past the card's edges by that space, so the captions and the
+     baseline still line up with the card. */
+  .method-tabs {
+    --tab-space: 12px;
+    display: flex;
+    margin: 0 calc(-1 * var(--tab-space)) 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* The baseline, as wide as the card and drawn in the row's own box, so
+       that it neither scrolls nor makes the row scroll vertically. */
+    background: linear-gradient(var(--border-light), var(--border-light))
+      var(--tab-space) 100% / calc(100% - 2 * var(--tab-space)) 1px no-repeat;
+  }
+
+  .method-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .method-tabs [role="tab"] {
+    position: relative;
+    flex-shrink: 0;
+    padding: 10px var(--tab-space) 12px;
+    border: 0;
+    background: none;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-emphasis);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  /* The selected tab's underline, as wide as its caption. */
+  .method-tabs [role="tab"]::after {
+    content: "";
+    position: absolute;
+    inset: auto var(--tab-space) 0;
+    height: 2px;
+    transition: background 0.2s;
+  }
+
+  .method-tabs [role="tab"]:hover {
+    color: var(--text-primary);
+  }
+
+  .method-tabs [aria-selected="true"] {
+    color: var(--text-primary);
+  }
+
+  .method-tabs [aria-selected="true"]::after {
+    background: var(--color-accent);
+  }
+
+  /* Drawn inside the tab, which the scrolling row would otherwise clip. */
+  .method-tabs [role="tab"]:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: -2px;
+    border-radius: 4px;
+  }
+
   /* ---- Cards ---- */
-
-  /* Each method is a .panel. */
-  .method + .method {
-    margin-top: 16px;
-  }
-
-  .method p {
-    margin-bottom: 16px;
-  }
 
   .tag {
     padding: 1px 10px;
@@ -478,13 +596,13 @@ const repository = repositoryURL;
     white-space: nowrap;
   }
 
-  /* macOS */
+  /* The steps after downloading a disk image or an AppImage. */
 
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px 24px;
-    margin: 24px 0 0;
+    margin: 16px 0 0;
     padding: 20px 0 0;
     border-top: 1px solid var(--border-light);
     list-style: none;
@@ -516,28 +634,31 @@ const repository = repositoryURL;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Linux */
-
-  .method__head {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px 12px;
-    margin-bottom: 8px;
-  }
-
-  /* A card's heading needs more room above a button, picker or command
-     than above a line of text. */
-  .method__head + :not(p) {
-    margin-top: 16px;
-  }
+  /* What every card can hold: buttons, a footer, a picker. */
 
   .method__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 12px 16px;
-    margin-bottom: 24px;
+    /* Inside a card, what follows a button is as far from it as what comes
+       before it, such as a picker. */
+    margin-bottom: 16px;
+  }
+
+  /* The size of what the button downloads, and its Verification toggle. The
+     size belongs to the button, so it sits closer to it than to the toggle. */
+  .method__actions :global(.method__info) {
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    margin-left: -4px;
+  }
+
+  .method__actions :global(.method__meta) {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
   }
 
   /* The CPU note, if any, and the Verification toggle. */
@@ -546,40 +667,49 @@ const repository = repositoryURL;
     flex-wrap: wrap;
     align-items: center;
     gap: 4px 16px;
-    margin: 16px 0 0 !important;
+    margin: 16px 0 0;
     font-size: var(--text-xs);
     color: var(--text-muted);
   }
 
+  /* A smaller version of the platform switch, for a choice within a card,
+     such as the CPU or the Ubuntu version. The options name themselves. */
   .segmented {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 6px;
-    margin: 0 0 12px;
-    padding: 0;
-    border: 0;
-  }
-
-  .segmented legend {
-    float: left;
-    margin: 0 8px 0 0;
+    gap: 2px;
+    min-width: 0;
+    margin: 0 0 16px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-subtle);
   }
 
   .segmented :global(label) {
     position: relative;
-    padding: 3px 14px;
-    border: 1px solid var(--border);
+    padding: 4px 16px;
+    border: 1px solid transparent;
     border-radius: 999px;
+    color: var(--text-muted);
     font-size: var(--text-sm);
-    color: var(--text-secondary);
+    font-weight: var(--weight-emphasis);
+    font-variant-numeric: tabular-nums;
     cursor: pointer;
+    transition:
+      color 0.2s,
+      background 0.2s;
+  }
+
+  .segmented :global(label:hover) {
+    color: var(--text-primary);
   }
 
   .segmented :global(label:has(:checked)) {
-    border-color: var(--color-accent);
-    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-    color: var(--color-accent);
+    border-color: var(--border);
+    background: var(--bg-page);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
   }
 
   .segmented :global(label:has(:focus-visible)) {
@@ -700,8 +830,10 @@ const repository = repositoryURL;
     display: none;
   }
 
+  /* A name breaks at its hyphens, or anywhere if it has none that fit. */
   .files :global(.file__link) {
     font-weight: var(--weight-emphasis);
+    overflow-wrap: anywhere;
   }
 
   .files :global(.file__size) {
@@ -767,6 +899,15 @@ const repository = repositoryURL;
     color: var(--text-secondary);
   }
 
+  /* In a card, whose border frames the list, lines go between rows only. */
+  .method > .files {
+    border-top: 0;
+  }
+
+  .method > .files :global(.file:last-child) {
+    border-bottom: 0;
+  }
+
   /* The archives sit inside the row, which draws the line below them. */
   .files :global(.file-group .files) {
     padding-left: 16px;
@@ -775,14 +916,6 @@ const repository = repositoryURL;
 
   .files :global(.file-group .file:last-child) {
     border-bottom: 0;
-  }
-
-  .downloads :global(.btn--small) {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 18px;
-    font-size: var(--text-xs);
   }
 
   /* ---- Verification ---- */
@@ -844,9 +977,9 @@ const repository = repositoryURL;
     }
   }
 
-  /* Under the macOS button, above the steps. */
+  /* Under a download button, above the steps. */
   .method__verify :global(.verify__details) {
-    margin: -8px 0 24px;
+    margin: -8px 0 16px;
   }
 
   /* Under a Linux card's footer. */
@@ -1011,6 +1144,8 @@ const repository = repositoryURL;
   @media (prefers-reduced-motion: reduce) {
     .toast,
     .platform-tabs [role="tab"],
+    .method-tabs [role="tab"],
+    .segmented :global(label),
     .downloads :global(.verify__trigger svg),
     .downloads :global(.verify__details) {
       transition: none;
@@ -1051,6 +1186,11 @@ const repository = repositoryURL;
       align-items: stretch;
       gap: 8px;
       text-align: center;
+    }
+
+    .method__actions :global(.method__info) {
+      align-self: center;
+      margin-left: 0;
     }
 
     .method__actions :global(.verify__trigger) {
